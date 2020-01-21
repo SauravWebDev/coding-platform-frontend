@@ -1,0 +1,8 @@
+export const GET_ALL_PROBLEMS = "GET_ALL_PROBLEMS";
+export const BEGIN_API_CALL = "BEGIN_API_CALL";
+export const API_CALL_ERROR = "API_CALL_ERROR";
+export const LOAD_All_Problems_SUCCESS = "LOAD_All_Problems_SUCCESS";
+export const SET_CURRENT_USER_SUCCESS = "SET_CURRENT_USER";
+export const SIGNUP_PROGRESS = "SIGNUP_PROGRESS";
+export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
+export const SIGNUP_FAIL = "SIGNUP_FAIL";

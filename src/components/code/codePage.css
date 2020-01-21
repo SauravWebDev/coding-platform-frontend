@@ -1,0 +1,103 @@
+.Resize {
+  display: "flex";
+  border-right: 1px solid rgb(238, 238, 238);
+}
+.Question {
+  padding: 1em 0px;
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+.example {
+  margin-top: 10px;
+  padding-top: 5px;
+}
+
+.heading {
+  font-weight: 500;
+}
+
+.data {
+  font-weight: 400;
+}
+
+.example-data {
+  margin: 12px;
+  padding: 5px;
+  background-color: #efefef;
+}
+.drags {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  background: #fff;
+  border-bottom: 1px solid rgb(238, 238, 238);
+}
+
+.left {
+  padding: 10px;
+  height: 100%;
+  overflow-y: auto;
+  border-width: 3px;
+}
+
+.CodeMirror {
+  height: 500px !important;
+}
+
+.button {
+  position: relative;
+  background-color: #4caf50;
+  border: none;
+  color: #ffffff;
+  text-align: center;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.submit-btn {
+  color: white;
+  background-color: #8e8686;
+}
+
+.codemaindiv {
+}
+
+.button4 {
+  background-color: #e7e7e7;
+  color: black;
+} /* Gray */
+.button5 {
+  background-color: #555555;
+}
+
+.purple-border textarea {
+  border: 1px solid #ba68c8;
+}
+.purple-border .form-control:focus {
+  border: 1px solid #ba68c8;
+  box-shadow: 0 0 0 0.2rem rgba(186, 104, 200, 0.25);
+}
+
+.green-border-focus .form-control:focus {
+  border: 1px solid #8bc34a;
+  box-shadow: 0 0 0 0.2rem rgba(139, 195, 74, 0.25);
+}
+
+.btn-space {
+  margin-right: 15px;
+}
