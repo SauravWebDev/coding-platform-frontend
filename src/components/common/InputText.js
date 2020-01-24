@@ -11,7 +11,9 @@ const InputText = ({
   error,
   onChange,
   type,
-  autoFocus
+  autoFocus,
+  multiline,
+  rows
 }) => {
   let errStatus = error ? true : false;
   return (
@@ -21,6 +23,8 @@ const InputText = ({
         variant="outlined"
         margin="normal"
         required={required}
+        rows={rows}
+        multiline={multiline}
         fullWidth
         id={id}
         label={label}
@@ -48,7 +52,9 @@ InputText.propTypes = {
   autoComplete: PropTypes.string,
   required: PropTypes.bool,
   type: PropTypes.string.isRequired,
-  autoFocus: PropTypes.bool
+  autoFocus: PropTypes.bool,
+  rows: PropTypes.number,
+  multiline: PropTypes.bool
 };
 
 export default InputText;

@@ -15,7 +15,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
-  table: {},
+  table: {
+    spacing: 2
+  },
   tableHead: {
     fontWeight: "bold"
   }
@@ -36,6 +38,9 @@ const ProblemList = ({ problems }) => {
                 Interview Questions
               </Typography>
             </TableCell>
+            <TableCell>
+              <Typography className={classes.tableHead}>Actions</Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -47,6 +52,11 @@ const ProblemList = ({ problems }) => {
               <TableCell scope="row">
                 <NavLink to={"/problem/" + problem.id}>
                   <Typography>{problem.title}</Typography>
+                </NavLink>
+              </TableCell>
+              <TableCell scope="row">
+                <NavLink to={"/problem/createUpdate/" + problem.id}>
+                  <Typography>Update</Typography>
                 </NavLink>
               </TableCell>
             </TableRow>

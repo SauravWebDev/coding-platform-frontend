@@ -8,6 +8,8 @@ import ProblemsPage from "./problems/ProblemsPage";
 import ManageLoginPage from "./login/ManageLoginPage";
 import ManageSignupPage from "./signup/ManageSignupPage";
 
+import ManageCreateUpdateProblemPage from "./createUpdateProblem/ManageCreateUpdateProblemPage";
+
 import codePage from "./code/codePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,6 +23,14 @@ function App() {
         <Route path="/login" component={ManageLoginPage} />
         <Route path="/signup" component={ManageSignupPage} />
         <Route path="/problems" component={ProblemsPage} />
+        <Route
+          path="/problem/createUpdate/:slug"
+          component={ManageCreateUpdateProblemPage}
+        />
+        <Route
+          path="/problem/createUpdate"
+          component={ManageCreateUpdateProblemPage}
+        />
         <Route path="/problem/:slug" component={codePage} />
         <Route component={PageNotFound} />
       </Switch>

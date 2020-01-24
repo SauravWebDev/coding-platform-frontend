@@ -1,9 +1,16 @@
 export default {
-  apiCallsInProgress: 0,
-  problems: [],
+  problems: {
+    loading: false,
+    data: [],
+    error: null
+  },
   userDetails: {
     isAuthenticated: false,
     data: {}
   },
-  signupSuccess: false
+  signupSuccess: false,
+  createUpdateProblems: {
+    loading: false,
+    data: []
+  }
 };

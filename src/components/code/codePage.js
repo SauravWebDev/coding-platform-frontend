@@ -6,21 +6,7 @@ import ProblemData from "./ProblemData";
 import "./codePage.css";
 import TestCase from "./TestCase";
 
-import { Controlled as CodeMirror } from "react-codemirror2";
-
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/theme/neat.css";
-import "codemirror/mode/javascript/javascript";
-
-import "codemirror/keymap/sublime";
-import "codemirror/addon/edit/closetag";
-import "codemirror/addon/edit/closebrackets";
-import "codemirror/addon/edit/matchtags";
-
-import "codemirror/addon/fold/foldgutter.css";
-
-import "codemirror/addon/fold/foldcode";
+import Editor from "./Editor";
 
 function codePage() {
   const [codeData, setCodeData] = useState(`function(nums) {
@@ -50,7 +36,9 @@ function codePage() {
       note: [`You may assume k is always valid, 1 ≤ k ≤ n2.`]
     }
   });
-
+  const onCodeChange = value => {
+    setCodeData(value);
+  };
   const run = () => {};
 
   const submit = () => {};
@@ -58,9 +46,6 @@ function codePage() {
     <div>
       <div>
         <div className="float-right btn-space">
-          {/* <button className="button button5" onClick={output}>
-            Output
-  </button>*/}
           <button className="button button4" onClick={run}>
             Run
           </button>
@@ -80,34 +65,7 @@ function codePage() {
             <Resize handleWidth="3px" handleColor="#ffffff ">
               <ResizeVertical height="350px">
                 <div className="codemaindiv">
-                  <CodeMirror
-                    value={codeData}
-                    options={{
-                      mode: "javascript",
-                      theme: "material",
-                      lineNumbers: true,
-                      keyMap: "sublime",
-                      tyleActiveLine: true,
-                      matchBrackets: true,
-                      indentUnit: 4,
-                      lineWrapping: true,
-                      indentWithTabs: true,
-                      autofocus: true,
-                      autoCloseTags: true,
-                      autoCloseBrackets: true,
-                      matchTags: true,
-                      showTrailingSpace: true,
-                      foldGutter: true,
-                      gutters: [
-                        "CodeMirror-linenumbers",
-                        "CodeMirror-foldgutter"
-                      ]
-                    }}
-                    onBeforeChange={(editor, data, value) => {
-                      setCodeData(value);
-                    }}
-                    onChange={() => {}}
-                  />
+                  <Editor codeData={codeData} onCodeChange={onCodeChange} />
                 </div>
               </ResizeVertical>
               <ResizeVertical minHeight="50px">

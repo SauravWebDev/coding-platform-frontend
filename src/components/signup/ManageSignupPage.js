@@ -5,17 +5,13 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { signup } from "../../redux/actions/loginAction";
 
-const ManageSignupPage = ({
-  isLoggedIn,
-  signupSuccess,
-  signupAction,
-  disablSignupButton
-}) => {
+const ManageSignupPage = ({ isLoggedIn, signupSuccess, signupAction }) => {
   let [errors, setErrors] = useState({});
   let [emailID, setEmailID] = useState("");
   let [password, setPassword] = useState("");
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
+  let [disablSignupButton, setDisablSignupButton] = useState(false);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -73,8 +69,10 @@ const ManageSignupPage = ({
   const handleSave = () => {
     event.preventDefault();
     if (!formIsValid()) return;
+    setDisablSignupButton(true);
     signupAction(firstName, lastName, emailID, password).catch(err => {
       setErrors({ ...errors, signupError: err });
+      setDisablSignupButton(false);
     });
   };
 
@@ -95,16 +93,14 @@ const ManageSignupPage = ({
 ManageSignupPage.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   signupSuccess: PropTypes.bool.isRequired,
-  signupAction: PropTypes.func.isRequired,
-  disablSignupButton: PropTypes.bool.isRequired
+  signupAction: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
   console.log("state ", state);
   return {
     isLoggedIn: state.userData && state.userData.isAuthenticated,
-    signupSuccess: state.signupSuccess,
-    disablSignupButton: state.apiCallsInProgress > 0
+    signupSuccess: state.signupSuccess
   };
 }
 

@@ -1,35 +1,49 @@
-import React, { useState } from "react";
+import React from "react";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PropTypes from "prop-types";
 
-require("codemirror/lib/codemirror.css");
-require("codemirror/theme/material.css");
-require("codemirror/theme/neat.css");
-require("codemirror/mode/xml/xml.js");
-require("codemirror/mode/javascript/javascript.js");
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/theme/neat.css";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/keymap/sublime";
+import "codemirror/addon/edit/closetag";
+import "codemirror/addon/edit/closebrackets";
+import "codemirror/addon/edit/matchtags";
+import "codemirror/addon/fold/foldgutter.css";
+import "codemirror/addon/fold/foldcode";
 
-function Editor({ value, mode, theme }) {
-  const [Codevalue, setValue] = useState(value);
+function Editor({ codeData, onCodeChange }) {
   return (
     <CodeMirror
-      value={Codevalue}
+      value={codeData}
       options={{
-        mode: mode,
-        theme: theme,
-        lineNumbers: true
+        mode: "javascript",
+        theme: "material",
+        lineNumbers: true,
+        keyMap: "sublime",
+        tyleActiveLine: true,
+        matchBrackets: true,
+        indentUnit: 4,
+        lineWrapping: true,
+        indentWithTabs: true,
+        autofocus: true,
+        autoCloseTags: true,
+        autoCloseBrackets: true,
+        matchTags: true,
+        showTrailingSpace: true,
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
       }}
       onBeforeChange={(editor, data, value) => {
-        setValue({ Codevalue: value });
+        onCodeChange(value);
       }}
-      onChange={(editor, data, value) => {
-        //this.setState({ codeValue: value });
-      }}
+      onChange={() => {}}
     />
   );
 }
 Editor.propTypes = {
-  value: PropTypes.string.isRequired,
-  mode: PropTypes.string.isRequired,
-  theme: PropTypes.string.isRequired
+  codeData: PropTypes.string.isRequired,
+  onCodeChange: PropTypes.func.isRequired
 };
 export default Editor;

@@ -1,8 +1,16 @@
 import { handleResponse, handleError } from "./apiUtils";
-const baseUrl = "http://localhost:8080/getAllProblems/";
+const getAllProblemsUrl = "http://localhost:8080/getAllProblems/";
+
+const getProblemByIdOrTitleUrl = "http://localhost:8080/problem/";
 
 export function getAllProblems() {
-  return fetch(baseUrl)
+  return fetch(getAllProblemsUrl)
+    .then(handleResponse)
+    .catch(handleError);
+}
+
+export function getProblemByIdOrTitle(id) {
+  return fetch(getProblemByIdOrTitleUrl + "" + id)
     .then(handleResponse)
     .catch(handleError);
 }
