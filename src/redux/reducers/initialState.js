@@ -1,16 +1,10 @@
 export default {
-  problems: {
-    loading: false,
-    data: [],
-    error: null
-  },
+  loading: true,
+  APIerror: null,
+  problems: {},
   userDetails: {
     isAuthenticated: false,
     data: {}
   },
-  signupSuccess: false,
-  createUpdateProblems: {
-    loading: false,
-    data: []
-  }
+  signupSuccess: false
 };

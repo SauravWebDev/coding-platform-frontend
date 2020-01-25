@@ -6,14 +6,14 @@ import { bindActionCreators } from "redux";
 import ProblemList from "./ProblemList";
 import Spinner from "../common/Spinner";
 import { Grid } from "@material-ui/core";
+
 class ProblemsPage extends React.Component {
   componentDidMount() {
-    const { actions, ProblemsData } = this.props;
-
-    if (ProblemsData.length === 0) {
-      actions.loadProblems().catch(error => {
-        alert("Loading courses failed" + error);
-      });
+    const { actions, problemsData, error } = this.props;
+    if (error) return;
+    let length = Object.keys(problemsData).length;
+    if (length === 0) {
+      actions.loadProblems();
     }
   }
   render() {
@@ -26,7 +26,7 @@ class ProblemsPage extends React.Component {
         <>
           <Grid container>
             <Grid item xs={4}>
-              <ProblemList problems={this.props.ProblemsData} />
+              <ProblemList problems={this.props.problemsData} />
             </Grid>
             <Grid item xs={4}></Grid>
             <Grid item xs={4}></Grid>
@@ -41,14 +41,14 @@ ProblemsPage.propTypes = {
   actions: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   error: PropTypes.object,
-  ProblemsData: PropTypes.array.isRequired
+  problemsData: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
   return {
-    loading: state.problems.loading,
-    error: state.problems.error,
-    ProblemsData: state.problems.data
+    loading: state.loading,
+    error: state.error,
+    problemsData: state.problems
   };
 }
 

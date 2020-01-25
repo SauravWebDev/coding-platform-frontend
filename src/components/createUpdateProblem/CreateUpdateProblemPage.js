@@ -149,6 +149,5 @@ export default function CreateUpdateProblemPage({
 CreateUpdateProblemPage.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired,
-  disable: PropTypes.bool.isRequired
+  errors: PropTypes.object.isRequired
 };

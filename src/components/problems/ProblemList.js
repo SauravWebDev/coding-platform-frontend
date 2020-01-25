@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 });
 
 const ProblemList = ({ problems }) => {
+  debugger;
   const classes = useStyles();
   return (
     <TableContainer component={Paper}>
@@ -44,18 +45,18 @@ const ProblemList = ({ problems }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {problems.map(problem => (
-            <TableRow key={problem.id}>
+          {Object.keys(problems).map(index => (
+            <TableRow key={problems[index].id}>
               <TableCell scope="row">
-                <Typography>{problem.id}</Typography>
+                <Typography>{problems[index].id}</Typography>
               </TableCell>
               <TableCell scope="row">
-                <NavLink to={"/problem/" + problem.id}>
-                  <Typography>{problem.title}</Typography>
+                <NavLink to={"/problem/" + problems[index].id}>
+                  <Typography>{problems[index].title}</Typography>
                 </NavLink>
               </TableCell>
               <TableCell scope="row">
-                <NavLink to={"/problem/createUpdate/" + problem.id}>
+                <NavLink to={"/problem/createUpdate/" + problems[index].id}>
                   <Typography>Update</Typography>
                 </NavLink>
               </TableCell>

@@ -12,3 +12,6 @@ export const SET_CURRENT_USER_SUCCESS = "SET_CURRENT_USER";
 export const SIGNUP_PROGRESS = "SIGNUP_PROGRESS";
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNUP_FAIL = "SIGNUP_FAIL";
+
+export const SET_ERROR = "SET_ERROR";
+export const SET_LOADING = "SET_LOADING";
