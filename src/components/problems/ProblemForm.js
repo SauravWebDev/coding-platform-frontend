@@ -2,15 +2,25 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import Avatar from "@material-ui/core/Avatar";
-import { Button, Divider } from "@material-ui/core";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+// Material UI Componenets
+import {
+  Button,
+  Divider,
+  CssBaseline,
+  Grid,
+  Typography,
+  makeStyles,
+  Container,
+  Tooltip
+} from "@material-ui/core";
+
+// MAterial UI icons
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+
 import TextInput from "../common/InputText";
+
+import { validString } from "../../util/util";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -32,22 +42,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function CreateUpdateProblemPage({
+export default function ProblemForm({
   onChange,
   onSave,
   errors,
-  operation,
-  examples = []
+  isCreate,
+  title,
+  examples,
+  description,
+  addExample,
+  deleteExample
 }) {
   const classes = useStyles();
-
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
-
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          {operation === "create" ? "Create New Problem" : "update Problem"}
+          {isCreate ? "Create New Problem" : "update Problem"}
         </Typography>
         <form className={classes.form} onSubmit={onSave}>
           <Grid container spacing={3}>
@@ -58,11 +70,12 @@ export default function CreateUpdateProblemPage({
                 name="title"
                 type="text"
                 required={true}
-                error={errors.title}
+                error={validString(errors.title)}
                 onChange={onChange}
                 autoFocus={true}
                 multiline={true}
                 rows={4}
+                value={title}
               />
             </Grid>
             <Grid item xs={6}>
@@ -70,75 +83,87 @@ export default function CreateUpdateProblemPage({
                 id="createUpdate-description"
                 label="Description"
                 name="description"
-                type="password"
+                type="text"
                 required={true}
-                error={errors.description}
+                error={validString(errors.description)}
                 onChange={onChange}
                 multiline={true}
                 rows={6}
+                value={description}
               />
             </Grid>
             <Grid item xs={12}>
               <Divider variant="middle" />
-              <Typography component="h1" variant="caption">
+              <Typography
+                style={{ display: "inline-block" }}
+                component="h1"
+                variant="caption"
+              >
                 Provide Examples
               </Typography>
+              <Tooltip title="click to Add more Examples">
+                <AddIcon style={{ float: "right" }} onClick={addExample} />
+              </Tooltip>
             </Grid>
-            {examples.map(example => (
-              <>
+            {examples.map((example, index) => (
+              <Grid container key={index}>
                 <Grid item xs={3}>
                   <TextInput
                     id="createUpdate-exampleInput-1"
                     label="Input"
-                    name="exampleInput-1"
+                    name={"example_input_" + index}
                     type="text"
                     required={true}
                     onChange={onChange}
-                    autoFocus={true}
                     multiline={true}
                     rows={4}
+                    value={example.input}
                   />
+                  <Tooltip
+                    title="click to Delete above Example"
+                    onClick={() => deleteExample(index)}
+                  >
+                    <DeleteIcon />
+                  </Tooltip>
                 </Grid>
                 <Grid item xs={3}>
                   <TextInput
+                    type="text"
                     id="createUpdate-output"
                     label="Output"
-                    name="output"
+                    name={"example_output_" + index}
                     required={true}
-                    error={errors.description}
+                    error={errors.output}
                     onChange={onChange}
                     multiline={true}
                     rows={4}
+                    value={example.output}
                   />
                 </Grid>
                 <Grid item xs={6}>
                   <TextInput
                     id="createUpdate-explaination"
                     label="Explaination"
-                    name="explaination"
+                    name={"example_explaination_" + index}
+                    type="text"
                     required={true}
-                    error={errors.description}
+                    error={errors.explaination}
                     onChange={onChange}
                     multiline={true}
                     rows={4}
+                    value={example.explaination}
                   />
                 </Grid>
-              </>
+              </Grid>
             ))}
           </Grid>
-
-          {errors.signInError && (
-            <span style={{ color: "red" }}>
-              <h6>{errors.signInError}</h6>
-            </span>
-          )}
           <Button
             type="submit"
             variant="contained"
             color="primary"
             className={classes.submit}
           >
-            Create
+            {isCreate ? <>Create</> : <>update</>}
           </Button>
         </form>
       </div>
@@ -146,8 +171,12 @@ export default function CreateUpdateProblemPage({
   );
 }
 
-CreateUpdateProblemPage.propTypes = {
+ProblemForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  isCreate: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  examples: PropTypes.array.isRequired
 };

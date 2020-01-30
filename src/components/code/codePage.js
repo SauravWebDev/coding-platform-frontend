@@ -9,6 +9,7 @@ import TestCase from "./TestCase";
 import Editor from "./Editor";
 
 function codePage() {
+  /*
   const [codeData, setCodeData] = useState(`function(nums) {
  };
  `);
@@ -77,6 +78,7 @@ function codePage() {
       </div>
     </div>
   );
+  */
 }
 
 function mapStateToProps() {

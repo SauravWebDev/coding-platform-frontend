@@ -7,11 +7,10 @@ import PageNotFound from "./PageNotFound";
 import ProblemsPage from "./problems/ProblemsPage";
 import ManageLoginPage from "./login/ManageLoginPage";
 import ManageSignupPage from "./signup/ManageSignupPage";
-
-import ManageCreateUpdateProblemPage from "./createUpdateProblem/ManageCreateUpdateProblemPage";
-
+import ManageProblem from "./problems/ManageProblem";
 import codePage from "./code/codePage";
 import { ToastContainer } from "react-toastify";
+import Test from "./test/TestPage";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -23,15 +22,10 @@ function App() {
         <Route path="/login" component={ManageLoginPage} />
         <Route path="/signup" component={ManageSignupPage} />
         <Route path="/problems" component={ProblemsPage} />
-        <Route
-          path="/problem/createUpdate/:slug"
-          component={ManageCreateUpdateProblemPage}
-        />
-        <Route
-          path="/problem/createUpdate"
-          component={ManageCreateUpdateProblemPage}
-        />
+        <Route path="/problem/createUpdate/:slug" component={ManageProblem} />
+        <Route path="/problem/createUpdate" component={ManageProblem} />
         <Route path="/problem/:slug" component={codePage} />
+        <Route path="/test" component={Test} />
         <Route component={PageNotFound} />
       </Switch>
       <StickyFooter />

@@ -1,7 +1,6 @@
 import * as types from "./actionTypes";
 import * as problemApi from "../../api/problemsApi";
-import setLoading from "./loadingAction";
-import setError from "./apiErrorAction";
+import { beginApiCall, apiCallError } from "./apiStatusActions";
 
 export function setProblemsData(data) {
   let payload = {};
@@ -12,22 +11,24 @@ export function setProblemsData(data) {
 }
 
 export function getAllProblems() {
+  beginApiCall();
   return function(dispatch) {
-    dispatch(setError(null));
-    dispatch(setLoading(true));
     return problemApi
       .getAllProblems()
       .then(problems => {
-        dispatch(setProblemsData(problems));
-        dispatch(setLoading(false));
+        if (problems.error) {
+          let err = new Error();
+          err.msg = "Error in fetching all problems";
+          throw err;
+        } else {
+          dispatch(setProblemsData(problems));
+        }
       })
       .catch(e => {
         console.log("Error in getAllProblems ", e);
-        debugger;
         let err = new Error();
         err.msg = "Error in fetching all problems";
-        dispatch(setError(err));
-        dispatch(setLoading(false));
+        throw err;
       });
   };
 }

@@ -15,3 +15,6 @@ export const SIGNUP_FAIL = "SIGNUP_FAIL";
 
 export const SET_ERROR = "SET_ERROR";
 export const SET_LOADING = "SET_LOADING";
+
+export const BEGIN_API_CALL = "BEGIN_API_CALL";
+export const API_CALL_ERROR = "API_CALL_ERROR";

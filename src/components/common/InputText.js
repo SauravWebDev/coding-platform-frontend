@@ -13,7 +13,8 @@ const InputText = ({
   type,
   autoFocus,
   multiline,
-  rows
+  rows,
+  value
 }) => {
   let errStatus = error ? true : false;
   return (
@@ -33,6 +34,7 @@ const InputText = ({
         autoComplete={autoComplete}
         autoFocus={autoFocus}
         onChange={onChange}
+        value={value}
       />
       {error && (
         <span style={{ color: "red" }}>

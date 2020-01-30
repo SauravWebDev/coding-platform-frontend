@@ -14,20 +14,20 @@ import {
 
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   table: {
-    spacing: 2
+    spacing: 2,
+    padding: theme.spacing(2)
   },
   tableHead: {
     fontWeight: "bold"
   }
-});
+}));
 
 const ProblemList = ({ problems }) => {
-  debugger;
   const classes = useStyles();
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table className={classes.table}>
         <TableHead className={classes.tableHead}>
           <TableRow>
@@ -69,7 +69,7 @@ const ProblemList = ({ problems }) => {
 };
 
 ProblemList.propTypes = {
-  problems: PropTypes.array.isRequired
+  problems: PropTypes.object.isRequired
 };
 
 export default ProblemList;

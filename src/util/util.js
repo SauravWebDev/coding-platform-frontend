@@ -1,3 +1,5 @@
+import { types } from "@babel/core";
+
 const jwt = require("jsonwebtoken");
 
 export function decode(token) {
@@ -7,4 +9,8 @@ export function decode(token) {
     firstName,
     lastName
   };
+}
+
+export function validString(str) {
+  return str && str.trim().length != 0;
 }

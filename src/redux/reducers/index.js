@@ -1,17 +1,14 @@
 import { combineReducers } from "redux";
-import error from "./apiErrorReducer";
-import loading from "./loadingReducer";
 import problems from "./problemsReducer";
 import userData from "./loginReducer";
-
 import signupSuccess from "./singupReducer";
+import apiCallsInProgress from "./apiStatusReducer";
 
 const rootReducer = combineReducers({
   problems,
   userData,
   signupSuccess,
-  error,
-  loading
+  apiCallsInProgress
 });
 
 export default rootReducer;
