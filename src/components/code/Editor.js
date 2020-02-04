@@ -24,7 +24,7 @@ function Editor({ codeData, onCodeChange }) {
         keyMap: "sublime",
         tyleActiveLine: true,
         matchBrackets: true,
-        indentUnit: 4,
+        indentUnit: 2,
         lineWrapping: true,
         indentWithTabs: true,
         autofocus: true,

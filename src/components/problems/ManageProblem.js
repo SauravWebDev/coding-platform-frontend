@@ -82,9 +82,9 @@ const ManageProblem = ({ isLoggedIn, slug }) => {
     createORUpdateProblem(reqBody)
       .then(res => {
         if (res.error) {
-          alert(res.error);
+          toast.error(res.error);
         } else {
-          alert(res.msg);
+          toast.success(res.msg);
         }
       })
       .catch(e => {

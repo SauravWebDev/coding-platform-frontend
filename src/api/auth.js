@@ -1,8 +1,9 @@
 import { handleResponse, handleError } from "./apiUtils";
-const baseUrl = "http://localhost:8080/";
+
+import { auth as apiUrl } from "./apiUrls";
 
 export function logIn(emailId, password) {
-  return fetch(baseUrl + "loginWithPassword", {
+  return fetch(apiUrl + "/loginWithPassword", {
     method: "post",
     mode: "cors",
     redirect: "follow",
@@ -20,7 +21,7 @@ export function logIn(emailId, password) {
 }
 
 export function signup(firstName, lastName, emailID, password) {
-  return fetch(baseUrl + "createUser", {
+  return fetch(apiUrl + "/createUser", {
     method: "post",
     mode: "cors",
     redirect: "follow",

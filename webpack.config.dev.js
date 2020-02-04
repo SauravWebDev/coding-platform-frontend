@@ -4,6 +4,12 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 process.env.NODE_ENV = "development";
 
+var API_URL = JSON.stringify("http://localhost:8081");
+
+// check environment mode
+var environment =
+  process.env.NODE_ENV === "production" ? "production" : "development";
+
 module.exports = {
   mode: "development",
   target: "web",
@@ -25,6 +31,9 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html"
+    }),
+    new webpack.DefinePlugin({
+      API_URL: API_URL
     })
   ],
   module: {

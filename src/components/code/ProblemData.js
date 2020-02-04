@@ -3,18 +3,15 @@ import PropTypes from "prop-types";
 import ProblemExample from "./ProblemExample";
 
 const ProblemData = ({ questionData }) => {
-  const example =
-    questionData.example && questionData.example.length > 0
-      ? questionData.example
-      : null;
+  console.log("data ", questionData);
 
   return (
     <div>
       <div className="Question heading">
         {questionData.id}. {questionData.title}
       </div>
-      <div>{questionData.desc}</div>
-      {example && <ProblemExample exampleData={example} />}
+      <div>{questionData.description}</div>
+      <ProblemExample exampleData={questionData.examples} />
     </div>
   );
 };

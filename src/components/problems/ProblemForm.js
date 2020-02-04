@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // Material UI Componenets
@@ -178,5 +177,7 @@ ProblemForm.propTypes = {
   isCreate: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  examples: PropTypes.array.isRequired
+  examples: PropTypes.array.isRequired,
+  addExample: PropTypes.func.isRequired,
+  deleteExample: PropTypes.func.isRequired
 };

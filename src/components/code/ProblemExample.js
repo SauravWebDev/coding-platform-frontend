@@ -5,9 +5,9 @@ const ProblemExample = ({ exampleData }) => (
   <div className="example">
     <span className="heading">Example:</span>
     <div className="example-data">
-      {exampleData.map(example => {
+      {exampleData.map((example, index) => {
         return (
-          <div key={Math.random() * 100000}>
+          <div key={index}>
             <div className="input">
               <span className="heading">Input:</span>
               <span className="input-data data">{example.input}</span>

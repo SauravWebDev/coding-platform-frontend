@@ -1,18 +1,19 @@
 import { handleResponse, handleError } from "./apiUtils";
-const getAllProblemsUrl = "http://localhost:8080/getAllProblems/";
+import { problem as apiUrl } from "./apiUrls";
 
-const getProblemByIdOrTitleUrl = "http://localhost:8080/problem/";
-
-const createORUpdate = "http://localhost:8080/problem/createORUpdate";
+const getAll = apiUrl + `/getAllProblems/`;
+const getByIdOrTitle = apiUrl + "/problem/";
+const createORUpdate = apiUrl + "/problem/createORUpdate";
 
 export function getAllProblems() {
-  return fetch(getAllProblemsUrl)
+  // eslint-disable-next-line no-undef
+  return fetch(getAll)
     .then(handleResponse)
     .catch(handleError);
 }
 
 export function getProblemByIdOrTitle(id) {
-  return fetch(getProblemByIdOrTitleUrl + "" + id)
+  return fetch(getByIdOrTitle + "" + id)
     .then(handleResponse)
     .catch(handleError);
 }
