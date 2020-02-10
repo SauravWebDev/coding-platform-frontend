@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ProblemForm from "./ProblemForm";
+import Form from "./Form";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -14,7 +14,7 @@ import {
   createORUpdateProblem
 } from "../../api/problemsApi";
 
-const ManageProblem = ({ isLoggedIn, slug }) => {
+const ManageForm = ({ isLoggedIn, slug }) => {
   let [problem, setProblem] = useState({
     id: null,
     title: "",
@@ -69,9 +69,21 @@ const ManageProblem = ({ isLoggedIn, slug }) => {
     }
     return true;
   };
+
+  const removeLine = obj => {
+    for (let prop in obj) {
+      if (typeof obj[prop] === "string") {
+        obj[prop] = obj[prop].split("\n").join("");
+      } else if (obj[prop] && typeof obj[prop] === "object") {
+        removeLine(obj[prop]);
+      }
+    }
+  };
   const handleSave = () => {
     event.preventDefault();
     if (!formIsValid()) return;
+
+    removeLine(problem);
     let reqBody = {
       title: problem.title,
       description: problem.description,
@@ -90,7 +102,6 @@ const ManageProblem = ({ isLoggedIn, slug }) => {
       .catch(e => {
         alert(e);
       });
-    console.log("data ", problem);
   };
 
   const addExample = () => {
@@ -119,7 +130,7 @@ const ManageProblem = ({ isLoggedIn, slug }) => {
     return <></>;
   } else {
     return (
-      <ProblemForm
+      <Form
         onSave={handleSave}
         onChange={handleChange}
         errors={formError}
@@ -134,7 +145,7 @@ const ManageProblem = ({ isLoggedIn, slug }) => {
   }
 };
 
-ManageProblem.propTypes = {
+ManageForm.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired
 };
 
@@ -147,4 +158,4 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(ManageProblem);
+export default connect(mapStateToProps)(ManageForm);

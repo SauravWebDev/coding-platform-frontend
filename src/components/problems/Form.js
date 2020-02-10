@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 // Material UI Componenets
 import {
-  Button,
   Divider,
   CssBaseline,
   Grid,
@@ -12,6 +11,8 @@ import {
   Container,
   Tooltip
 } from "@material-ui/core";
+
+import Button from "../common/Button";
 
 // MAterial UI icons
 import AddIcon from "@material-ui/icons/Add";
@@ -41,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ProblemForm({
+export default function Form({
   onChange,
   onSave,
   errors,
@@ -91,6 +92,8 @@ export default function ProblemForm({
                 value={description}
               />
             </Grid>
+          </Grid>
+          <Grid container spacing={3}>
             <Grid item xs={12}>
               <Divider variant="middle" />
               <Typography
@@ -156,21 +159,19 @@ export default function ProblemForm({
               </Grid>
             ))}
           </Grid>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            {isCreate ? <>Create</> : <>update</>}
-          </Button>
+          <Divider variant="middle" />
+          <Grid item xs={12} style={{ margin: "auto", padding: "10px" }}>
+            <Button type="submit">
+              {isCreate ? <>Create</> : <>update</>}
+            </Button>
+          </Grid>
         </form>
       </div>
     </Container>
   );
 }
 
-ProblemForm.propTypes = {
+Form.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,

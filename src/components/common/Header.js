@@ -2,75 +2,48 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { AppBar, Toolbar, Typography, Grid } from "@material-ui/core";
-
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 function Header({ isLoggedIn }) {
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Grid container>
-          <Grid item xs={1}>
-            <NavLink to="/">
-              <Typography
-                style={{
-                  display: "inline-block",
-                  color: "white"
-                }}
-              >
-                Home
-              </Typography>
+    <div className="flex-container header">
+      {!isLoggedIn ? (
+        <>
+          <div>
+            <NavLink to="/signup" activeStyle={{ color: "green" }}>
+              Signup
             </NavLink>
-          </Grid>
-          <Grid item xs={1}>
-            <NavLink style={{ color: "white" }} to="/problems">
-              <Typography
-                style={{
-                  display: "inline-block",
-                  color: "white"
-                }}
-              >
-                Questions
-              </Typography>
+          </div>
+          <div>
+            <NavLink to="/login" activeStyle={{ color: "green" }}>
+              Login
             </NavLink>
-          </Grid>
+          </div>
+        </>
+      ) : (
+        <div>
+          <AccountCircleIcon className="header-element" onClick="control" />
+          {/*
+          <div></div>
 
-          <Grid item xs={10}>
-            <div style={{ float: "right" }}>
-              {!isLoggedIn ? (
-                <>
-                  <NavLink color="white" to="/login">
-                    <Typography
-                      style={{
-                        display: "inline-block",
-                        color: "white"
-                      }}
-                    >
-                      Login
-                    </Typography>
-                  </NavLink>
-
-                  <NavLink to="/signup">
-                    <Typography
-                      style={{
-                        display: "inline-block",
-                        color: "white",
-                        marginLeft: "20px"
-                      }}
-                    >
-                      Signup
-                    </Typography>
-                  </NavLink>
-                </>
-              ) : (
-                <AccountCircleIcon />
-              )}
-            </div>
-          </Grid>
-        </Grid>
-      </Toolbar>
-    </AppBar>
+          <div id="myDropdown" className="dropdown-content">
+            <a href="#home">Profile</a>
+            <a href="#about">Sign out</a>
+          </div>
+          */}
+        </div>
+      )}
+      <div>
+        <NavLink to="/problems" activeStyle={{ color: "green" }}>
+          Questions
+        </NavLink>
+      </div>
+      <div>
+        <NavLink to="/" exact activeStyle={{ color: "green" }}>
+          Home
+        </NavLink>
+      </div>
+    </div>
   );
 }
 
