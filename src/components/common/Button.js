@@ -6,6 +6,7 @@ export default function Button(props) {
       type={props.type}
       variant="outlined"
       color="primary"
+      className={props.className}
       onClick={props.onClick}
     >
       {props.children}

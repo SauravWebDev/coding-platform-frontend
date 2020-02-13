@@ -1,5 +1,6 @@
 body {
   margin: 0px;
+  background: linear-gradient(#dee1e4, #ffffff);
 }
 
 .header {
@@ -67,4 +68,40 @@ body {
 a {
   color: green;
   text-decoration: none;
+}
+.setup_code_main-div {
+  background: white;
+  min-height: 400px;
+  display: flex;
+}
+.setup_code_main-div-tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  margin: 5px;
+  padding: 5px;
+  width: 60%;
+}
+.setup_code_main-div-tab-header {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+.setup_code_main-div-tab-button {
+  color: black !important;
+
+  border: 0px !important;
+}
+
+.setup_code_main-div_q_details {
+  width: 40%;
+  margin: 5px;
+  padding: 5px;
+}
+
+.displayNone {
+  display: none;
+}
+
+.backgroundGrey {
+  background-color: #ccc !important;
 }

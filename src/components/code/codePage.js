@@ -2,22 +2,16 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { Resize, ResizeVertical, ResizeHorizon } from "react-resize-layout";
 import ProblemData from "./ProblemData";
 import "./codePage.css";
-import TestCase from "./TestCase";
 import Editor from "./Editor";
 
 // Material UI Componenets
 import {
-  Button,
-  Divider,
   CssBaseline,
   Grid,
   Typography,
-  makeStyles,
   Container,
-  Tooltip,
   AppBar,
   Tabs,
   Tab,
@@ -25,7 +19,7 @@ import {
 } from "@material-ui/core";
 
 import { validString } from "../../util/util";
-
+import Button from "../common/Button";
 // API //
 import { getProblemByIdOrTitle } from "../../api/problemsApi";
 
@@ -86,121 +80,72 @@ function codePage({ slug }) {
     setValue(newValue);
   };
 
-  const [exposedData, setExposedData] = useState("");
-  const [mainData, setMainData] = useState("");
-  const [inputOutputData, setInputOutputData] = useState("");
+  const headers = ["User File", "Wrapper File", "Input Output file"];
 
-  const codeChangeLogicFile = value => {
-    setExposedData(value);
-  };
-  const codeChangeWrapper = value => {
-    setMainData(value);
+  const [codeData, setCodeData] = useState({
+    "User File": "// logic here",
+    "Wrapper File": "// wrapper here",
+    "Input Output file": "// test cases here "
+  });
+
+  let [activeTab, setActiveTab] = useState(headers[0]);
+
+  const codeChangeLogicFile = (header, value) => {
+    setCodeData(prev => ({ ...prev, [header]: value }));
   };
 
-  const codeChangeInputOutput = value => {
-    setInputOutputData(value);
-  };
   const run = () => {
     alert();
   };
 
-  const submit = () => {
-    let data = { exposedData, mainData, inputOutputData };
+  const submit = () => {};
+
+  const showEditor = (evt, header) => {
+    setActiveTab(header);
   };
 
   return (
-    <Container component="main" maxWidth="lg">
-      <CssBaseline />
-      <Grid container spacing={3}>
-        <Grid md={10}>
-          <AppBar position="static">
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="simple tabs example"
-            >
-              <Tab label="Question Details" />
-              <Tab label="Exposed File" />
-              <Tab label="Main File" />
-              <Tab label="input output" />
-            </Tabs>
-          </AppBar>
-          <TabPanel value={value} index={0}>
-            <ProblemData questionData={problem} />
-          </TabPanel>
-
-          <TabPanel value={value} index={1}>
-            <Editor codeData={exposedData} onCodeChange={codeChangeLogicFile} />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <Editor codeData={mainData} onCodeChange={codeChangeWrapper} />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <Editor
-              style={{ width: "500px" }}
-              codeData={inputOutputData}
-              onCodeChange={codeChangeInputOutput}
-            />
-          </TabPanel>
-        </Grid>
-        <Grid md={2} style={{ "margin-top": "10%" }}>
-          <Grid>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => {
-                //createProblem(history);
-              }}
-            >
-              Run
-            </Button>
-          </Grid>
-          <Grid>
-            <Button variant="outlined" color="primary" onClick={submit}>
-              Submit
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-
-  /*  return (
-
-<div>
-      <div>
-        <div className="float-right btn-space">
-          <button className="button button4" onClick={run}>
-            Run
-          </button>
-          <button className="button button5" onClick={submit}>
-            Submit
-          </button>
-        </div>
+    <div className="setup_code_main-div">
+      <div className="setup_code_main-div_q_details">
+        <h4>Question Details</h4>
+        <ProblemData questionData={problem} />
       </div>
-      <div className="row drags">
-        <Resize handleWidth="3px" handleColor="#ffffff ">
-          <ResizeHorizon width="350px" minWidth="350px">
-            <div className="left">
-              <ProblemData questionData={problem} />
-            </div>
-          </ResizeHorizon>
-          <ResizeHorizon minWidth="50%">
-            <Resize handleWidth="3px" handleColor="#ffffff ">
-              <ResizeVertical height="350px">
-                <div className="codemaindiv">
-                  <Editor codeData={codeData} onCodeChange={onCodeChange} />
-                </div>
-              </ResizeVertical>
-              <ResizeVertical minHeight="50px">
-                <TestCase />
-              </ResizeVertical>
-            </Resize>
-          </ResizeHorizon>
-        </Resize>
+      <div className="setup_code_main-div-tab">
+        <div className="setup_code_main-div-tab-header">
+          {headers.map(header => (
+            <Button
+              key={"div_tab_button_" + header}
+              className={
+                activeTab == header
+                  ? "backgroundGrey setup_code_main-div-tab-button"
+                  : "setup_code_main-div-tab-button"
+              }
+              onClick={event => showEditor(event, header)}
+            >
+              {header}
+            </Button>
+          ))}
+          <span style={{ float: "right" }}>
+            <Button className="setup_code_main-div-tab-button">Run</Button>
+            <Button className="setup_code_main-div-tab-button">Submit</Button>
+          </span>
+        </div>
+        {headers.map(header => (
+          <div
+            key={"div_tab_editor_" + header}
+            className={activeTab == header ? "" : "displayNone"}
+          >
+            <Editor
+              codeData={codeData[header]}
+              onCodeChange={data => {
+                codeChangeLogicFile(header, data);
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
-  ); */
+  );
 }
 
 function mapStateToProps(state, ownProps) {

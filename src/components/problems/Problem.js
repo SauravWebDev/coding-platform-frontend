@@ -12,7 +12,7 @@ export default function Problem({ problem }) {
       </div>
       <div style={{ float: "right" }}>
         <div style={{ position: "relative", top: "10px" }}>
-          <NavLink> Solve </NavLink>
+          <NavLink to="./"> Solve </NavLink>
         </div>
         <div style={{ position: "relative", top: "20px" }}>
           <NavLink to={"/problem/setupCode/" + problem.title}>
