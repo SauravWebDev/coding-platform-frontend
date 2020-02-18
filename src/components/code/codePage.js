@@ -1,49 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import Button from "../common/Button";
 
 import ProblemData from "./ProblemData";
 import "./codePage.css";
 import Editor from "./Editor";
 
-// Material UI Componenets
-import {
-  CssBaseline,
-  Grid,
-  Typography,
-  Container,
-  AppBar,
-  Tabs,
-  Tab,
-  Box
-} from "@material-ui/core";
-
 import { validString } from "../../util/util";
-import Button from "../common/Button";
 // API //
 import { getProblemByIdOrTitle } from "../../api/problemsApi";
-
-function TabPanel(props) {
-  const { children, value, index } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
-};
 
 function codePage({ slug }) {
   let [problem, setProblem] = useState({
@@ -52,6 +18,15 @@ function codePage({ slug }) {
     description: "",
     examples: [{ input: "", output: "", explaination: "" }]
   });
+  const headers = ["User File", "Wrapper File", "Input Output file"];
+
+  let [codeData, setCodeData] = useState({
+    "User File": "// logic here",
+    "Wrapper File": "// wrapper here",
+    "Input Output file": "// test cases here "
+  });
+
+  let [activeTab, setActiveTab] = useState(headers[0]);
 
   useEffect(() => {
     if (validString(slug)) {
@@ -74,26 +49,27 @@ function codePage({ slug }) {
     }
   }, [slug]);
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const headers = ["User File", "Wrapper File", "Input Output file"];
-
-  const [codeData, setCodeData] = useState({
-    "User File": "// logic here",
-    "Wrapper File": "// wrapper here",
-    "Input Output file": "// test cases here "
-  });
-
-  let [activeTab, setActiveTab] = useState(headers[0]);
-
+  useEffect(() => {
+    return () => {
+      saveToLocalStorage();
+    };
+  }, []);
+  let [temp, setTemp] = useState(0);
   const codeChangeLogicFile = (header, value) => {
+    setTemp(1111);
     setCodeData(prev => ({ ...prev, [header]: value }));
   };
 
+  const saveToLocalStorage = () => {
+    let data = localStorage.getItem("codeSetup") || "{}";
+    data = JSON.parse(data);
+    console.log(temp);
+    debugger;
+    data[slug] = codeData;
+    localStorage.setItem("codeSetup", JSON.stringify(data));
+  };
+
+  //const expensive = throttle();
   const run = () => {
     alert();
   };

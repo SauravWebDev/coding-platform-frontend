@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import ProblemExample from "./ProblemExample";
 
 const ProblemData = ({ questionData }) => {
-  console.log("data ", questionData);
-
   return (
     <div>
       <div className="Question heading">
