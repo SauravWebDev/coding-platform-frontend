@@ -6,24 +6,25 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
 function Header({ isLoggedIn }) {
   return (
-    <div className="flex-container header">
-      {!isLoggedIn ? (
-        <>
+    <header>
+      <div className="flex-container header">
+        {!isLoggedIn ? (
+          <>
+            <div>
+              <NavLink to="/signup" activeStyle={{ color: "green" }}>
+                Signup
+              </NavLink>
+            </div>
+            <div>
+              <NavLink to="/login" activeStyle={{ color: "green" }}>
+                Login
+              </NavLink>
+            </div>
+          </>
+        ) : (
           <div>
-            <NavLink to="/signup" activeStyle={{ color: "green" }}>
-              Signup
-            </NavLink>
-          </div>
-          <div>
-            <NavLink to="/login" activeStyle={{ color: "green" }}>
-              Login
-            </NavLink>
-          </div>
-        </>
-      ) : (
-        <div>
-          <AccountCircleIcon className="header-element" onClick="control" />
-          {/*
+            <AccountCircleIcon className="header-element" onClick="control" />
+            {/*
           <div></div>
 
           <div id="myDropdown" className="dropdown-content">
@@ -31,19 +32,20 @@ function Header({ isLoggedIn }) {
             <a href="#about">Sign out</a>
           </div>
           */}
+          </div>
+        )}
+        <div>
+          <NavLink to="/problems" activeStyle={{ color: "green" }}>
+            Questions
+          </NavLink>
         </div>
-      )}
-      <div>
-        <NavLink to="/problems" activeStyle={{ color: "green" }}>
-          Questions
-        </NavLink>
+        <div>
+          <NavLink to="/" exact activeStyle={{ color: "green" }}>
+            Home
+          </NavLink>
+        </div>
       </div>
-      <div>
-        <NavLink to="/" exact activeStyle={{ color: "green" }}>
-          Home
-        </NavLink>
-      </div>
-    </div>
+    </header>
   );
 }
 

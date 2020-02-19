@@ -11,7 +11,7 @@ import ManageProblem from "./problems/ManageForm";
 import codePage from "./code/codePage";
 import { ToastContainer } from "react-toastify";
 import Test from "./test/TestPage";
-import "../public/cssFile.css";
+import "../css/main.scss";
 
 import "react-toastify/dist/ReactToastify.css";
 
