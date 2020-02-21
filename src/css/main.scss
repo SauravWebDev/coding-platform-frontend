@@ -1,5 +1,5 @@
 $colorBlack: #20232a;
-
+$colorWhite: white;
 body {
   margin: 0px;
   background: linear-gradient(#dee1e4, #ffffff);
@@ -21,7 +21,7 @@ body {
   overflow: hidden;
   text-align: center;
   background-color: $colorBlack;
-  color: white;
+  color: $colorWhite;
   z-index: 10;
 }
 
@@ -31,7 +31,7 @@ body {
 }
 
 .header-element {
-  color: white;
+  color: $colorWhite;
 }
 
 .flex-container {
@@ -73,7 +73,7 @@ a {
   text-decoration: none;
 }
 .setup_code_main-div {
-  background: white;
+  background: $colorWhite;
   min-height: 400px;
   display: flex;
 }
