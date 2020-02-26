@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import "./ProblemExample.scss";
 
 const ProblemExample = ({ exampleData }) => (
   <div className="example">
@@ -8,20 +9,14 @@ const ProblemExample = ({ exampleData }) => (
       {exampleData.map((example, index) => {
         return (
           <div key={index}>
-            <div className="input">
-              <span className="heading">Input:</span>
-              <span className="input-data data">{example.input}</span>
-            </div>
-            <div className="output">
-              <span className="heading">Output:</span>
-              <span className="output-data data">{example.output}</span>
-            </div>
-            <div className="Explanation">
-              <span className="heading">Explanation:</span>
-              <span className="explaination-data data">
-                {example.explaination}
-              </span>
-            </div>
+            <div>Input:</div>
+            <div>{example.input}</div>
+            <br />
+            <div>Output:</div>
+            <div>{example.output}</div>
+            <br />
+            <div>Explanation:</div>
+            <div>{example.explaination}</div>
           </div>
         );
       })}

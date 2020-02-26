@@ -1,0 +1,9 @@
+.problemList {
+  display: flex;
+  flex-direction: column;
+}
+
+.problemList > div {
+  margin: 10px;
+  border-bottom: 1px dashed #e5e7e8;
+}

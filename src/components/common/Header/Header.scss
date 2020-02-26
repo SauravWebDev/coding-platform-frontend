@@ -1,0 +1,28 @@
+@import "../../../css/constant.scss";
+
+.header {
+  display: flex;
+  flex-direction: row-reverse;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  overflow: hidden;
+  background-color: $colorDodgerblue;
+}
+
+.header-element {
+  color: $colorWhite;
+}
+
+.header > div {
+  margin: 12px;
+  padding: 10px;
+  font-size: 15px;
+}
+
+.header > div > a {
+  color: $colorWhite;
+  text-decoration: none;
+  font-weight: 300;
+  font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+}

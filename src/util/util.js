@@ -1,4 +1,4 @@
-import { types } from "@babel/core";
+import { debounce } from "lodash";
 
 const jwt = require("jsonwebtoken");
 
@@ -13,4 +13,8 @@ export function decode(token) {
 
 export function validString(str) {
   return str && str.trim().length != 0;
+}
+
+export function debouceFn(fn, delayTime) {
+  return debounce(fn, delayTime);
 }

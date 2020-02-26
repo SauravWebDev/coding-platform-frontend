@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export default function Problem({ problem }) {
   return (
@@ -28,3 +29,7 @@ export default function Problem({ problem }) {
     </div>
   );
 }
+
+Problem.propTypes = {
+  problem: PropTypes.object.isRequired
+};

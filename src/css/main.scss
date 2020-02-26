@@ -1,16 +1,16 @@
-$colorBlack: #20232a;
-$colorWhite: white;
+@import "./constant.scss";
+
 body {
   margin: 0px;
-  background: linear-gradient(#dee1e4, #ffffff);
+  background: $colorWhite;
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
 }
 
-.header {
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  overflow: hidden;
-  background-color: $colorBlack;
+a {
+  color: $colorBlack;
+  text-decoration: none;
 }
 
 .footer {
@@ -30,81 +30,10 @@ body {
   margin: 10px;
 }
 
-.header-element {
-  color: $colorWhite;
-}
-
-.flex-container {
-  display: flex;
-  flex-direction: row-reverse;
-}
-
-.flex-container > div {
-  margin: 12px;
-  padding: 12px;
-  font-size: 15px;
-}
-
-.flex-container > div > a {
-  color: white;
-  text-decoration: none;
-  font-weight: 300;
-  font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
-}
-
-.problemList {
-  display: flex;
-  flex-direction: column;
-}
-
-.problemList > div {
-  margin: 10px;
-  border-bottom: 1px dashed #e5e7e8;
-}
-
-.probTitle {
-  color: #46535e;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-a {
-  color: green;
-  text-decoration: none;
-}
-.setup_code_main-div {
-  background: $colorWhite;
-  min-height: 400px;
-  display: flex;
-}
-.setup_code_main-div-tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  margin: 5px;
-  padding: 5px;
-  width: 60%;
-}
-.setup_code_main-div-tab-header {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-.setup_code_main-div-tab-button {
-  color: black !important;
-
-  border: 0px !important;
-}
-
-.setup_code_main-div_q_details {
-  width: 40%;
-  margin: 5px;
-  padding: 5px;
-}
-
 .displayNone {
   display: none;
 }
 
 .backgroundGrey {
-  background-color: #ccc !important;
+  background-color: $colorGrey !important;
 }

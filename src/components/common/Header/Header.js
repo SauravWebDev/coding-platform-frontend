@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
+import "./Header.scss";
 function Header({ isLoggedIn }) {
   return (
     <header>
-      <div className="flex-container header">
+      <div className="header">
         {!isLoggedIn ? (
           <>
             <div>
@@ -23,15 +24,7 @@ function Header({ isLoggedIn }) {
           </>
         ) : (
           <div>
-            <AccountCircleIcon className="header-element" onClick="control" />
-            {/*
-          <div></div>
-
-          <div id="myDropdown" className="dropdown-content">
-            <a href="#home">Profile</a>
-            <a href="#about">Sign out</a>
-          </div>
-          */}
+            <AccountCircleIcon className="header-element" />
           </div>
         )}
         <div>
