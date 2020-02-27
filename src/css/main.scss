@@ -9,7 +9,6 @@ body {
 }
 
 a {
-  color: $colorBlack;
   text-decoration: none;
 }
 
@@ -38,8 +37,8 @@ a {
   background-color: $colorGrey !important;
 }
 
-.margin-10px {
-  margin: 10px;
+.margin-left-10px {
+  margin-left: 10px;
 }
 
 .padding-10px {

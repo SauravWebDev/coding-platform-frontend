@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import Button from "../common/Button";
-
+import "./Problem.scss";
 export default function Problem({ problem }) {
   return (
     <div className="problem">
@@ -16,12 +16,12 @@ export default function Problem({ problem }) {
             <Button>Solve</Button>
           </NavLink>
         </span>
-        <span className="margin-10px ">
+        <span className="margin-left-10px ">
           <NavLink to={"/problem/setupCode/" + problem.title}>
             <Button>code setup</Button>
           </NavLink>
         </span>
-        <span className="margin-10px">
+        <span className="margin-left-10px">
           <NavLink to={"/problem/createUpdate/" + problem.title}>
             <Button>update</Button>
           </NavLink>
