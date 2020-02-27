@@ -11,37 +11,39 @@ import Editor from "../Editor/JSEditor";
 import { validString, debouceFn } from "../../util/util";
 
 // API //
-import { getProblemByIdOrTitle } from "../../api/problemsApi";
+import { getFileDataByIdOrTitle, saveFileData } from "../../api/problemsApi";
 
 function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
   const [problem, setProblem] = useState(emptyProblemData);
 
-  const saveToLocalStorage = (fileName, codeValue) => {
-    let data = localStorage.getItem("codeSetup") || "{}";
-    data = JSON.parse(data);
-    data[slug] = codeData;
-    console.log(String(codeValue));
-    debugger;
-    localStorage.setItem("codeSetup", JSON.stringify(data));
+  const saveToLocalStorage = (problem, fileName, codeValue) => {
+    let keyName = `admin_${problem.id}_${fileName}`;
+    localStorage.setItem(keyName, codeValue);
   };
 
   const debouceOnChange = useCallback(debouceFn(saveToLocalStorage, 1000), []);
   const [codeData, setCodeData] = useState(initialCodeValue);
 
-  let [activeFile, setActiveFile] = useState(fileNames[0]);
+  const [activeFile, setActiveFile] = useState(fileNames[0]);
 
   useEffect(() => {
     if (validString(slug)) {
-      getProblemByIdOrTitle(slug)
+      getFileDataByIdOrTitle(slug)
         .then(data => {
           if (data.error) {
-            // setApiError(data.error);
+            alert(data.error);
           } else {
-            setProblem({
+            let problemData = {
               id: data.id,
               title: data.title,
               examples: data.example,
               description: data.description
+            };
+            setProblem(problemData);
+            setCodeData({
+              user_file: data.user_file,
+              main_file: data.main_file,
+              input_output_file: data.input_output_file
             });
           }
         })
@@ -53,12 +55,28 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
 
   const codeChangeLogicFile = (fileName, value) => {
     setCodeData(prev => ({ ...prev, [fileName]: value }));
-    debouceOnChange(fileName, value);
+    debouceOnChange(problem, fileName, value);
   };
 
   //const expensive = throttle();
   const run = () => {
-    alert();
+    let body = {
+      problem_id: problem.id,
+      user_file: codeData.user_file,
+      main_file: codeData.main_file,
+      input_output_file: codeData.input_output_file
+    };
+    saveFileData(body)
+      .then(data => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert(data.msg);
+        }
+      })
+      .catch(e => {
+        alert(e);
+      });
   };
 
   const submit = () => {};
@@ -88,8 +106,12 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
             </Button>
           ))}
           <span style={{ float: "right" }}>
-            <Button className="codeButtons">Run</Button>
-            <Button className="codeButtons">Submit</Button>
+            <Button className="codeButtons" onClick={run}>
+              Run
+            </Button>
+            <Button className="codeButtons" onClick={submit}>
+              Submit
+            </Button>
           </span>
         </div>
         {fileNames.map(fileName => {
@@ -117,7 +139,7 @@ const emptyProblemData = {
   examples: [{ input: "", output: "", explaination: "" }]
 };
 
-const fileNames = ["User File", "Wrapper File", "Input Output file"];
+const fileNames = ["user_file", "main_file", "input_output_file"];
 
 const initialCodeValue = {
   [fileNames[0]]: "// logic here",
