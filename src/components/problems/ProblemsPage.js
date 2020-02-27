@@ -4,7 +4,7 @@ import * as problemsAction from "../../redux/actions/problemsAction";
 import PropTypes from "prop-types";
 import ProblemList from "./ProblemsList";
 import Button from "../common/Button";
-
+import "./ProblemsPage.scss";
 const createProblem = history => {
   history.push("/problem/createUpdate/");
   return;
@@ -18,10 +18,12 @@ const ProblemsPage = ({ loadProblems, problemsData, history }) => {
   }, []);
 
   return (
-    <div>
-      <Button onClick={() => createProblem(history)}>Create Question</Button>
-
-      <ProblemList problems={problemsData} />
+    <div className="problemPage">
+      <div className="width-10percent"></div>
+      <div className="width-80percent">
+        <Button onClick={() => createProblem(history)}>Create Question</Button>
+        <ProblemList problems={problemsData} />
+      </div>
     </div>
   );
 };
