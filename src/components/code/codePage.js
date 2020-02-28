@@ -59,7 +59,7 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
   };
 
   //const expensive = throttle();
-  const run = () => {
+  const save = () => {
     let body = {
       problem_id: problem.id,
       user_file: codeData.user_file,
@@ -106,9 +106,10 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
             </Button>
           ))}
           <span style={{ float: "right" }}>
-            <Button className="codeButtons" onClick={run}>
-              Run
+            <Button className="codeButtons" onClick={save}>
+              Save
             </Button>
+            <Button className="codeButtons">Run</Button>
             <Button className="codeButtons" onClick={submit}>
               Submit
             </Button>
