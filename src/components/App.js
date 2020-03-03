@@ -21,7 +21,7 @@ function App() {
       <Header />
       <div className="content">
         <Switch>
-          <Route exact path="/" component={HomePage} />
+          <Route exact path="/" component={ProblemsPage} />
           <Route path="/login" component={ManageLoginPage} />
           <Route path="/signup" component={ManageSignupPage} />
           <Route path="/problems" component={ProblemsPage} />

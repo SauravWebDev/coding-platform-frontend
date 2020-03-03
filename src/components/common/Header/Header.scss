@@ -2,19 +2,24 @@
 
 .header {
   display: flex;
-  flex-direction: row-reverse;
   top: 0px;
   left: 0px;
   right: 0px;
-  overflow: hidden;
   background-color: $colorDodgerblue;
+}
+
+.rightbar {
+  display: flex;
+  flex-direction: row-reverse;
+  overflow: hidden;
+  width: 100%;
 }
 
 .header-element {
   color: $colorWhite;
 }
 
-.header > div {
+.rightbar > div {
   margin: 12px;
   padding: 10px;
   font-size: 15px;
@@ -25,4 +30,36 @@
   text-decoration: none;
   font-weight: 300;
   font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+}
+
+.dropdown {
+  position: absolute;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  right: 0px;
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.dropdown-content a:hover {
+  background-color: $colorWhite;
+}
+
+.accoutDiv:hover .dropdown-content {
+  display: block;
+}
+.logo {
+  width: 100px;
+  height: 100%;
 }
