@@ -15,8 +15,6 @@ import "../css/main.scss";
 
 import "react-toastify/dist/ReactToastify.css";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 function App() {
   return (
     <div className="">
