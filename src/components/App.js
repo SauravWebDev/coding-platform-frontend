@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePage from "./home/HomePage";
-import Header from "./common/Header/Header";
+import Header from "./Header/Header.js";
 import Footer from "./common/Footer";
 import PageNotFound from "./PageNotFound";
 import ProblemsPage from "./problems/ProblemsPage";
@@ -11,17 +11,30 @@ import ManageProblem from "./problems/ManageForm";
 import codePage from "./code/codePage";
 import { ToastContainer } from "react-toastify";
 import Test from "./test/TestPage";
+import HeaderLinks from "./Header/HeaderLinks.js";
 import "../css/main.scss";
 
 import "react-toastify/dist/ReactToastify.css";
 
-function App() {
+function App(props) {
+  const { ...rest } = props;
   return (
     <div className="">
-      <Header />
+            <Header
+        brand="HackerLead"
+        rightLinks={<HeaderLinks />}
+        fixed
+        color="transparent"
+        changeColorOnScroll={{
+          height: 400,
+          color: "white"
+        }}
+        {...rest} 
+      />
       <div className="content">
         <Switch>
           <Route exact path="/" component={ProblemsPage} />
+          <Route exact path="/home" component={HomePage} />
           <Route path="/login" component={ManageLoginPage} />
           <Route path="/signup" component={ManageSignupPage} />
           <Route path="/problems" component={ProblemsPage} />
