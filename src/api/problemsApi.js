@@ -4,10 +4,9 @@ import { problem as apiUrl } from "./apiUrls";
 const getAll = apiUrl + `/getAllProblems/`;
 const getByIdOrTitle = apiUrl + "/problem/";
 const createORUpdate = apiUrl + "/problem/createORUpdate";
-const FileDataByIdOrTitleUrl = apiUrl + "/problem/fileData/";
+const sourceCode = apiUrl + "/problem/sourceCode/";
 const saveFileDataUrl = apiUrl + "/problem/fileData/save/";
 export function getAllProblems() {
-  // eslint-disable-next-line no-undef
   return fetch(getAll)
     .then(handleResponse)
     .catch(handleError);
@@ -18,8 +17,8 @@ export function getProblemByIdOrTitle(id) {
     .then(handleResponse)
     .catch(handleError);
 }
-export function getFileDataByIdOrTitle(id) {
-  return fetch(FileDataByIdOrTitleUrl + "" + id)
+export function getSourceCode(id) {
+  return fetch(`${sourceCode}?slug=${id}`)
     .then(handleResponse)
     .catch(handleError);
 }

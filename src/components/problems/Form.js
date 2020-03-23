@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 
 import Button from "../common/Button";
+import MultiSelect from "../common/MultiSelect";
+import SingleSelect from "../common/SingleSelect";
 
 // MAterial UI icons
 import AddIcon from "@material-ui/icons/Add";
@@ -51,9 +53,11 @@ export default function Form({
   examples,
   description,
   addExample,
-  deleteExample
+  deleteExample,
+  ...props
 }) {
   const classes = useStyles();
+
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
@@ -62,7 +66,7 @@ export default function Form({
           {isCreate ? "Create New Problem" : "update Problem"}
         </Typography>
         <form className={classes.form} onSubmit={onSave}>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
             <Grid item xs={6}>
               <TextInput
                 id="createUpdate-title"
@@ -93,7 +97,7 @@ export default function Form({
               />
             </Grid>
           </Grid>
-          <Grid container spacing={3}>
+          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
             <Grid item xs={12}>
               <Divider variant="middle" />
               <Typography
@@ -109,7 +113,7 @@ export default function Form({
             </Grid>
             {examples.map((example, index) => (
               <Grid container key={index}>
-                <Grid item xs={3}>
+                <Grid item xs={3} style={{ padding: "5px" }}>
                   <TextInput
                     id="createUpdate-exampleInput-1"
                     label="Input"
@@ -128,7 +132,7 @@ export default function Form({
                     <DeleteIcon />
                   </Tooltip>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={3} style={{ padding: "5px" }}>
                   <TextInput
                     type="text"
                     id="createUpdate-output"
@@ -142,22 +146,90 @@ export default function Form({
                     value={example.output}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6} style={{ padding: "5px" }}>
                   <TextInput
-                    id="createUpdate-explaination"
-                    label="Explaination"
-                    name={"example_explaination_" + index}
+                    id="createUpdate-explanation"
+                    label="explanation"
+                    name={"example_explanation_" + index}
                     type="text"
                     required={true}
-                    error={errors.explaination}
+                    error={errors.explanation}
                     onChange={onChange}
                     multiline={true}
                     rows={4}
-                    value={example.explaination}
+                    value={example.explanation}
                   />
                 </Grid>
               </Grid>
             ))}
+          </Grid>
+          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
+            <Grid item xs={12}>
+              <Divider variant="middle" />
+              <Typography
+                style={{ display: "inline-block" }}
+                component="h1"
+                variant="caption"
+              >
+                Provide Notes
+              </Typography>
+              <Tooltip title="click to Add more Notes">
+                <AddIcon style={{ float: "right" }} onClick={props.addNote} />
+              </Tooltip>
+            </Grid>
+            {props.notes.map((note, index) => (
+              <Grid container key={index}>
+                <Grid item xs={12} style={{ padding: "5px" }}>
+                  <TextInput
+                    id={"note_" + index}
+                    label="Note"
+                    name={"note_" + index}
+                    type="text"
+                    required={false}
+                    onChange={onChange}
+                    multiline={true}
+                    rows={4}
+                    value={note}
+                  />
+                  <Tooltip
+                    title="click to Delete above Note"
+                    onClick={() => props.deleteNote(index)}
+                  >
+                    <DeleteIcon />
+                  </Tooltip>
+                </Grid>
+              </Grid>
+            ))}
+          </Grid>
+          <Divider variant="middle" />
+          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
+            <Grid item xs={6}>
+              <MultiSelect
+                labelName={"Tags"}
+                selectedItem={props.selectedTag}
+                inputItems={props.tag}
+                onChange={onChange}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <SingleSelect
+                labelName={props.difficultyLebel}
+                selectedValue={props.selectedDifficulty}
+                inputItems={props.difficulty}
+                onChange={onChange}
+              />
+            </Grid>
+          </Grid>
+          <Divider variant="middle" />
+          <Grid container spacing={2} style={{ padding: "5px", margin: "5px" }}>
+            <Grid item xs={12}>
+              <MultiSelect
+                labelName={props.langLebel}
+                selectedItem={props.selectedLang}
+                inputItems={props.lang}
+                onChange={onChange}
+              />
+            </Grid>
           </Grid>
           <Divider variant="middle" />
           <Grid item xs={12} style={{ margin: "auto", padding: "10px" }}>
@@ -180,5 +252,10 @@ Form.propTypes = {
   description: PropTypes.string.isRequired,
   examples: PropTypes.array.isRequired,
   addExample: PropTypes.func.isRequired,
-  deleteExample: PropTypes.func.isRequired
+  deleteExample: PropTypes.func.isRequired,
+  selectedTag: PropTypes.array.isRequired,
+  tag: PropTypes.object.isRequired,
+  difficulty: PropTypes.object.isRequired,
+  notes: PropTypes.array,
+  deleteNote: PropTypes.func.isRequired
 };

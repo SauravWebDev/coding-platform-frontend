@@ -17,12 +17,12 @@ export default function Problem({ problem }) {
           </NavLink>
         </span>
         <span className="margin-left-10px ">
-          <NavLink to={"/problem/setupCode/" + problem.title}>
+          <NavLink to={"/problem/setupCode/" + problem.slug}>
             <Button>code setup</Button>
           </NavLink>
         </span>
         <span className="margin-left-10px">
-          <NavLink to={"/problem/createUpdate/" + problem.title}>
+          <NavLink to={"/problem/createUpdate/" + problem.slug}>
             <Button>update</Button>
           </NavLink>
         </span>

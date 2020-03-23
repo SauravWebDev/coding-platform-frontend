@@ -11,11 +11,15 @@ import Editor from "../Editor/JSEditor";
 import { validString, debouceFn } from "../../util/util";
 
 // API //
-import { getFileDataByIdOrTitle, saveFileData } from "../../api/problemsApi";
+import {
+  getProblemByIdOrTitle,
+  getSourceCode,
+  saveFileData
+} from "../../api/problemsApi";
 
 function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
   const [problem, setProblem] = useState(emptyProblemData);
-
+  const [selectedLang, setSelectedLang] = useState(null);
   const saveToLocalStorage = (problem, fileName, codeValue) => {
     let keyName = `admin_${problem.id}_${fileName}`;
     localStorage.setItem(keyName, codeValue);
@@ -28,7 +32,7 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
 
   useEffect(() => {
     if (validString(slug)) {
-      getFileDataByIdOrTitle(slug)
+      getProblemByIdOrTitle(slug)
         .then(data => {
           if (data.error) {
             alert(data.error);
@@ -40,11 +44,28 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
               description: data.description
             };
             setProblem(problemData);
-            setCodeData({
+            /*  setCodeData({
               user_file: data.user_file,
               main_file: data.main_file,
               input_output_file: data.input_output_file
+            }); */
+          }
+        })
+        .catch(e => {
+          alert(e);
+        });
+      getSourceCode(slug)
+        .then(data => {
+          if (data.error) {
+            alert(data.error);
+          } else {
+            setCodeData({
+              user_file: (data.length > 0 && data[0].user_file) || "",
+              main_file: (data.length > 0 && data[0].main_file) || "",
+              input_output_file:
+                (data.length > 0 && data[0].input_output_file) || ""
             });
+            setSelectedLang((data.length > 0 && data[0].lang_id) || 1);
           }
         })
         .catch(e => {
@@ -64,7 +85,8 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
       problem_id: problem.id,
       user_file: codeData.user_file,
       main_file: codeData.main_file,
-      input_output_file: codeData.input_output_file
+      input_output_file: codeData.input_output_file,
+      lang_id: selectedLang
     };
     saveFileData(body)
       .then(data => {

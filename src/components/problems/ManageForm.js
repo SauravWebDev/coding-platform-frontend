@@ -13,17 +13,26 @@ import {
   getProblemByIdOrTitle,
   createORUpdateProblem
 } from "../../api/problemsApi";
+import * as filtersAction from "../../redux/actions/filtersAction";
 
-const ManageForm = ({ isLoggedIn, slug }) => {
-  let [problem, setProblem] = useState({
+const DIFFICULTY = "Difficulty";
+const LANGUAGE = "language";
+const NOTE = "Note";
+
+const ManageForm = ({ isLoggedIn, slug, ...props }) => {
+  const [selectedTag, setSelectedTag] = useState([]);
+  const [selectedLang, setSelectedLang] = useState([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [problem, setProblem] = useState({
     id: null,
     title: "",
     description: "",
-    examples: [{ input: "", output: "", explaination: "" }]
+    examples: [{ input: "", output: "", explanation: "" }],
+    note: []
   });
 
-  let [apiError, setApiError] = useState("");
-  let [formError, setFormError] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [formError, setFormError] = useState({});
 
   useEffect(() => {
     if (validString(slug)) {
@@ -32,11 +41,21 @@ const ManageForm = ({ isLoggedIn, slug }) => {
           if (data.error) {
             setApiError(data.error);
           } else {
+            let tag = Object.keys(data.tag).map(key =>
+              String(data.tag[key].id)
+            );
+            let lang = Object.keys(data.language).map(key =>
+              String(data.language[key].id)
+            );
+            setSelectedLang(lang);
+            setSelectedTag(tag);
+            setSelectedDifficulty(String(data.difficulty));
             setProblem({
               id: data.id,
               title: data.title,
               examples: data.example,
-              description: data.description
+              description: data.description,
+              note: data.note
             });
           }
         })
@@ -44,10 +63,39 @@ const ManageForm = ({ isLoggedIn, slug }) => {
           alert(e);
         });
     }
+
+    if (
+      Object.keys(props.difficulty).length === 0 &&
+      Object.keys(props.tag).length === 0
+    ) {
+      props.loadFilters().catch(() => alert("error"));
+    }
   }, [slug]);
 
   const handleChange = event => {
     const { name, value } = event.target;
+
+    if (name === DIFFICULTY) {
+      setSelectedDifficulty(event.target.value);
+      return;
+    }
+    if (name === LANGUAGE) {
+      setSelectedLang(event.target.value);
+      return;
+    }
+    if (name === "Tags") {
+      setSelectedTag(event.target.value);
+      return;
+    }
+    if (name.split("_")[0] === "note") {
+      let exAttr = name.split("_");
+      setProblem(prevProblem => {
+        let note = [...prevProblem.note];
+        note[exAttr[1]] = value;
+        return { ...prevProblem, note: note };
+      });
+      return;
+    }
     if (name.split("_")[0] === "example") {
       setProblem(prevProblem => {
         let exAttr = name.split("_");
@@ -84,10 +132,16 @@ const ManageForm = ({ isLoggedIn, slug }) => {
     if (!formIsValid()) return;
 
     removeLine(problem);
+    let processLang = selectedLang.map(lang => Number(lang));
+    let processTag = selectedTag.map(tag => Number(tag));
     let reqBody = {
       title: problem.title,
       description: problem.description,
-      example: problem.examples
+      example: problem.examples,
+      note: problem.note,
+      language: processLang,
+      tag: processTag,
+      difficulty: Number(selectedDifficulty)
     };
     if (problem.id) reqBody.id = problem.id;
 
@@ -108,12 +162,17 @@ const ManageForm = ({ isLoggedIn, slug }) => {
     setProblem(prev => {
       let examples = [
         ...prev.examples,
-        { input: "", output: "", explaination: "" }
+        { input: "", output: "", explanation: "" }
       ];
       return { ...prev, examples: examples };
     });
   };
-
+  const addNote = () => {
+    setProblem(prev => {
+      let note = [...prev.note, ""];
+      return { ...prev, note };
+    });
+  };
   const deleteExample = index => {
     if (problem.examples.length <= 1) return;
     setProblem(prev => {
@@ -122,7 +181,14 @@ const ManageForm = ({ isLoggedIn, slug }) => {
       return { ...prev, examples: examples };
     });
   };
-
+  const deleteNote = index => {
+    if (problem.note.length === 0) return;
+    setProblem(prev => {
+      let note = [...prev.note];
+      note.splice(index, 1);
+      return { ...prev, note: note };
+    });
+  };
   if (!isLoggedIn) {
     return <Redirect to="/" />;
   } else if (validString(apiError)) {
@@ -140,6 +206,18 @@ const ManageForm = ({ isLoggedIn, slug }) => {
         examples={problem.examples}
         addExample={addExample}
         deleteExample={deleteExample}
+        selectedTag={selectedTag}
+        tag={props.tag}
+        difficulty={props.difficulty}
+        difficultyLebel={DIFFICULTY}
+        selectedDifficulty={selectedDifficulty}
+        langLebel={LANGUAGE}
+        selectedLang={selectedLang}
+        lang={props.lang}
+        notes={problem.note}
+        noteLebel={NOTE}
+        addNote={addNote}
+        deleteNote={deleteNote}
       />
     );
   }
@@ -152,10 +230,37 @@ ManageForm.propTypes = {
 function mapStateToProps(state, ownProps) {
   let slug = ownProps.match.params.slug && ownProps.match.params.slug.trim();
 
+  let tag = state.filters.tag;
+
+  let processedTag = {};
+  if (tag.length != 0)
+    for (let i in tag) {
+      processedTag[tag[i].id] = tag[i].value;
+    }
+  let lang = state.filters.language;
+
+  let processedLang = {};
+  if (lang.length != 0)
+    for (let i in lang) {
+      processedLang[lang[i].id] = lang[i].value;
+    }
+
+  let difficulty = state.filters.difficulty;
+  let processedDifficulty = {};
+  if (difficulty.length != 0)
+    for (let i in difficulty) {
+      processedDifficulty[difficulty[i].id] = difficulty[i].value;
+    }
   return {
     isLoggedIn: state.userData.isAuthenticated,
-    slug
+    slug,
+    tag: processedTag,
+    difficulty: processedDifficulty,
+    lang: processedLang
   };
 }
+const mapDispatchToProps = {
+  loadFilters: filtersAction.getFilters
+};
 
-export default connect(mapStateToProps)(ManageForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageForm);

@@ -16,7 +16,8 @@ const ProblemExample = ({ exampleData }) => (
             <div>{example.output}</div>
             <br />
             <div>Explanation:</div>
-            <div>{example.explaination}</div>
+            <div>{example.explanation}</div>
+            <br />
           </div>
         );
       })}
