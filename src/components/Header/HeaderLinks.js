@@ -2,6 +2,8 @@
 import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import IconButton from "@material-ui/core/IconButton";
+import { NavLink } from "react-router-dom";
+
 // react components for routing our app without refresh
 import { Link } from "react-router-dom";
 
@@ -27,34 +29,23 @@ export default function HeaderLinks(props) {
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
-      <Button
-     
-          color="transparent"
-         
-          className={classes.navLink}
-        >
+        <Button color="transparent" className={classes.navLink}>
           <CloudDownload className={classes.icons} /> Explore
         </Button>
       </ListItem>
       <ListItem className={classes.listItem}>
-        <Button
-     
-          color="transparent"
-        
-          className={classes.navLink}
-        >
-          <CloudDownload className={classes.icons} /> Content
-        </Button>
+        <NavLink to="/">
+          <Button color="transparent" className={classes.navLink}>
+            <CloudDownload className={classes.icons} /> Content
+          </Button>
+        </NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
-        <Button
-     
-          color="transparent"
-        
-          className={classes.navLink}
-        >
-          <CloudDownload className={classes.icons} /> Login
-        </Button>
+        <NavLink to="/login">
+          <Button color="transparent" className={classes.navLink}>
+            <CloudDownload className={classes.icons} /> Login
+          </Button>
+        </NavLink>
       </ListItem>
     </List>
   );

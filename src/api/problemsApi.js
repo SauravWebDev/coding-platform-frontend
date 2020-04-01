@@ -5,7 +5,7 @@ const getAll = apiUrl + `/getAllProblems/`;
 const getByIdOrTitle = apiUrl + "/problem/";
 const createORUpdate = apiUrl + "/problem/createORUpdate";
 const sourceCode = apiUrl + "/problem/sourceCode/";
-const saveFileDataUrl = apiUrl + "/problem/fileData/save/";
+const saveFileDataUrl = apiUrl + "/problem/problemSourceCode/save/";
 export function getAllProblems() {
   return fetch(getAll)
     .then(handleResponse)
@@ -18,7 +18,7 @@ export function getProblemByIdOrTitle(id) {
     .catch(handleError);
 }
 export function getSourceCode(id) {
-  return fetch(`${sourceCode}?slug=${id}`)
+  return fetch(`${sourceCode}${id}`)
     .then(handleResponse)
     .catch(handleError);
 }

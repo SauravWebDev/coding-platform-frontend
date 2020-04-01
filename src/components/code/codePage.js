@@ -60,10 +60,9 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
             alert(data.error);
           } else {
             setCodeData({
-              user_file: (data.length > 0 && data[0].user_file) || "",
+              exposed_file: (data.length > 0 && data[0].exposed_file) || "",
               main_file: (data.length > 0 && data[0].main_file) || "",
-              input_output_file:
-                (data.length > 0 && data[0].input_output_file) || ""
+              solution_file: (data.length > 0 && data[0].solution_file) || ""
             });
             setSelectedLang((data.length > 0 && data[0].lang_id) || 1);
           }
@@ -83,9 +82,9 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
   const save = () => {
     let body = {
       problem_id: problem.id,
-      user_file: codeData.user_file,
+      exposed_file: codeData.exposed_file,
       main_file: codeData.main_file,
-      input_output_file: codeData.input_output_file,
+      solution_file: codeData.solution_file,
       lang_id: selectedLang
     };
     saveFileData(body)
@@ -162,7 +161,7 @@ const emptyProblemData = {
   examples: [{ input: "", output: "", explaination: "" }]
 };
 
-const fileNames = ["user_file", "main_file", "input_output_file"];
+const fileNames = ["exposed_file", "main_file", "solution_file"];
 
 const initialCodeValue = {
   [fileNames[0]]: "// logic here",
