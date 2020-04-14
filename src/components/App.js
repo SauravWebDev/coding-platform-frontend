@@ -1,14 +1,14 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePage from "./home/HomePage";
-import Header from "./Header/Header.js";
+import Header from "./common/Header/Header";
 import Footer from "./common/Footer";
 import PageNotFound from "./PageNotFound";
 import ProblemsPage from "./problems/ProblemsPage";
 import ManageLoginPage from "./login/ManageLoginPage";
 import ManageSignupPage from "./signup/ManageSignupPage";
 import ManageProblem from "./problems/ManageForm";
-import codePage from "./code/codePage";
+import codeSetupPage from "./CodeSetup/codeSetupPage";
 import { ToastContainer } from "react-toastify";
 import Test from "./test/TestPage";
 import HeaderLinks from "./Header/HeaderLinks.js";
@@ -17,20 +17,9 @@ import "../css/main.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 function App(props) {
-  const { ...rest } = props;
   return (
     <div className="">
-            <Header
-        brand="HackerLead"
-        rightLinks={<HeaderLinks />}
-        fixed
-        color="transparent"
-        changeColorOnScroll={{
-          height: 400,
-          color: "white"
-        }}
-        {...rest} 
-      />
+      <Header />
       <div className="content">
         <Switch>
           <Route exact path="/" component={ProblemsPage} />
@@ -40,7 +29,7 @@ function App(props) {
           <Route path="/problems" component={ProblemsPage} />
           <Route path="/problem/createUpdate/:slug" component={ManageProblem} />
           <Route path="/problem/createUpdate" component={ManageProblem} />
-          <Route path="/problem/setupCode/:slug" component={codePage} />
+          <Route path="/problem/setupCode/:slug" component={codeSetupPage} />
           <Route path="/test" component={Test} />
           <Route component={PageNotFound} />
         </Switch>

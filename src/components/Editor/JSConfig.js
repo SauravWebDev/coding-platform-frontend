@@ -1,6 +1,6 @@
 export default {
   mode: "javascript",
-  theme: "twilight",
+  theme: "eclipse",
   lineNumbers: true,
   keyMap: "sublime",
   tyleActiveLine: true,

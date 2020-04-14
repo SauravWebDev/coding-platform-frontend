@@ -2,14 +2,14 @@ import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import "./codePage.scss";
+import "./codeSetupPage.scss";
 
 import Button from "../common/Button";
 import ProblemData from "./ProblemData";
 import Editor from "../Editor/JSEditor";
 
 import { validString, debouceFn } from "../../util/util";
-
+import { DEFAULT_PROB_DATA, FILE_NAMES, DEFAULT_FILE_DATA } from "./Constant";
 // API //
 import {
   getProblemByIdOrTitle,
@@ -17,18 +17,22 @@ import {
   saveFileData
 } from "../../api/problemsApi";
 
-function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
-  const [problem, setProblem] = useState(emptyProblemData);
+function codeSetupPage({
+  slug,
+  DEFAULT_PROB_DATA,
+  FILE_NAMES,
+  DEFAULT_FILE_DATA
+}) {
+  const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [selectedLang, setSelectedLang] = useState(null);
   const saveToLocalStorage = (problem, fileName, codeValue) => {
     let keyName = `admin_${problem.id}_${fileName}`;
     localStorage.setItem(keyName, codeValue);
   };
-
   const debouceOnChange = useCallback(debouceFn(saveToLocalStorage, 1000), []);
-  const [codeData, setCodeData] = useState(initialCodeValue);
+  const [codeData, setCodeData] = useState(DEFAULT_FILE_DATA);
 
-  const [activeFile, setActiveFile] = useState(fileNames[0]);
+  const [activeFile, setActiveFile] = useState(FILE_NAMES[0]);
 
   useEffect(() => {
     if (validString(slug)) {
@@ -113,7 +117,7 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
       </div>
       <div className="codeEditorScreen">
         <div className="fileNameDiv">
-          {fileNames.map(fileName => (
+          {FILE_NAMES.map(fileName => (
             <Button
               key={"div_tab_button_" + fileName}
               className={
@@ -136,7 +140,7 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
             </Button>
           </span>
         </div>
-        {fileNames.map(fileName => {
+        {FILE_NAMES.map(fileName => {
           let classEditor = activeFile == fileName ? undefined : "displayNone";
           return (
             <div key={"div_tab_editor_" + fileName} className={classEditor}>
@@ -154,36 +158,21 @@ function codePage({ slug, emptyProblemData, fileNames, initialCodeValue }) {
   );
 }
 
-const emptyProblemData = {
-  id: null,
-  title: "",
-  description: "",
-  examples: [{ input: "", output: "", explaination: "" }]
-};
-
-const fileNames = ["exposed_file", "main_file", "solution_file"];
-
-const initialCodeValue = {
-  [fileNames[0]]: "// logic here",
-  [fileNames[1]]: "// wrapper here",
-  [fileNames[2]]: "// test cases here "
-};
-
 function mapStateToProps(state, ownProps) {
   return {
     slug:
       (ownProps.match.params.slug && ownProps.match.params.slug.trim()) || "",
-    emptyProblemData,
-    fileNames,
-    initialCodeValue
+    DEFAULT_PROB_DATA,
+    FILE_NAMES,
+    DEFAULT_FILE_DATA
   };
 }
 
-codePage.propTypes = {
+codeSetupPage.propTypes = {
   slug: PropTypes.string.isRequired,
-  emptyProblemData: PropTypes.object.isRequired,
-  fileNames: PropTypes.array.isRequired,
-  initialCodeValue: PropTypes.object.isRequired
+  DEFAULT_PROB_DATA: PropTypes.object.isRequired,
+  FILE_NAMES: PropTypes.array.isRequired,
+  DEFAULT_FILE_DATA: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps)(codePage);
+export default connect(mapStateToProps)(codeSetupPage);

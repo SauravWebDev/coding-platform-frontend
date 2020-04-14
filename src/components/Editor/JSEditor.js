@@ -4,16 +4,17 @@ import PropTypes from "prop-types";
 
 import config from "./JSConfig.js";
 
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/twilight.css";
-import "codemirror/theme/neat.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/keymap/sublime";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import "codemirror/addon/edit/matchtags";
-import "codemirror/addon/fold/foldgutter.css";
 import "codemirror/addon/fold/foldcode";
+
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/eclipse.css";
+import "codemirror/theme/neat.css";
+import "codemirror/addon/fold/foldgutter.css";
 
 export default function Editor({ codeData, onCodeChange }) {
   return (
