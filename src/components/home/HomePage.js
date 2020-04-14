@@ -3,9 +3,14 @@ import GridContainer from "../common/Grid/GridContainer.js";
 import GridItem from "../common/Grid/GridItem.js";
 import Parallax from "../common/Parallax/Parallax.js";
 import SectionTabs from "../common/Sections/SectionTabs.js";
+import SectionCarousel from "../slider/SectionCarousel.js"
+
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../../assets/jss/HomeStyle.js";
 import classNames from "classnames";
+import ProductSection from "./ProductSection.js";
+import WorkSection from "./WorkSection.js";
+
 const useStyles = makeStyles(styles);
 
 export default function HomePage (props){
@@ -28,7 +33,9 @@ export default function HomePage (props){
         </div>
       </Parallax>
       <div className={classNames(classes.main, classes.mainRaised)}>
-      <SectionTabs />
+      <SectionCarousel />
+      <ProductSection />
+          <WorkSection />
       </div>
   </div>
 );

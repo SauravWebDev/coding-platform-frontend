@@ -31,6 +31,7 @@ function App(props) {
         }}
         {...rest} 
       />
+ 
       <div className="content">
         <Switch>
           <Route exact path="/" component={ProblemsPage} />
