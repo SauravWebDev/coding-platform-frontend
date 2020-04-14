@@ -6,6 +6,8 @@ import configureStore from "./redux/configureStore";
 import { Provider as ReduxProvider } from "react-redux";
 import { setCurrentUser } from "./redux/actions/loginAction";
 
+import "./assets/scss/material-kit-react.scss";
+
 const store = configureStore();
 
 if (localStorage.token) {

@@ -17,9 +17,21 @@ import "../css/main.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 function App(props) {
+  const { ...rest } = props;
   return (
     <div className="">
-      <Header />
+      <Header
+        brand="HackerLead"
+        rightLinks={<HeaderLinks />}
+        fixed
+        color="transparent"
+        changeColorOnScroll={{
+          height: 400,
+          color: "white",
+        }}
+        {...rest}
+      />
+
       <div className="content">
         <Switch>
           <Route exact path="/" component={ProblemsPage} />
