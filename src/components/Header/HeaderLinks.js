@@ -29,24 +29,28 @@ export default function HeaderLinks(props) {
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItem}>
-        <Button color="transparent" className={classes.navLink}>
-          <CloudDownload className={classes.icons} /> Explore
-        </Button>
+        <NavLink to="/">
+          <Button color="transparent" className={classes.navLink}>
+            <CloudDownload className={classes.icons} /> Explore
+          </Button>
+        </NavLink>
       </ListItem>
       <ListItem className={classes.listItem}>
-        <NavLink to="/">
+        <NavLink to="/problems">
           <Button color="transparent" className={classes.navLink}>
             <CloudDownload className={classes.icons} /> Content
           </Button>
         </NavLink>
       </ListItem>
-      <ListItem className={classes.listItem}>
-        <NavLink to="/login">
-          <Button color="transparent" className={classes.navLink}>
-            <CloudDownload className={classes.icons} /> Login
-          </Button>
-        </NavLink>
-      </ListItem>
+      {!props.isLoggedIn && (
+        <ListItem className={classes.listItem}>
+          <NavLink to="/login">
+            <Button color="transparent" className={classes.navLink}>
+              <CloudDownload className={classes.icons} /> Login
+            </Button>
+          </NavLink>
+        </ListItem>
+      )}
     </List>
   );
 }

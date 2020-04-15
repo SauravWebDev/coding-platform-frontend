@@ -1,4 +1,6 @@
 import React from "react";
+import { connect } from "react-redux";
+
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // nodejs library to set properties for components
@@ -15,10 +17,12 @@ import Drawer from "@material-ui/core/Drawer";
 import Menu from "@material-ui/icons/Menu";
 // core components
 import styles from "../../assets/jss/HeaderStyle.js";
+import "./Header.scss";
+import HeaderLinks from "./HeaderLinks";
 
 const useStyles = makeStyles(styles);
 
-export default function Header(props) {
+function Header(props) {
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   React.useEffect(() => {
@@ -53,62 +57,61 @@ export default function Header(props) {
         .classList.remove(classes[changeColorOnScroll.color]);
     }
   };
-  const { color, rightLinks, leftLinks, brand, fixed, absolute } = props;
+  const { color, leftLinks, brand, fixed, absolute } = props;
   const appBarClasses = classNames({
     [classes.appBar]: true,
     [classes[color]]: color,
     [classes.absolute]: absolute,
-    [classes.fixed]: fixed
+    [classes.fixed]: fixed,
   });
   const brandComponent = <Button className={classes.title}>{brand}</Button>;
   return (
-    <AppBar className={appBarClasses}>
-      <Toolbar className={classes.container}>
-        {leftLinks !== undefined ? brandComponent : null}
-        <div className={classes.flex}>
-          {leftLinks !== undefined ? (
-            <Hidden smDown implementation="css">
-              {leftLinks}
-            </Hidden>
-          ) : (
-            brandComponent
-          )}
-        </div>
-        <Hidden smDown implementation="css">
-          {rightLinks}
-        </Hidden>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-          >
-            <Menu />
-          </IconButton>
-        </Hidden>
-      </Toolbar>
-      <Hidden mdUp implementation="js">
-        <Drawer
-          variant="temporary"
-          anchor={"right"}
-          open={mobileOpen}
-          classes={{
-            paper: classes.drawerPaper
-          }}
-          onClose={handleDrawerToggle}
-        >
-          <div className={classes.appResponsive}>
-            {leftLinks}
-            {rightLinks}
+    <div className="header">
+      <AppBar className={appBarClasses}>
+        <Toolbar className={classes.container}>
+          {leftLinks !== undefined ? brandComponent : null}
+          <div className={classes.flex}>
+            {leftLinks !== undefined ? (
+              <Hidden smDown implementation="css">
+                {leftLinks}
+              </Hidden>
+            ) : (
+              brandComponent
+            )}
           </div>
-        </Drawer>
-      </Hidden>
-    </AppBar>
+          <Hidden smDown implementation="css">
+            <HeaderLinks isLoggedIn={props.isLoggedIn} />
+          </Hidden>
+          <Hidden mdUp>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+            >
+              <Menu />
+            </IconButton>
+          </Hidden>
+        </Toolbar>
+        <Hidden mdUp implementation="js">
+          <Drawer
+            variant="temporary"
+            anchor={"right"}
+            open={mobileOpen}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            onClose={handleDrawerToggle}
+          >
+            <div className={classes.appResponsive}>{leftLinks}</div>
+          </Drawer>
+        </Hidden>
+      </AppBar>
+    </div>
   );
 }
 
 Header.defaultProp = {
-  color: "white"
+  color: "white",
 };
 
 Header.propTypes = {
@@ -121,9 +124,8 @@ Header.propTypes = {
     "transparent",
     "white",
     "rose",
-    "dark"
+    "dark",
   ]),
-  rightLinks: PropTypes.node,
   leftLinks: PropTypes.node,
   brand: PropTypes.string,
   fixed: PropTypes.bool,
@@ -145,7 +147,18 @@ Header.propTypes = {
       "transparent",
       "white",
       "rose",
-      "dark"
-    ]).isRequired
-  })
+      "dark",
+    ]).isRequired,
+  }),
 };
+
+Header.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+  return {
+    isLoggedIn: state.userData.isAuthenticated,
+  };
+}
+export default connect(mapStateToProps)(Header);
