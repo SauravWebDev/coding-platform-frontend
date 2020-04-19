@@ -6,7 +6,7 @@ import * as filtersAction from "../../redux/actions/filtersAction";
 import PropTypes from "prop-types";
 import ProblemList from "./ProblemsList";
 import Filters from "./Filters";
-
+import Header from "../Header/Header";
 import Button from "../common/Button";
 import "./ProblemsPage.scss";
 
@@ -28,6 +28,18 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
   }, []);
 
   return (
+    <div>
+    <div className="header">
+    <Header
+    brand="HackerLead"
+    fixed
+    color="transparent"
+    changeColorOnScroll={{
+      height: 100,
+      color: "white",
+    }}
+  />
+  </div>
     <div className="problemPage">
       <div className="width-5percent"></div>
       <div className="width-70percent">
@@ -37,6 +49,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
       <div className="width-25percent filter">
         <Filters filters={props.filters} />
       </div>
+    </div>
     </div>
   );
 };

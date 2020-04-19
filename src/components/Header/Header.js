@@ -66,7 +66,6 @@ function Header(props) {
   });
   const brandComponent = <Button className={classes.title}>{brand}</Button>;
   return (
-    <div className="header">
       <AppBar className={appBarClasses}>
         <Toolbar className={classes.container}>
           {leftLinks !== undefined ? brandComponent : null}
@@ -106,7 +105,6 @@ function Header(props) {
           </Drawer>
         </Hidden>
       </AppBar>
-    </div>
   );
 }
 

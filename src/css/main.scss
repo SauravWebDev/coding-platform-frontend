@@ -72,3 +72,11 @@ a {
 .width-80percent {
   width: 80%;
 }
+
+.header {
+  display: flex !important;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100px;
+}

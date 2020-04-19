@@ -10,14 +10,25 @@ import styles from "../../assets/jss/HomeStyle.js";
 import classNames from "classnames";
 import ProductSection from "./ProductSection.js";
 import WorkSection from "./WorkSection.js";
-
+import Header from "../Header/Header";
+import "./HomePage.scss"
 const useStyles = makeStyles(styles);
 
 export default function HomePage (props){
+  const { ...rest } = props;
   const classes = useStyles();
   return (
   <div >
-
+      <Header
+        brand="HackerLead"
+        fixed
+        color="transparent"
+        changeColorOnScroll={{
+          height: 400,
+          color: "white",
+        }}
+        {...rest}
+      />
       <Parallax image={require('./../../assets/img/bg4.jpg')}>
         <div className={classes.container}>
           <GridContainer>

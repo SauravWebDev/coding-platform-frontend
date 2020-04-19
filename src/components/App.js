@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import HomePage from "./home/HomePage";
-import Header from "./Header/Header";
 import Footer from "./common/Footer";
 import PageNotFound from "./PageNotFound";
 import ProblemsPage from "./problems/ProblemsPage";
@@ -16,19 +15,10 @@ import "../css/main.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 function App(props) {
-  const { ...rest } = props;
+ 
   return (
     <>
-      <Header
-        brand="HackerLead"
-        fixed
-        color="transparent"
-        changeColorOnScroll={{
-          height: 400,
-          color: "white",
-        }}
-        {...rest}
-      />
+
 
       <Switch>
         <Route exact path="/" component={HomePage} />
