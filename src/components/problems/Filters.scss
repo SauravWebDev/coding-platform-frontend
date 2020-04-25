@@ -1,0 +1,9 @@
+.filters {
+  display: flex;
+
+  flex-wrap: nowrap;
+}
+
+.filters > div {
+  width: 50%;
+}

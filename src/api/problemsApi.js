@@ -6,10 +6,9 @@ const getByIdOrTitle = apiUrl + "/problem/";
 const createORUpdate = apiUrl + "/problem/createORUpdate";
 const sourceCode = apiUrl + "/problem/sourceCode/";
 const saveFileDataUrl = apiUrl + "/problem/problemSourceCode/save/";
+const tryCodeUrl = apiUrl + "/problem/try/";
 export function getAllProblems() {
-  return fetch(getAll)
-    .then(handleResponse)
-    .catch(handleError);
+  return fetch(getAll).then(handleResponse).catch(handleError);
 }
 
 export function getProblemByIdOrTitle(id) {
@@ -18,10 +17,12 @@ export function getProblemByIdOrTitle(id) {
     .catch(handleError);
 }
 export function getSourceCode(id) {
-  return fetch(`${sourceCode}${id}`)
-    .then(handleResponse)
-    .catch(handleError);
+  return fetch(`${sourceCode}${id}`).then(handleResponse).catch(handleError);
 }
+export function tryCode(id) {
+  return fetch(`${tryCodeUrl}${id}`).then(handleResponse).catch(handleError);
+}
+
 export function createORUpdateProblem(data) {
   return fetch(createORUpdate, {
     method: "post",
@@ -29,9 +30,9 @@ export function createORUpdateProblem(data) {
     redirect: "follow",
     referrerPolicy: "no-referrer",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
     .then(handleResponse)
     .catch(handleError);
@@ -44,9 +45,9 @@ export function saveFileData(data) {
     redirect: "follow",
     referrerPolicy: "no-referrer",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
     .then(handleResponse)
     .catch(handleError);

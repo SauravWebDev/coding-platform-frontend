@@ -6,6 +6,10 @@ body {
   font-size: 1rem;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 400;
+  padding: 0;
+  border: 0;
+  height: 100%;
+  max-height: 100%;
 }
 
 a {
@@ -34,7 +38,6 @@ a {
 }
 
 .backgroundGrey {
-  background-color: $colorGrey !important;
 }
 
 .margin-left-10px {
@@ -71,12 +74,4 @@ a {
 
 .width-80percent {
   width: 80%;
-}
-
-.header {
-  display: flex !important;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  height: 100px;
 }

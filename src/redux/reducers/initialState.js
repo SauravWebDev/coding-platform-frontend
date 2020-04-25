@@ -1,14 +1,14 @@
 export default {
   problems: {},
   filters: {
-    difficulty: [],
-    tag: [],
-    language: []
+    difficulty: {},
+    tag: {},
+    language: {},
   },
   userDetails: {
     isAuthenticated: false,
-    data: {}
+    data: {},
   },
   signupSuccess: false,
-  apiCallsInProgress: 0
+  apiCallsInProgress: 0,
 };

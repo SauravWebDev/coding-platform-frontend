@@ -1,0 +1,48 @@
+@import "../../css/constant.scss";
+
+.Question {
+  padding: 1em 0px;
+  border-bottom: 1px $colorGradientGray;
+}
+
+.codeSetupPage {
+  background: #f5f5f5;
+  min-height: 400px;
+  display: flex;
+}
+
+.questionDetailsScreen {
+  width: 40%;
+  margin: 5px;
+  padding: 5px;
+}
+
+.codeEditorScreen {
+  overflow: hidden;
+  width: 100%;
+  margin: 5px;
+  padding: 5px;
+  background-color: $colorWhite;
+}
+
+.fileNameDiv {
+  overflow: hidden;
+}
+.codeButtons {
+  color: $colorBlack !important;
+  border: 0px !important;
+}
+.code-template {
+  border-left: 1px solid #c2c7d0;
+  border-right: 1px solid #c2c7d0;
+  background-color: #f8f8f8;
+  padding: 5px 15px;
+}
+
+.code-label {
+  font-weight: 600;
+  font-size: 14px;
+}
+.code-editor {
+  line-height: 1em;
+}

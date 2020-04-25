@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ProblemExample from "./ProblemExample";
 
 export default function ProblemData({ questionData }) {
   return (
@@ -9,12 +8,13 @@ export default function ProblemData({ questionData }) {
       <div className="Question">
         {questionData.id}. {questionData.title}
       </div>
-      <div>{questionData.description}</div>
-      <ProblemExample exampleData={questionData.examples} />
+      <div dangerouslySetInnerHTML={{ __html: questionData.description }} />
+      <div dangerouslySetInnerHTML={{ __html: questionData.example }} />
+      <div dangerouslySetInnerHTML={{ __html: questionData.note }} />
     </div>
   );
 }
 
 ProblemData.propTypes = {
-  questionData: PropTypes.object.isRequired
+  questionData: PropTypes.object.isRequired,
 };

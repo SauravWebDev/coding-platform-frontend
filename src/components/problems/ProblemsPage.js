@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import * as problemsAction from "../../redux/actions/problemsAction";
 import * as filtersAction from "../../redux/actions/filtersAction";
@@ -6,50 +6,65 @@ import * as filtersAction from "../../redux/actions/filtersAction";
 import PropTypes from "prop-types";
 import ProblemList from "./ProblemsList";
 import Filters from "./Filters";
-import Header from "../Header/Header";
-import Button from "../common/Button";
+import Chip from "@material-ui/core/Chip";
+
 import "./ProblemsPage.scss";
 
-const createProblem = history => {
+const createProblem = (history) => {
   history.push("/problem/createUpdate/");
   return;
 };
 
 const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
+  const [selectedTag, setSelectedTag] = useState([]);
+  const [selectedDifficulty, setSelectedDifficulty] = useState([]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    console.log("name ", name, "value ", value);
+    if (name === "Difficulty") {
+      setSelectedDifficulty(event.target.value);
+      return;
+    }
+    if (name === "Tags") {
+      setSelectedTag(event.target.value);
+      return;
+    }
+  };
   useEffect(() => {
     let length = Object.keys(problemsData).length;
     if (length === 0) {
       loadProblems().catch(() => alert("error"));
     }
     let filters = props.filters;
-    if (filters.difficulty.length === 0 && filters.tag.length === 0) {
+    if (
+      Object.keys(filters.difficulty).length === 0 &&
+      Object.keys(filters.tag).length === 0
+    ) {
       props.loadFilters().catch(() => alert("error"));
     }
   }, []);
 
   return (
     <div>
-    <div className="header">
-    <Header
-    brand="HackerLead"
-    fixed
-    color="transparent"
-    changeColorOnScroll={{
-      height: 100,
-      color: "white",
-    }}
-  />
-  </div>
-    <div className="problemPage">
-      <div className="width-5percent"></div>
-      <div className="width-70percent">
-        <Button onClick={() => createProblem(history)}>Create Question</Button>
-        <ProblemList problems={problemsData} />
+      <div className="problemPage">
+        <div className="width-5percent"></div>
+        <div className="width-70percent">
+          <Chip
+            onClick={() => createProblem(history)}
+            label={"Create New Problem"}
+            variant="outlined"
+          />
+          <Filters
+            filters={props.filters}
+            selectedDifficulty={selectedDifficulty}
+            handleChange={handleChange}
+            selectedTag={selectedTag}
+          />
+          <ProblemList />
+        </div>
+        <div className="width-25percent filter"></div>
       </div>
-      <div className="width-25percent filter">
-        <Filters filters={props.filters} />
-      </div>
-    </div>
     </div>
   );
 };
@@ -59,20 +74,20 @@ ProblemsPage.propTypes = {
   problemsData: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   loadFilters: PropTypes.func.isRequired,
-  filters: PropTypes.object.isRequired
+  filters: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   return {
     problemsData: state.problems,
     history: ownProps.history,
-    filters: state.filters
+    filters: state.filters,
   };
 }
 
 const mapDispatchToProps = {
   loadProblems: problemsAction.getAllProblems,
-  loadFilters: filtersAction.getFilters
+  loadFilters: filtersAction.getFilters,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProblemsPage);

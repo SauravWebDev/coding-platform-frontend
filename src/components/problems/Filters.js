@@ -1,37 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function Filters({ filters }) {
+import MultiSelect from "../common/MultiSelect";
+import "./Filters.scss";
+export default function Filters({
+  filters,
+  selectedTag,
+  selectedDifficulty,
+  handleChange,
+}) {
   return (
-    <>
-      <div className="filter-group">
-        <h2>Difficulty</h2>
-        {filters.difficulty.map(data => {
-          return (
-            <div key={data.id}>
-              <input type="checkbox" />
-              <label> {data.value}</label>
-              <br />
-            </div>
-          );
-        })}
+    <div className="filters">
+      <div>
+        <MultiSelect
+          labelName={"Difficulty"}
+          selectedItem={selectedDifficulty}
+          inputItems={filters.difficulty}
+          onChange={handleChange}
+        />
       </div>
-      <div className="filter-group">
-        <h2>Tags</h2>
-        {filters.tag.map(data => {
-          return (
-            <div key={data.id}>
-              <input type="checkbox" />
-              <label> {data.value}</label>
-              <br />
-            </div>
-          );
-        })}
+      <div>
+        <MultiSelect
+          labelName={"Tags"}
+          selectedItem={selectedTag}
+          inputItems={filters.tag}
+          onChange={handleChange}
+        />
       </div>
-    </>
+    </div>
   );
 }
 
 Filters.propTypes = {
-  filters: PropTypes.object
+  filters: PropTypes.object,
+  selectedTag: PropTypes.array,
+  selectedDifficulty: PropTypes.array,
+  handleChange: PropTypes.func,
 };

@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react";
 import Form from "./Form";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
-
+import PropTypes, { func } from "prop-types";
+import "./ManageForm.scss";
 import { toast } from "react-toastify";
-
 import { validString } from "../../util/util";
-
+import { DEFAULT_PROB_DATA } from "./Constant";
 // API //
 import {
   getProblemByIdOrTitle,
-  createORUpdateProblem
+  createORUpdateProblem,
 } from "../../api/problemsApi";
 import * as filtersAction from "../../redux/actions/filtersAction";
 
@@ -20,6 +19,7 @@ const LANGUAGE = "language";
 const NOTE = "Note";
 
 const ManageForm = ({ isLoggedIn, slug, ...props }) => {
+  const [selectedTab, setSelectedTab] = useState(0);
   const [selectedTag, setSelectedTag] = useState([]);
   const [selectedLang, setSelectedLang] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
@@ -27,8 +27,8 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
     id: null,
     title: "",
     description: "",
-    examples: [{ input: "", output: "", explanation: "" }],
-    note: []
+    example: "",
+    note: "",
   });
 
   const [apiError, setApiError] = useState("");
@@ -37,14 +37,14 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
   useEffect(() => {
     if (validString(slug)) {
       getProblemByIdOrTitle(slug)
-        .then(data => {
+        .then((data) => {
           if (data.error) {
             setApiError(data.error);
           } else {
-            let tag = Object.keys(data.tag).map(key =>
+            let tag = Object.keys(data.tag).map((key) =>
               String(data.tag[key].id)
             );
-            let lang = Object.keys(data.language).map(key =>
+            let lang = Object.keys(data.language).map((key) =>
               String(data.language[key].id)
             );
             setSelectedLang(lang);
@@ -52,14 +52,15 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
             setSelectedDifficulty(String(data.difficulty));
             setProblem({
               id: data.id,
+              slug: data.slug,
               title: data.title,
-              examples: data.example,
+              example: data.example || "",
               description: data.description,
-              note: data.note
+              note: data.note || "",
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           alert(e);
         });
     }
@@ -72,9 +73,9 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
     }
   }, [slug]);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
-
+    console.log("name ", name, "value ", value);
     if (name === DIFFICULTY) {
       setSelectedDifficulty(event.target.value);
       return;
@@ -86,24 +87,7 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
     if (name === "Tags") {
       setSelectedTag(event.target.value);
       return;
-    }
-    if (name.split("_")[0] === "note") {
-      let exAttr = name.split("_");
-      setProblem(prevProblem => {
-        let note = [...prevProblem.note];
-        note[exAttr[1]] = value;
-        return { ...prevProblem, note: note };
-      });
-      return;
-    }
-    if (name.split("_")[0] === "example") {
-      setProblem(prevProblem => {
-        let exAttr = name.split("_");
-        let examples = [...prevProblem.examples];
-        examples[exAttr[2]][exAttr[1]] = value;
-        return { ...prevProblem, examples: examples };
-      });
-    } else setProblem(prevProblem => ({ ...prevProblem, [name]: value }));
+    } else setProblem((prevProblem) => ({ ...prevProblem, [name]: value }));
   };
 
   const formIsValid = () => {
@@ -111,83 +95,54 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
       setFormError({ ...formError, title: "Title is Required" });
       return false;
     }
-    if (!validString(problem.title)) {
-      setFormError({ ...formError, description: "Title is Required" });
+    if (!validString(problem.description)) {
+      setFormError({ ...formError, description: "Descriptiom is Required" });
+      return false;
+    }
+    if (!validString(problem.example)) {
+      setFormError({ ...formError, description: "Example is Required" });
+      return false;
+    }
+    if (!validString(problem.note)) {
+      setFormError({ ...formError, description: "Note is Required" });
       return false;
     }
     return true;
   };
 
-  const removeLine = obj => {
-    for (let prop in obj) {
-      if (typeof obj[prop] === "string") {
-        obj[prop] = obj[prop].split("\n").join("");
-      } else if (obj[prop] && typeof obj[prop] === "object") {
-        removeLine(obj[prop]);
-      }
-    }
+  const updateHtml = (name, value) => {
+    setProblem((prevProblem) => ({ ...prevProblem, [name]: value }));
   };
   const handleSave = () => {
     event.preventDefault();
     if (!formIsValid()) return;
 
-    removeLine(problem);
-    let processLang = selectedLang.map(lang => Number(lang));
-    let processTag = selectedTag.map(tag => Number(tag));
+    let processLang = selectedLang.map((lang) => Number(lang));
+    let processTag = selectedTag.map((tag) => Number(tag));
     let reqBody = {
-      title: problem.title,
+      title: problem.title.split("\n").join(""),
       description: problem.description,
-      example: problem.examples,
+      example: problem.example,
       note: problem.note,
       language: processLang,
       tag: processTag,
-      difficulty: Number(selectedDifficulty)
+      difficulty: Number(selectedDifficulty),
     };
     if (problem.id) reqBody.id = problem.id;
-
     createORUpdateProblem(reqBody)
-      .then(res => {
+      .then((res) => {
         if (res.error) {
           toast.error(res.error);
         } else {
           toast.success(res.msg);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         alert(e);
       });
   };
-
-  const addExample = () => {
-    setProblem(prev => {
-      let examples = [
-        ...prev.examples,
-        { input: "", output: "", explanation: "" }
-      ];
-      return { ...prev, examples: examples };
-    });
-  };
-  const addNote = () => {
-    setProblem(prev => {
-      let note = [...prev.note, ""];
-      return { ...prev, note };
-    });
-  };
-  const deleteExample = index => {
-    if (problem.examples.length <= 1) return;
-    setProblem(prev => {
-      let examples = [...prev.examples];
-      examples.splice(index, 1);
-      return { ...prev, examples: examples };
-    });
-  };
-  const deleteNote = index => {
-    if (problem.note.length === 0) return;
-    setProblem(prev => {
-      let note = [...prev.note];
-      note.splice(index, 1);
-      return { ...prev, note: note };
-    });
+  const clickTab = (tab) => {
+    setSelectedTab(tab);
   };
   if (!isLoggedIn) {
     return <Redirect to="/" />;
@@ -196,35 +151,59 @@ const ManageForm = ({ isLoggedIn, slug, ...props }) => {
     return <></>;
   } else {
     return (
-      <Form
-        onSave={handleSave}
-        onChange={handleChange}
-        errors={formError}
-        isCreate={!validString(slug)}
-        title={problem.title}
-        description={problem.description}
-        examples={problem.examples}
-        addExample={addExample}
-        deleteExample={deleteExample}
-        selectedTag={selectedTag}
-        tag={props.tag}
-        difficulty={props.difficulty}
-        difficultyLebel={DIFFICULTY}
-        selectedDifficulty={selectedDifficulty}
-        langLebel={LANGUAGE}
-        selectedLang={selectedLang}
-        lang={props.lang}
-        notes={problem.note}
-        noteLebel={NOTE}
-        addNote={addNote}
-        deleteNote={deleteNote}
-      />
+      <>
+        <div>
+          <div className="top-bar">
+            <div className="wrapper-progressBar">
+              <ul className="progressBar">
+                <li onClick={() => clickTab(0)} className="active">
+                  Problem Statement
+                </li>
+                <li onClick={() => clickTab(1)} className="active">
+                  Code Setup
+                </li>
+                <li onClick={() => clickTab(2)}>Test Cases</li>
+                <li onClick={() => clickTab(3)}>Overview</li>
+              </ul>
+            </div>
+          </div>
+          <div className={"" + (selectedTab == 0 ? "show" : "hide")}>
+            <Form
+              onSave={handleSave}
+              onChange={handleChange}
+              errors={formError}
+              isCreate={!validString(slug)}
+              title={problem.title}
+              description={problem.description}
+              example={problem.example}
+              selectedTag={selectedTag}
+              tag={props.tag}
+              difficulty={props.difficulty}
+              difficultyLebel={DIFFICULTY}
+              selectedDifficulty={selectedDifficulty}
+              langLebel={LANGUAGE}
+              selectedLang={selectedLang}
+              lang={props.lang}
+              note={problem.note}
+              noteLebel={NOTE}
+              updateHtml={updateHtml}
+            />
+          </div>
+          <div className={"" + (selectedTab == 1 ? "show" : "hide")}>
+            code setup
+          </div>
+          <div className={"" + (selectedTab == 2 ? "show" : "hide")}>
+            code setup
+          </div>
+          <div></div>
+        </div>
+      </>
     );
   }
 };
 
 ManageForm.propTypes = {
-  isLoggedIn: PropTypes.bool.isRequired
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -256,11 +235,11 @@ function mapStateToProps(state, ownProps) {
     slug,
     tag: processedTag,
     difficulty: processedDifficulty,
-    lang: processedLang
+    lang: processedLang,
   };
 }
 const mapDispatchToProps = {
-  loadFilters: filtersAction.getFilters
+  loadFilters: filtersAction.getFilters,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageForm);
