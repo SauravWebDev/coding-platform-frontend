@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import SingleSelect from "../common/SingleSelect";
@@ -9,15 +9,46 @@ import Button from "../common/Button";
 import ProblemData from "./ProblemData";
 import Editor from "../Editor/JSEditor";
 
-import { validString } from "../../util/util";
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
-import { run as submissionRun } from "../../api/submissionApi";
+import { run as submissionRun, checkStatus } from "../../api/submissionApi";
+import { toast } from "react-toastify";
+import { debounceFn, validString } from "../../util/util";
 
+const delay = 1000;
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [defaultInput, setDefaultInput] = useState(DEFAULT_INPUT);
+  const [checkRes, setCheckRes] = useState(false);
+  const [submissionId, setSubmissionId] = useState(null);
+  const [result, setResult] = useState({});
+
+  const getResult = function () {
+    if (checkRes) {
+      setCheckRes(false);
+      checkStatus(submissionId)
+        .then((res) => {
+          if (res.error) {
+            toast.error("something went wrong");
+          } else if (res.status == 1) {
+            toast.success("Code executed");
+            setResult(() => {
+              return { ...res };
+            });
+          } else {
+            setCheckRes(true);
+          }
+        })
+        .catch((e) => {
+          alert("err");
+        });
+    }
+  };
+
+  const debounceOnChange = useCallback(debounceFn(getResult, delay), [
+    checkRes,
+  ]);
 
   useEffect(() => {
     if (validString(slug)) {
@@ -59,6 +90,9 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
     }
   }, [slug]);
 
+  if (submissionId && checkRes) {
+    debounceOnChange();
+  }
   const codeChange = (value) => {
     setProblem((prev) => {
       prev.selectedCode = value;
@@ -71,23 +105,30 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
     body.lang_id = problem.selectedLanguage;
     body.code = problem.selectedCode;
     body.language = problem.language[problem.selectedLanguage];
-    body.default_input = defaultInput;
+    body.default_input = defaultInput.split("\n");
     body.problem_id = problem.id;
     submissionRun(body)
       .then((data) => {
         if (data.error) {
-          alert(data.error);
+          toast.error(data.error);
         } else {
-          alert(data);
+          toast.success("Execution in progress");
+          setSubmissionId(data.submissionId);
+          setCheckRes(true);
         }
       })
       .catch((e) => {
+        setCheckRes(false);
         alert(e);
       });
   };
 
   const onChange = (event) => {
-    const { value } = event.target;
+    const { name, value } = event.target;
+    if (name == "defaultInput") {
+      setDefaultInput(value);
+      return;
+    }
     setProblem((prev) => {
       prev.sourceCode[prev.selectedLanguage] = prev.selectedCode;
       prev.selectedLanguage = value;
@@ -109,11 +150,6 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
               inputItems={problem.language}
               onChange={onChange}
             />
-            <span style={{ float: "right" }}>
-              <Button className="codeButtons" onClick={run}>
-                Run
-              </Button>
-            </span>
           </div>
 
           <div className="code-template" key={"code_body"}>
@@ -125,6 +161,60 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
                   codeChange(data);
                 }}
               />
+            </div>
+          </div>
+          <div>
+            <div> Test Case : </div>
+            <textarea
+              style={{
+                height: "100px",
+                width: "300px",
+                border: "1px solid #ddd",
+              }}
+              name="defaultInput"
+              value={defaultInput}
+              rows="5"
+              onChange={onChange}
+            ></textarea>
+            <span style={{ float: "right" }}>
+              <Button className="codeButtons" disabled={checkRes} onClick={run}>
+                Run
+              </Button>
+            </span>
+          </div>
+          <div>
+            <div className="consoleOutput">
+              <div style={{ width: "75%" }}>
+                <div className="code-label"> Console</div>
+                <div className="console">
+                  {result.codeError && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: result.codeError.replace(/\n/g, "</br>"),
+                      }}
+                    />
+                  )}
+                  {result.stdout && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: result.stdout.replace(/\n/g, "</br>"),
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div style={{ width: "25%" }}>
+                <div className="code-label"> Your Output</div>
+                <div className="console">
+                  {result.output && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: result.output.replace(/\n/g, "</br>"),
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -145,7 +235,7 @@ function mapStateToProps(state, ownProps) {
 TryCodePage.propTypes = {
   slug: PropTypes.string.isRequired,
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
-  DEFAULT_INPUT: PropTypes.array.isRequired,
+  DEFAULT_INPUT: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps)(TryCodePage);

@@ -21,7 +21,6 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log("name ", name, "value ", value);
     if (name === "Difficulty") {
       setSelectedDifficulty(event.target.value);
       return;

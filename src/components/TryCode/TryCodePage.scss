@@ -21,7 +21,7 @@
   overflow: hidden;
 }
 .codeButtons {
-  color: $colorBlack !important;
+  color: white !important;
   border: 0px !important;
 }
 .code-template {
@@ -37,4 +37,23 @@
 }
 .code-editor {
   line-height: 1em;
+  font-size: 14px;
+}
+.consoleOutput {
+  display: flex;
+  padding: 5px;
+  margin: 5px;
+}
+
+.console {
+  padding: 5px;
+  margin: 5px;
+  overflow-x: auto;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(238, 238, 238);
+  border-image: initial;
+  border-radius: 3px;
+  background: rgb(250, 250, 250);
+  min-height: 100px;
 }

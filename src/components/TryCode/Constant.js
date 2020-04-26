@@ -11,4 +11,4 @@ export const DEFAULT_PROB_DATA = {
   selectedCode: "",
 };
 
-export const DEFAULT_INPUT = [];
+export const DEFAULT_INPUT = "";

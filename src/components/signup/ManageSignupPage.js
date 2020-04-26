@@ -13,7 +13,7 @@ const ManageSignupPage = ({ isLoggedIn, signupSuccess, signupAction }) => {
   let [lastName, setLastName] = useState("");
   let [disablSignupButton, setDisablSignupButton] = useState(false);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
     if (errors.signupError) delete errors.signupError;
     if (name === "email") {
@@ -70,7 +70,7 @@ const ManageSignupPage = ({ isLoggedIn, signupSuccess, signupAction }) => {
     event.preventDefault();
     if (!formIsValid()) return;
     setDisablSignupButton(true);
-    signupAction(firstName, lastName, emailID, password).catch(err => {
+    signupAction(firstName, lastName, emailID, password).catch((err) => {
       setErrors({ ...errors, signupError: err });
       setDisablSignupButton(false);
     });
@@ -93,19 +93,18 @@ const ManageSignupPage = ({ isLoggedIn, signupSuccess, signupAction }) => {
 ManageSignupPage.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   signupSuccess: PropTypes.bool.isRequired,
-  signupAction: PropTypes.func.isRequired
+  signupAction: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
-  console.log("state ", state);
   return {
     isLoggedIn: state.userData && state.userData.isAuthenticated,
-    signupSuccess: state.signupSuccess
+    signupSuccess: state.signupSuccess,
   };
 }
 
 const mapDispatchToProps = {
-  signupAction: signup
+  signupAction: signup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ManageSignupPage);

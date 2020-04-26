@@ -7,7 +7,7 @@ export function decode(token) {
   return {
     emailID,
     firstName,
-    lastName
+    lastName,
   };
 }
 
@@ -15,6 +15,6 @@ export function validString(str) {
   return str && str.trim().length != 0;
 }
 
-export function debouceFn(fn, delayTime) {
+export function debounceFn(fn, delayTime) {
   return debounce(fn, delayTime);
 }

@@ -149,7 +149,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log("name ", name, "value ", value);
     if (name === "Difficulty") {
       setSelectedDifficulty(event.target.value);
       return;
@@ -288,7 +287,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       prev.selectedCode = prev.sourceCode[value];
       return { ...prev };
     });
-    console.log("name ", event.target);
   };
 
   if (!isLoggedIn) {

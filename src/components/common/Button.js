@@ -6,8 +6,9 @@ export default function Button({ ...props }) {
   return (
     <MuiButton
       type={props.type}
-      variant="outlined"
+      variant="contained"
       color="primary"
+      disabled={props.disabled}
       className={props.className}
       onClick={props.onClick}
     >
@@ -17,5 +18,5 @@ export default function Button({ ...props }) {
 }
 
 Button.propTypes = {
-  type: PropTypes.string
+  type: PropTypes.string,
 };
