@@ -64,7 +64,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
 
             let selectedLanguage = data.language[0].id;
             let selectedCode = sourceCode[selectedLanguage];
-
             setProblem({
               id: data.id,
               slug: data.slug,

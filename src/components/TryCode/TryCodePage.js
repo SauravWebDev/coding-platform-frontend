@@ -16,7 +16,7 @@ import { run as submissionRun, checkStatus } from "../../api/submissionApi";
 import { toast } from "react-toastify";
 import { debounceFn, validString } from "../../util/util";
 
-const delay = 1000;
+const delay = 4000;
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [defaultInput, setDefaultInput] = useState(DEFAULT_INPUT);

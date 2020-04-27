@@ -25,7 +25,6 @@ export function getAllProblems() {
         }
       })
       .catch((e) => {
-        console.log("Error in getAllProblems ", e);
         let err = new Error();
         err.msg = "Error in fetching all problems";
         throw err;
