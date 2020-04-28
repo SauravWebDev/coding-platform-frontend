@@ -10,6 +10,13 @@ export const DEFAULT_PROB_DATA = {
   code_template: [],
   sourceCode: {},
   selectedCode: "",
+  testCase: [
+    {
+      input: "",
+      output: "",
+    },
+  ],
+  status: 0,
 };
 export const FILTERS = {
   difficulty: {},

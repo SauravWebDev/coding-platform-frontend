@@ -4,18 +4,20 @@ import PropTypes from "prop-types";
 import SingleSelect from "../common/SingleSelect";
 
 import "./TryCodePage.scss";
+import Chip from "@material-ui/core/Chip";
 
 import Button from "../common/Button";
 import ProblemData from "./ProblemData";
 import Editor from "../Editor/JSEditor";
-
+import PublishIcon from "@material-ui/icons/Publish";
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
 import { run as submissionRun, checkStatus } from "../../api/submissionApi";
 import { toast } from "react-toastify";
 import { debounceFn, validString } from "../../util/util";
-
+import Avatar from "@material-ui/core/Avatar";
+import DoneAllIcon from "@material-ui/icons/DoneAll";
 const delay = 4000;
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
@@ -68,7 +70,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
             }
             let selectedLanguage = data.language[0].id;
             let selectedCode = sourceCode[selectedLanguage];
-
+            setDefaultInput(data.default_input);
             let problemData = {
               id: data.id,
               title: data.title,
@@ -163,24 +165,47 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
               />
             </div>
           </div>
-          <div>
-            <div> Test Case : </div>
-            <textarea
-              style={{
-                height: "100px",
-                width: "300px",
-                border: "1px solid #ddd",
-              }}
-              name="defaultInput"
-              value={defaultInput}
-              rows="5"
-              onChange={onChange}
-            ></textarea>
-            <span style={{ float: "right" }}>
-              <Button className="codeButtons" disabled={checkRes} onClick={run}>
-                Run
-              </Button>
-            </span>
+          <div style={{ display: "flex", backgroundColor: "#fafafa" }}>
+            <div>
+              <div> Test Case : </div>
+              <textarea
+                style={{
+                  height: "100px",
+                  width: "300px",
+                  border: "1px solid #ddd",
+                }}
+                name="defaultInput"
+                value={defaultInput}
+                rows="5"
+                onChange={onChange}
+              ></textarea>
+            </div>
+            <div style={{ marginTop: "10%", marginLeft: "10%" }}>
+              <span style={{ padding: "10px" }}>
+                <Chip
+                  avatar={
+                    <Avatar>
+                      <DoneAllIcon />
+                    </Avatar>
+                  }
+                  onClick={run}
+                  label={"Run Code"}
+                  color="primary"
+                />
+              </span>
+              <span style={{ padding: "10px" }}>
+                <Chip
+                  avatar={
+                    <Avatar>
+                      <PublishIcon />
+                    </Avatar>
+                  }
+                  onClick={run}
+                  label={"Submit Code"}
+                  color="primary"
+                />
+              </span>
+            </div>
           </div>
           <div>
             <div className="consoleOutput">

@@ -11,9 +11,10 @@ import {
   getSourceCode,
   createORUpdateProblem,
   saveFileData,
+  saveTestCases,
 } from "../../api/problemsApi";
 import { getFilters } from "../../api/filtersApi";
-
+import TestCasePage from "./TestCasePage";
 import { DEFAULT_PROB_DATA, FILTERS } from "./Constant";
 
 const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
@@ -22,6 +23,10 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedTagArray, setSelectedTagArray] = useState([]);
   const [selectedLangArray, setSelectedLangArray] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [statusOb] = useState({
+    0: "Inactive",
+    1: "Active",
+  });
   const [problem, setProblem] = useState(props.DEFAULT_PROB_DATA);
   const [filters, setFilters] = useState(props.FILTERS);
   const [apiError, setApiError] = useState("");
@@ -55,15 +60,26 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
             });
 
             lang = {};
+            // create source code for selected language
             for (let i in data.language) {
               lang[data.language[i].id] = data.language[i].value;
               sourceCode[data.language[i].id] =
                 sourceCode[data.language[i].id] ||
                 codeTemplate[data.language[i].id];
             }
+            // In case no assigned languages, there there is not selected language
+            let selectedLanguage =
+              (data.language &&
+                data.language.length > 0 &&
+                data.language[0].id) ||
+              "";
+            let selectedCode = "";
+            if (selectedLanguage != "") {
+              selectedCode =
+                (sourceCode && sourceCode[selectedLanguage]) ||
+                codeTemplate[selectedLanguage];
+            }
 
-            let selectedLanguage = data.language[0].id;
-            let selectedCode = sourceCode[selectedLanguage];
             setProblem({
               id: data.id,
               slug: data.slug,
@@ -77,10 +93,13 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               codeTemplate,
               sourceCode,
               selectedCode,
+              status: data.status,
+              testCase: data.test_case,
             });
           }
         })
         .catch((e) => {
+          console.log(e);
           alert(e);
         });
     }
@@ -156,6 +175,10 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       setSelectedLangArray(event.target.value);
       return;
     }
+    if (name === "Status") {
+      setProblem((prevProblem) => ({ ...prevProblem, ["status"]: value }));
+      return;
+    }
     if (name === "Tags") {
       setSelectedTagArray(event.target.value);
       return;
@@ -180,6 +203,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       language: processLang,
       tag: processTag,
       difficulty: Number(selectedDifficulty),
+      status: problem.status,
     };
     if (problem.id) reqBody.id = problem.id;
     createORUpdateProblem(reqBody)
@@ -242,6 +266,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       return (
         <Form
           problem={problem}
+          statusOb={statusOb}
           filters={filters}
           onSave={handleSave}
           onChange={handleChange}
@@ -265,9 +290,13 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     }
     if (selectedTab == 2) {
       return (
-        <>
-          <h1> Test Cases</h1>
-        </>
+        <TestCasePage
+          testCases={problem.testCase}
+          addTestCase={addTestCase}
+          deleteTestCase={deleteTestCase}
+          onChangeTestCase={onChangeTestCase}
+          onSave={onSaveTestCase}
+        />
       );
     }
     if (selectedTab == 3) {
@@ -288,6 +317,52 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     });
   };
 
+  const onSaveTestCase = () => {
+    let data = {
+      problem_id: problem.id,
+      testCase: problem.testCase,
+    };
+    event.preventDefault();
+    saveTestCases(data)
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          toast.success("Test Cases updated successfully");
+        }
+      })
+      .catch((e) => {
+        alert(e);
+      });
+  };
+  // Test Cases Handling
+  const addTestCase = () => {
+    setProblem((prev) => {
+      prev.testCase.push({ input: "", output: "" });
+      return { ...prev };
+    });
+  };
+
+  const deleteTestCase = (index) => {
+    if (problem.testCase.length <= 1) return;
+    setProblem((prev) => {
+      prev.testCase.splice(index, 1);
+      return { ...prev };
+    });
+  };
+
+  const onChangeTestCase = (event) => {
+    let { name, value } = event.target;
+    setProblem((prevProblem) => {
+      name = name.split("-");
+      let index = name[2];
+      let field = name[1];
+      prevProblem.testCase[index][field] = value;
+      return { ...prevProblem };
+    });
+  };
+
+  ///////////////End Test Case ////////
   if (!isLoggedIn) {
     return <Redirect to="/" />;
   }
@@ -338,6 +413,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
 CreateUpdatePage.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   loadFilters: PropTypes.func.isRequired,
+  DEFAULT_PROB_DATA: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
