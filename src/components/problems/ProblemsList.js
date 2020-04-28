@@ -53,23 +53,11 @@ const List = ({ problems, filters }) => {
             {Object.keys(problems)
               .slice(start, end)
               .map((index) => (
-                <TableRow
-                  key={problems[index].id}
-                  style={{
-                    color: problems[index].status == 0 ? "Red" : undefined,
-                  }}
-                >
+                <TableRow key={problems[index].id}>
                   <TableCell component="th" scope="row">
                     {problems[index].id}
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    style={{
-                      color: problems[index].status == 0 ? "Red" : "green",
-                    }}
-                  >
-                    {problems[index].title}
-                  </TableCell>
+                  <TableCell align="left">{problems[index].title}</TableCell>
                   <TableCell align="left">
                     <Chip
                       label={filters.difficulty[problems[index].difficulty]}
@@ -90,7 +78,7 @@ const List = ({ problems, filters }) => {
                   <TableCell
                     align="left"
                     style={{
-                      color: problems[index].status == 0 ? "Red" : "green",
+                      color: problems[index].status == 0 ? "Red" : undefined,
                     }}
                   >
                     {problems[index].status == 0 ? "InActive" : "Active"}
