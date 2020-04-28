@@ -16,7 +16,7 @@ import {
 import { getFilters } from "../../api/filtersApi";
 import TestCasePage from "./TestCasePage";
 import { DEFAULT_PROB_DATA, FILTERS } from "./Constant";
-
+import OverviewPage from "./OverviewPage";
 const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [slug, setSlug] = useState(props.slug);
@@ -59,6 +59,10 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               codeTemplate[item.lang_id] = item;
             });
 
+            /**
+             * why we are initializing lang is because we need key:pair as id:value
+             * for problem source code page
+             */
             lang = {};
             // create source code for selected language
             for (let i in data.language) {
@@ -67,13 +71,18 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
                 sourceCode[data.language[i].id] ||
                 codeTemplate[data.language[i].id];
             }
-            // In case no assigned languages, there there is not selected language
+            /**
+             * There can be a case when api have enmpty language array in that case default
+             * selected language will be empty string
+             */
             let selectedLanguage =
               (data.language &&
                 data.language.length > 0 &&
                 data.language[0].id) ||
               "";
+
             let selectedCode = "";
+
             if (selectedLanguage != "") {
               selectedCode =
                 (sourceCode && sourceCode[selectedLanguage]) ||
@@ -213,6 +222,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
         } else {
           toast.success(res.msg);
           if (!problem.id) {
+            // why we have to update slug becuase we do not have code template data so we have to call getsourcedata
             setSlug(res.slug);
           } else {
             let sourceCode = problem.sourceCode;
@@ -301,9 +311,11 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     }
     if (selectedTab == 3) {
       return (
-        <>
-          <h1> Overview</h1>
-        </>
+        <OverviewPage
+          problem={problem}
+          filters={filters}
+          selectedDifficulty={selectedDifficulty}
+        />
       );
     }
   };
@@ -414,13 +426,15 @@ CreateUpdatePage.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   loadFilters: PropTypes.func.isRequired,
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
+  slug: PropTypes.string.isRequired,
+  FILTERS: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   let slug = ownProps.match.params.slug && ownProps.match.params.slug.trim();
   return {
     isLoggedIn: state.userData.isAuthenticated,
-    slug,
+    slug: slug || "",
     DEFAULT_PROB_DATA,
     FILTERS,
   };
