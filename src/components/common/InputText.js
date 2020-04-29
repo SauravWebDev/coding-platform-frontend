@@ -14,7 +14,7 @@ const InputText = ({
   autoFocus,
   multiline,
   rows,
-  value
+  value,
 }) => {
   let errStatus = error ? true : false;
   return (
@@ -56,7 +56,8 @@ InputText.propTypes = {
   type: PropTypes.string.isRequired,
   autoFocus: PropTypes.bool,
   rows: PropTypes.number,
-  multiline: PropTypes.bool
+  multiline: PropTypes.bool,
+  value: PropTypes.string,
 };
 
 export default InputText;

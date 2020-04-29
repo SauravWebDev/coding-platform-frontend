@@ -6,7 +6,6 @@ import SingleSelect from "../common/SingleSelect";
 import "./TryCodePage.scss";
 import Chip from "@material-ui/core/Chip";
 
-import Button from "../common/Button";
 import ProblemData from "./ProblemData";
 import Editor from "../Editor/JSEditor";
 import PublishIcon from "@material-ui/icons/Publish";
@@ -43,7 +42,8 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
           }
         })
         .catch((e) => {
-          alert("err");
+          console.log(e);
+          toast.error("something went wrong");
         });
     }
   };
@@ -148,7 +148,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
           <div className="fileNameDiv">
             <SingleSelect
               labelName="Language"
-              selectedValue={String(problem.selectedLanguage)}
+              selectedValue={String(problem.selectedLanguage || "")}
               inputItems={problem.language}
               onChange={onChange}
             />

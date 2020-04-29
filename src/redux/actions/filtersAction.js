@@ -34,6 +34,7 @@ export function getFilters() {
         }
       })
       .catch((e) => {
+        console.log(e);
         let err = new Error();
         err.msg = "Error in fetching filters";
         throw err;

@@ -14,7 +14,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
 import Chip from "@material-ui/core/Chip";
 import TablePagination from "@material-ui/core/TablePagination";
-
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -23,7 +22,7 @@ const useStyles = makeStyles({
 
 const List = ({ problems, filters }) => {
   const classes = useStyles();
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
   const handleChangePage = (event, newPage) => {
@@ -89,7 +88,7 @@ const List = ({ problems, filters }) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 20, 40]}
         component="div"
         count={Object.keys(problems).length}
         rowsPerPage={rowsPerPage}

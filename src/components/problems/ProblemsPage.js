@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import ProblemList from "./ProblemsList";
 import Filters from "./Filters";
 import Chip from "@material-ui/core/Chip";
+import { toast } from "react-toastify";
 
 import "./ProblemsPage.scss";
 
@@ -22,25 +23,25 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     if (name === "Difficulty") {
-      setSelectedDifficulty(event.target.value);
+      setSelectedDifficulty(value);
       return;
     }
     if (name === "Tags") {
-      setSelectedTag(event.target.value);
+      setSelectedTag(value);
       return;
     }
   };
   useEffect(() => {
     let length = Object.keys(problemsData).length;
     if (length === 0) {
-      loadProblems().catch(() => alert("error"));
+      loadProblems().catch(() => toast.error("something went wrong"));
     }
     let filters = props.filters;
     if (
       Object.keys(filters.difficulty).length === 0 &&
       Object.keys(filters.tag).length === 0
     ) {
-      props.loadFilters().catch(() => alert("error"));
+      props.loadFilters().catch(() => toast.error("something went wrong"));
     }
   }, []);
 
