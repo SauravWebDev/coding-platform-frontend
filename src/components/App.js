@@ -143,7 +143,7 @@ function App({ isLoggedIn }) {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap>
-              Gamma Coder
+              GammaCoder
             </Typography>
           </Toolbar>
         </AppBar>
