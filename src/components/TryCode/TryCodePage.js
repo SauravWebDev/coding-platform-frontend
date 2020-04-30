@@ -163,6 +163,12 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
             <div className="code-label"> Code Body</div>
             <div className="code-editor">
               <Editor
+                language={
+                  (problem &&
+                    problem.language &&
+                    problem.language[problem.selectedLanguage]) ||
+                  ""
+                }
                 codeData={problem.selectedCode}
                 onCodeChange={(data) => {
                   codeChange(data);

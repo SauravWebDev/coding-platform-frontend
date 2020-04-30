@@ -4,7 +4,10 @@ import PropTypes from "prop-types";
 
 import config from "./JSConfig.js";
 
+import "codemirror/mode/clike/clike";
+import "codemirror/mode/python/python";
 import "codemirror/mode/javascript/javascript";
+
 import "codemirror/keymap/sublime";
 import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
@@ -16,7 +19,16 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/theme/neat.css";
 import "codemirror/addon/fold/foldgutter.css";
 
-export default function Editor({ codeData, onCodeChange }) {
+const mapLangToMode = {
+  js: "text/javascript",
+  java: "text/x-java",
+  c: "text/x-csrc",
+  "c ++": "text/x-c++src",
+  "c#": "text/x-csharp",
+  python: "text/x-python",
+};
+export default function Editor({ codeData, onCodeChange, ...props }) {
+  config.mode = mapLangToMode[props.language] || mapLangToMode.js;
   return (
     <CodeMirror
       value={codeData}
@@ -30,5 +42,6 @@ export default function Editor({ codeData, onCodeChange }) {
 }
 Editor.propTypes = {
   codeData: PropTypes.string.isRequired,
-  onCodeChange: PropTypes.func.isRequired
+  onCodeChange: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired,
 };
