@@ -7,6 +7,7 @@ import ManageLoginPage from "./login/ManageLoginPage";
 import ManageSignupPage from "./signup/ManageSignupPage";
 import CreateUpdatePage from "./problems/CreateUpdatePage";
 import TryCodePage from "./TryCode/TryCodePage";
+import DiscussPage from "./discuss/Discuss"
 
 import { ToastContainer } from "react-toastify";
 import "../css/main.scss";
@@ -153,8 +154,8 @@ function App() {
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />
               ) : (
-                <ChevronLeftIcon />
-              )}
+                  <ChevronLeftIcon />
+                )}
             </IconButton>
           </div>
           <Divider />
@@ -209,7 +210,7 @@ function App() {
             />
             <Route path="/problem/createUpdate" component={CreateUpdatePage} />
             <Route path="/problem/:slug" component={TryCodePage} />
-
+            <Route path="/discuss" component={DiscussPage} />
             <Route component={PageNotFound} />
           </Switch>
           <Footer />
