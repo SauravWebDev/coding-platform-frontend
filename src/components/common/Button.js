@@ -19,4 +19,8 @@ export default function Button({ ...props }) {
 
 Button.propTypes = {
   type: PropTypes.string,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  children: PropTypes.string,
 };

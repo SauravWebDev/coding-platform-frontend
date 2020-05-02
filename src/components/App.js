@@ -1,5 +1,16 @@
 import React from "react";
 import { Route, Switch, NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import {
+  homeLink,
+  listProblemLink,
+  addProblemLink,
+  loginLink,
+  signupLink,
+  updateProblemLink,
+  solveProblemLink,
+} from "../Config/RouterLinkConfig";
 import Footer from "./common/Footer";
 import PageNotFound from "./PageNotFound";
 import ProblemsPage from "./problems/ProblemsPage";
@@ -97,7 +108,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-function App() {
+
+function App({ isLoggedIn }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -132,7 +144,7 @@ function App() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap>
-              Gamma Coder
+              GammaCoder
             </Typography>
           </Toolbar>
         </AppBar>
@@ -160,7 +172,7 @@ function App() {
           </div>
           <Divider />
           <List>
-            <NavLink to="/">
+            <NavLink to={homeLink}>
               <ListItem button key={"All Problems"}>
                 <ListItemIcon>
                   <HomeIcon />
@@ -170,47 +182,49 @@ function App() {
             </NavLink>
           </List>
           <Divider />
-          <NavLink to="/problem/createUpdate">
-            <ListItem button key={"Add Problem"}>
-              <ListItemIcon>
-                <AddIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Add Problem"} />
-            </ListItem>
-          </NavLink>
-          <NavLink to="/login">
-            <ListItem button key={"Login"}>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Login"} />
-            </ListItem>
-          </NavLink>
-          <NavLink to="/signup">
-            <ListItem button key={"Signup"}>
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Signup"} />
-            </ListItem>
-          </NavLink>
+          {isLoggedIn && (
+            <NavLink to={addProblemLink}>
+              <ListItem button key={"Add Problem"}>
+                <ListItemIcon>
+                  <AddIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Add Problem"} />
+              </ListItem>
+            </NavLink>
+          )}
+          {!isLoggedIn && (
+            <>
+              <NavLink to={loginLink}>
+                <ListItem button key={"Login"}>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Login"} />
+                </ListItem>
+              </NavLink>
+              <NavLink to={signupLink}>
+                <ListItem button key={"Signup"}>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Signup"} />
+                </ListItem>
+              </NavLink>
+            </>
+          )}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />
 
           <Switch>
-            <Route exact path="/" component={ProblemsPage} />
-            <Route exact path="/problems" component={ProblemsPage} />
-            <Route path="/login" component={ManageLoginPage} />
-            <Route path="/signup" component={ManageSignupPage} />
-            <Route path="/problems" component={ProblemsPage} />
-            <Route
-              path="/problem/createUpdate/:slug"
-              component={CreateUpdatePage}
-            />
-            <Route path="/problem/createUpdate" component={CreateUpdatePage} />
-            <Route path="/problem/:slug" component={TryCodePage} />
-            <Route path="/discuss" component={DiscussPage} />
+            <Route exact path={homeLink} component={ProblemsPage} />
+            <Route exact path={listProblemLink} component={ProblemsPage} />
+            <Route path={loginLink} component={ManageLoginPage} />
+            <Route path={signupLink} component={ManageSignupPage} />
+            <Route path={updateProblemLink} component={CreateUpdatePage} />
+            <Route path={addProblemLink} component={CreateUpdatePage} />
+            <Route path={solveProblemLink} component={TryCodePage} />
+
             <Route component={PageNotFound} />
           </Switch>
           <Footer />
@@ -221,4 +235,14 @@ function App() {
   );
 }
 
-export default App;
+App.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+};
+
+function mapStateToProps(state) {
+  return {
+    isLoggedIn: state.userData.isAuthenticated,
+  };
+}
+
+export default connect(mapStateToProps)(App);

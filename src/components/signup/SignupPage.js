@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
+import { loginLink } from "../../Config/RouterLinkConfig";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,31 +13,32 @@ import Container from "@material-ui/core/Container";
 import TextInput from "../common/InputText";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import PropTypes from "prop-types";
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3)
+    marginTop: theme.spacing(3),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export default function SignUp({
   onChange,
   onSave,
   errors,
-  disablSignupButton
+  disablSignupButton,
 }) {
   const classes = useStyles();
 
@@ -120,7 +122,7 @@ export default function SignUp({
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <NavLink to="/login">Already have an account? Login</NavLink>
+              <NavLink to={loginLink}>Already have an account? Login</NavLink>
             </Grid>
           </Grid>
         </form>
@@ -133,5 +135,5 @@ SignUp.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
-  disablSignupButton: PropTypes.bool.isRequired
+  disablSignupButton: PropTypes.bool.isRequired,
 };

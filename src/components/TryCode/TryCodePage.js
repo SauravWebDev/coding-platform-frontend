@@ -4,11 +4,10 @@ import PropTypes from "prop-types";
 import SingleSelect from "../common/SingleSelect";
 
 import "./TryCodePage.scss";
+import Button from "@material-ui/core/Button";
 
-import Button from "../common/Button";
 import ProblemData from "./ProblemData";
 import Editor from "../Editor/JSEditor";
-
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
@@ -23,7 +22,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [checkRes, setCheckRes] = useState(false);
   const [submissionId, setSubmissionId] = useState(null);
   const [result, setResult] = useState({});
-
+  const [apiInprogress, setApiInprogress] = useState(false);
   const getResult = function () {
     if (checkRes) {
       setCheckRes(false);
@@ -31,17 +30,20 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
         .then((res) => {
           if (res.error) {
             toast.error("something went wrong");
+            setApiInprogress(false);
           } else if (res.status == 1) {
             toast.success("Code executed");
             setResult(() => {
               return { ...res };
             });
+            setApiInprogress(false);
           } else {
             setCheckRes(true);
           }
         })
         .catch((e) => {
-          alert("err");
+          console.log(e);
+          toast.error("something went wrong");
         });
     }
   };
@@ -68,7 +70,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
             }
             let selectedLanguage = data.language[0].id;
             let selectedCode = sourceCode[selectedLanguage];
-
+            setDefaultInput(data.default_input);
             let problemData = {
               id: data.id,
               title: data.title,
@@ -101,12 +103,14 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   };
 
   const run = () => {
+    setApiInprogress(true);
     let body = {};
     body.lang_id = problem.selectedLanguage;
     body.code = problem.selectedCode;
     body.language = problem.language[problem.selectedLanguage];
     body.default_input = defaultInput.split("\n");
     body.problem_id = problem.id;
+
     submissionRun(body)
       .then((data) => {
         if (data.error) {
@@ -118,8 +122,10 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
         }
       })
       .catch((e) => {
+        toast.error("Something went wrong");
+        console.log(e);
         setCheckRes(false);
-        alert(e);
+        setApiInprogress(false);
       });
   };
 
@@ -136,9 +142,10 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
       return { ...prev };
     });
   };
+
   return (
     <div>
-      <div className="codeSetupPage">
+      <div className="try-code-page">
         <div className="questionDetailsScreen">
           <ProblemData questionData={problem} />
         </div>
@@ -146,7 +153,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
           <div className="fileNameDiv">
             <SingleSelect
               labelName="Language"
-              selectedValue={String(problem.selectedLanguage)}
+              selectedValue={String(problem.selectedLanguage || "")}
               inputItems={problem.language}
               onChange={onChange}
             />
@@ -156,6 +163,12 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
             <div className="code-label"> Code Body</div>
             <div className="code-editor">
               <Editor
+                language={
+                  (problem &&
+                    problem.language &&
+                    problem.language[problem.selectedLanguage]) ||
+                  ""
+                }
                 codeData={problem.selectedCode}
                 onCodeChange={(data) => {
                   codeChange(data);
@@ -163,24 +176,43 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
               />
             </div>
           </div>
-          <div>
-            <div> Test Case : </div>
-            <textarea
-              style={{
-                height: "100px",
-                width: "300px",
-                border: "1px solid #ddd",
-              }}
-              name="defaultInput"
-              value={defaultInput}
-              rows="5"
-              onChange={onChange}
-            ></textarea>
-            <span style={{ float: "right" }}>
-              <Button className="codeButtons" disabled={checkRes} onClick={run}>
-                Run
-              </Button>
-            </span>
+          <div style={{ display: "flex", backgroundColor: "#fafafa" }}>
+            <div>
+              <div> Test Case : </div>
+              <textarea
+                style={{
+                  height: "100px",
+                  width: "300px",
+                  border: "1px solid #ddd",
+                }}
+                name="defaultInput"
+                value={defaultInput}
+                rows="5"
+                onChange={onChange}
+              ></textarea>
+            </div>
+            <div style={{ marginTop: "10%", marginLeft: "10%" }}>
+              <span style={{ padding: "10px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={run}
+                  disabled={apiInprogress}
+                >
+                  Run Code
+                </Button>
+              </span>
+              <span style={{ padding: "10px" }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={run}
+                  disabled={apiInprogress}
+                >
+                  Submit Code
+                </Button>
+              </span>
+            </div>
           </div>
           <div>
             <div className="consoleOutput">

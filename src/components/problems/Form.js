@@ -47,12 +47,13 @@ export default function Form({ onChange, onSave, errors, ...props }) {
     <Container component="main" maxWidth="md">
       <CssBaseline />
       <div className={classes.paper}>
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="caption">
           {"Problem Statement"}
         </Typography>
-
         <form className={classes.form} onSubmit={onSave}>
-          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
+          <Divider variant="middle" />
+
+          <Grid container spacing={3} style={{ padding: "5px" }}>
             <Grid item xs={6}>
               <TextInput
                 id="createUpdate-title"
@@ -139,6 +140,16 @@ export default function Form({ onChange, onSave, errors, ...props }) {
               />
             </Grid>
           </Grid>
+          <Grid container spacing={3} style={{ padding: "5px", margin: "5px" }}>
+            <Grid item xs={6}>
+              <SingleSelect
+                labelName={"Status"}
+                selectedValue={String(props.problem.status)}
+                inputItems={{ 0: "InActive", 1: "Active" }}
+                onChange={onChange}
+              />
+            </Grid>
+          </Grid>
 
           <Divider variant="middle" />
           <Grid
@@ -166,4 +177,5 @@ Form.propTypes = {
   selectedTagArray: PropTypes.array.isRequired,
   selectedDifficulty: PropTypes.string,
   updateHtml: PropTypes.func.isRequired,
+  statusOb: PropTypes.object.isRequired,
 };

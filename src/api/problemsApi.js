@@ -7,6 +7,8 @@ const createORUpdate = apiUrl + "/problem/createORUpdate";
 const sourceCode = apiUrl + "/problem/sourceCode/";
 const saveFileDataUrl = apiUrl + "/problem/problemSourceCode/save/";
 const tryCodeUrl = apiUrl + "/problem/try/";
+const saveTestCasesUrl = apiUrl + "/problem/saveTestCases/";
+
 export function getAllProblems() {
   return fetch(getAll).then(handleResponse).catch(handleError);
 }
@@ -40,6 +42,21 @@ export function createORUpdateProblem(data) {
 
 export function saveFileData(data) {
   return fetch(saveFileDataUrl, {
+    method: "post",
+    mode: "cors",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
+export function saveTestCases(data) {
+  return fetch(saveTestCasesUrl, {
     method: "post",
     mode: "cors",
     redirect: "follow",

@@ -11,25 +11,25 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import TextInput from "../common/InputText";
-
-const useStyles = makeStyles(theme => ({
+import { signupLink } from "../../Config/RouterLinkConfig";
+const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export default function LogIn({ onChange, onSave, errors, disable }) {
@@ -89,7 +89,9 @@ export default function LogIn({ onChange, onSave, errors, disable }) {
               <NavLink to="/">Forgot password?</NavLink>
             </Grid>
             <Grid item>
-              <NavLink to="/signup">{"Don't have an account? Sign Up"}</NavLink>
+              <NavLink to={signupLink}>
+                {"Don't have an account? Sign Up"}
+              </NavLink>
             </Grid>
           </Grid>
         </form>
@@ -102,5 +104,5 @@ LogIn.propTypes = {
   onChange: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   errors: PropTypes.object.isRequired,
-  disable: PropTypes.bool.isRequired
+  disable: PropTypes.bool.isRequired,
 };
