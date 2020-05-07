@@ -12,11 +12,13 @@ import {
   createORUpdateProblem,
   saveFileData,
   saveTestCases,
+  deleteTestCase as deleteTestCaseApi,
 } from "../../api/problemsApi";
 import { getFilters } from "../../api/filtersApi";
 import TestCasePage from "./TestCasePage";
-import { DEFAULT_PROB_DATA, FILTERS } from "./Constant";
+import { DEFAULT_PROB_DATA, FILTERS, TEST_CASES } from "./Constant";
 import OverviewPage from "./OverviewPage";
+
 const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [slug, setSlug] = useState(props.slug);
@@ -31,7 +33,20 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [filters, setFilters] = useState(props.FILTERS);
   const [apiError, setApiError] = useState("");
   const [formError, setFormError] = useState({});
-
+  const [testCases, setTestCases] = useState(props.TEST_CASES);
+  const TEST_CASE_TYPE = {
+    1: "Default Case",
+    2: "corner_case",
+    3: "Normal",
+    4: "Time Complexity",
+  };
+  const [selectedTestCase, setSelectedTestCase] = useState({
+    id: null,
+    type: "",
+    input: "",
+    output: "",
+    name: "",
+  });
   useEffect(() => {
     if (validString(slug)) {
       getSourceCode(slug)
@@ -88,7 +103,10 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
                 (sourceCode && sourceCode[selectedLanguage]) ||
                 codeTemplate[selectedLanguage];
             }
-
+            setTestCases((prev) => {
+              prev = data.test_case;
+              return [...prev];
+            });
             setProblem({
               id: data.id,
               slug: data.slug,
@@ -103,7 +121,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               sourceCode,
               selectedCode,
               status: data.status,
-              testCase: data.test_case,
             });
           }
         })
@@ -251,6 +268,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   };
 
   const saveSourceCode = () => {
+    event.preventDefault();
     let data = problem.sourceCode;
     let body = {
       id: problem.id,
@@ -301,10 +319,11 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     if (selectedTab == 2) {
       return (
         <TestCasePage
-          testCases={problem.testCase}
-          addTestCase={addTestCase}
+          testCases={testCases}
+          changeSelectedTC={changeSelectedTC}
+          updateTestCase={updateTestCase}
+          selectedTestCase={selectedTestCase}
           deleteTestCase={deleteTestCase}
-          onChangeTestCase={onChangeTestCase}
           onSave={onSaveTestCase}
         />
       );
@@ -314,11 +333,13 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
         <OverviewPage
           problem={problem}
           filters={filters}
+          testCases={testCases}
           selectedDifficulty={selectedDifficulty}
         />
       );
     }
   };
+
   const onChangeCodeSetupLang = (event) => {
     const { value } = event.target;
     setProblem((prev) => {
@@ -328,50 +349,104 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       return { ...prev };
     });
   };
+  // Test Cases Function
 
   const onSaveTestCase = () => {
-    let data = {
+    let reqBody = {
       problem_id: problem.id,
-      testCase: problem.testCase,
     };
+    if (selectedTestCase) reqBody.id = selectedTestCase.id;
+    reqBody.input = selectedTestCase.input;
+    reqBody.output = selectedTestCase.output;
+    reqBody.type = Number(selectedTestCase.type);
+    reqBody.name = TEST_CASE_TYPE[reqBody.type];
+
     event.preventDefault();
-    saveTestCases(data)
+    saveTestCases(reqBody)
       .then((data) => {
         if (data.error) {
           alert(data.error);
         } else {
-          toast.success("Test Cases updated successfully");
+          if (reqBody.id) {
+            var index = testCases.findIndex((x) => x.id === reqBody.id);
+
+            setTestCases([
+              ...testCases.slice(0, index),
+              { ...reqBody },
+              ...testCases.slice(index + 1),
+            ]);
+            toast.success("Test Cases updated successfully");
+            // update
+          } else {
+            // create
+            let newTC = { ...reqBody };
+            newTC.id = data.insertId;
+            setTestCases((prev) => {
+              prev.push(newTC);
+              return [...prev];
+            });
+            toast.success("Test Cases created successfully");
+          }
+
+          setSelectedTestCase({
+            id: null,
+            type: "",
+            input: "",
+            output: "",
+            name: "",
+          });
         }
       })
       .catch((e) => {
         alert(e);
       });
   };
-  // Test Cases Handling
-  const addTestCase = () => {
-    setProblem((prev) => {
-      prev.testCase.push({ input: "", output: "" });
+
+  const changeSelectedTC = function (event) {
+    const { name, value } = event.target;
+    if (name == "testCase-input") {
+      setSelectedTestCase((prev) => {
+        return { ...prev, ["input"]: value };
+      });
+      return;
+    }
+    if (name == "testCase-output") {
+      setSelectedTestCase((prev) => {
+        return { ...prev, ["output"]: value };
+      });
+      return;
+    }
+    if (name == "Type") {
+      setSelectedTestCase((prev) => {
+        return { ...prev, ["type"]: value };
+      });
+      return;
+    }
+  };
+  const updateTestCase = function (testCase) {
+    setSelectedTestCase((prev) => {
+      prev = testCase;
+      prev.type = String(testCase.type);
       return { ...prev };
     });
   };
 
   const deleteTestCase = (index) => {
-    if (problem.testCase.length <= 1) return;
-    setProblem((prev) => {
-      prev.testCase.splice(index, 1);
-      return { ...prev };
-    });
-  };
+    deleteTestCaseApi({ id: index, problem_id: problem.id })
+      .then((data) => {
+        if (data.error) {
+          toast.error(data.error);
+        } else {
+          let id = testCases.findIndex((x) => x.id === index);
 
-  const onChangeTestCase = (event) => {
-    let { name, value } = event.target;
-    setProblem((prevProblem) => {
-      name = name.split("-");
-      let index = name[2];
-      let field = name[1];
-      prevProblem.testCase[index][field] = value;
-      return { ...prevProblem };
-    });
+          setTestCases([...testCases.slice(0, id), ...testCases.slice(id + 1)]);
+          toast.success(`Test Case Deleted successfully with id : ${index}`);
+        }
+      })
+      .catch(() => {
+        toast.error("Error in deleting Test Case");
+      });
+    //
   };
 
   ///////////////End Test Case ////////
@@ -428,6 +503,7 @@ CreateUpdatePage.propTypes = {
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
   slug: PropTypes.string.isRequired,
   FILTERS: PropTypes.object.isRequired,
+  TEST_CASES: PropTypes.array.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -437,6 +513,7 @@ function mapStateToProps(state, ownProps) {
     slug: slug || "",
     DEFAULT_PROB_DATA,
     FILTERS,
+    TEST_CASES,
   };
 }
 const mapDispatchToProps = {

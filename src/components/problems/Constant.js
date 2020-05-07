@@ -10,12 +10,6 @@ export const DEFAULT_PROB_DATA = {
   code_template: [],
   sourceCode: {},
   selectedCode: "",
-  testCase: [
-    {
-      input: "",
-      output: "",
-    },
-  ],
   status: 0,
 };
 export const FILTERS = {
@@ -23,4 +17,13 @@ export const FILTERS = {
   lang: {},
   tag: {},
 };
+export const TEST_CASES= [
+  {
+    id:"",
+    input: "",
+    output: "",
+    type:"",
+    name:""
+  },
+];
 export const DEFAULT_INPUT = [];

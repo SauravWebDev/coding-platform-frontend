@@ -16,16 +16,19 @@ function CodeSetupPage({
   return (
     <div>
       <div className="CodeSetupPage">
+      <form onSubmit={saveSourceCode}>
+
         <div className="codeEditorScreen">
           <div className="fileNameDiv">
             <SingleSelect
               labelName="Language"
+              autoFocus={true}
               selectedValue={String(problem.selectedLanguage)}
               inputItems={problem.language}
               onChange={onChangeCodeSetupLang}
             />
             <span style={{ float: "right" }}>
-              <Button className="codeButtons" onClick={saveSourceCode}>
+              <Button className="codeButtons"type="submit">
                 Save
               </Button>
             </span>
@@ -34,6 +37,7 @@ function CodeSetupPage({
             <div className="code-label"> Code Head</div>
             <div className="code-editor">
               <Editor
+              language={problem.language[problem.selectedLanguage]}
                 codeData={problem.selectedCode.code_head}
                 onCodeChange={(data) => {
                   codeChange("code_head", data);
@@ -46,6 +50,7 @@ function CodeSetupPage({
             <div className="code-label"> Code Body</div>
             <div className="code-editor">
               <Editor
+              language={problem.language[problem.selectedLanguage]}
                 codeData={problem.selectedCode.code_body}
                 onCodeChange={(data) => {
                   codeChange("code_body", data);
@@ -57,6 +62,7 @@ function CodeSetupPage({
             <div className="code-label"> Code Tail</div>
             <div className="code-editor">
               <Editor
+              language={problem.language[problem.selectedLanguage]}
                 codeData={problem.selectedCode.code_tail}
                 onCodeChange={(data) => {
                   codeChange("code_tail", data);
@@ -65,7 +71,8 @@ function CodeSetupPage({
             </div>
           </div>
         </div>
-      </div>
+        </form> </div>
+      
     </div>
   );
 }
