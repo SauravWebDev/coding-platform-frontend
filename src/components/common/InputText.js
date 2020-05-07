@@ -15,6 +15,7 @@ const InputText = ({
   multiline,
   rows,
   value,
+  ...props
 }) => {
   let errStatus = error ? true : false;
   return (
@@ -35,6 +36,7 @@ const InputText = ({
         autoFocus={autoFocus}
         onChange={onChange}
         value={value}
+        disabled={props.disabled}
       />
       {error && (
         <span style={{ color: "red" }}>
@@ -49,7 +51,7 @@ InputText.propTypes = {
   id: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func,
   error: PropTypes.string,
   autoComplete: PropTypes.string,
   required: PropTypes.bool,
@@ -58,6 +60,7 @@ InputText.propTypes = {
   rows: PropTypes.number,
   multiline: PropTypes.bool,
   value: PropTypes.string,
+  disabled:PropTypes.bool
 };
 
 export default InputText;

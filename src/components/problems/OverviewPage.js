@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export default function OverviewPage({ problem, filters, selectedDifficulty }) {
+export default function OverviewPage({ problem, filters, selectedDifficulty, testCases }) {
   let langs = [];
-  debugger;
   for (let i in problem.language) {
     langs.push(problem.language[i]);
   }
@@ -16,7 +15,7 @@ export default function OverviewPage({ problem, filters, selectedDifficulty }) {
       <div>Difficulty : {filters.difficulty[selectedDifficulty]}</div>
       Description:
       <div dangerouslySetInnerHTML={{ __html: problem.description }} />
-      <div>No of test Cases : {problem.testCase.length}</div>
+      <div>No of test Cases : {testCases.length}</div>
       <div>Languages : {langs.join(", ")}</div>
       <div dangerouslySetInnerHTML={{ __html: problem.example }} />
       <div dangerouslySetInnerHTML={{ __html: problem.note }} />
@@ -27,5 +26,6 @@ export default function OverviewPage({ problem, filters, selectedDifficulty }) {
 OverviewPage.propTypes = {
   problem: PropTypes.object.isRequired,
   filters: PropTypes.object.isRequired,
+  testCases:PropTypes.array.isRequired,
   selectedDifficulty: PropTypes.string.isRequired,
 };

@@ -7,6 +7,7 @@ export default function SingleSelect({
   labelName,
   selectedValue,
   inputItems,
+  autoFocus,
   onChange
 }) {
   return (
@@ -18,6 +19,7 @@ export default function SingleSelect({
           name={labelName}
           id={labelName}
           value={selectedValue}
+          autoFocus={autoFocus}
           onChange={onChange}
         >
           {Object.keys(inputItems).map(item => (
@@ -35,5 +37,6 @@ SingleSelect.propTypes = {
   labelName: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   selectedValue: PropTypes.string,
-  inputItems: PropTypes.object.isRequired
+  inputItems: PropTypes.object.isRequired,
+  autoFocus:PropTypes.bool,
 };

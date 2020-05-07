@@ -7,8 +7,8 @@ const createORUpdate = apiUrl + "/problem/createORUpdate";
 const sourceCode = apiUrl + "/problem/sourceCode/";
 const saveFileDataUrl = apiUrl + "/problem/problemSourceCode/save/";
 const tryCodeUrl = apiUrl + "/problem/try/";
-const saveTestCasesUrl = apiUrl + "/problem/saveTestCases/";
-
+const saveTestCasesUrl = apiUrl + "/problem/testCase/save";
+const deleteTestCaseUrl = apiUrl + "/problem/testCase/delete";
 export function getAllProblems() {
   return fetch(getAll).then(handleResponse).catch(handleError);
 }
@@ -57,6 +57,21 @@ export function saveFileData(data) {
 
 export function saveTestCases(data) {
   return fetch(saveTestCasesUrl, {
+    method: "post",
+    mode: "cors",
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
+export function deleteTestCase(data) {
+  return fetch(deleteTestCaseUrl, {
     method: "post",
     mode: "cors",
     redirect: "follow",
