@@ -12,7 +12,7 @@
 }
 
 .questionDetailsScreen {
-  width: 40%;
+ 
   margin: 5px;
   padding: 5px;
 }
@@ -53,4 +53,35 @@
   border-radius: 3px;
   background: rgb(250, 250, 250);
   min-height: 100px;
+}
+
+.resultConsole{
+  padding: 5px;
+  margin: 5px;
+  overflow-x: auto;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(238, 238, 238);
+  border-image: initial;
+  border-radius: 3px;
+  background: rgb(250, 250, 250);
+  min-height: 50px;
+}
+
+
+
+.rightPanel{
+    flex-grow: 2;  
+    display: flex;
+
+}
+
+.actionButton{
+  display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.runAlign{
+  margin: 0 10px;
 }

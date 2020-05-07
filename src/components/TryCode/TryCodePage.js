@@ -15,6 +15,17 @@ import { run as submissionRun, checkStatus } from "../../api/submissionApi";
 import { toast } from "react-toastify";
 import { debounceFn, validString } from "../../util/util";
 
+//tabs
+import SwipeableViews from 'react-swipeable-views';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+
+import ResizePanel from "react-resize-panel";
+
 const delay = 4000;
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
@@ -23,6 +34,23 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [submissionId, setSubmissionId] = useState(null);
   const [result, setResult] = useState({});
   const [apiInprogress, setApiInprogress] = useState(false);
+
+  //tabs
+  const classes = useStyles();
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleChangeIndex = (index) => {
+    setValue(index);
+  };
+  //tabs end
+
+
+
   const getResult = function () {
     if (checkRes) {
       setCheckRes(false);
@@ -146,9 +174,11 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   return (
     <div>
       <div className="try-code-page">
-        <div className="questionDetailsScreen">
-          <ProblemData questionData={problem} />
-        </div>
+        <ResizePanel direction="e" style={{ flexGrow: '1' }} >
+          <div className="questionDetailsScreen">
+            <ProblemData questionData={problem} />
+          </div>
+        </ResizePanel>
         <div className="codeEditorScreen">
           <div className="fileNameDiv">
             <SingleSelect
@@ -176,84 +206,185 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
               />
             </div>
           </div>
+
+
+          <div className="actionButton">
+            <span  className="runAlign">
+            <Button           
+            size="small"
+             variant="contained"
+              color="primary"
+              onClick={run}
+              disabled={apiInprogress}
+            >
+              Run
+             </Button>
+             </span>
+            <Button
+            size="small"
+             variant="contained"
+              color="primary"
+              onClick={run}
+              disabled={apiInprogress}
+            >
+              Submit
+             </Button>
+          </div>
+<br/>
           <div style={{ display: "flex", backgroundColor: "#fafafa" }}>
-            <div>
-              <div> Test Case : </div>
-              <textarea
-                style={{
-                  height: "100px",
-                  width: "300px",
-                  border: "1px solid #ddd",
-                }}
-                name="defaultInput"
-                value={defaultInput}
-                rows="5"
-                onChange={onChange}
-              ></textarea>
-            </div>
-            <div style={{ marginTop: "10%", marginLeft: "10%" }}>
-              <span style={{ padding: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={run}
-                  disabled={apiInprogress}
+
+            <div className={classes.root}>
+              <AppBar position="static" color="default" >
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="fullWidth"
+                  aria-label="full width tabs example"
                 >
-                  Run Code
-                </Button>
-              </span>
-              <span style={{ padding: "10px" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={run}
-                  disabled={apiInprogress}
-                >
-                  Submit Code
-                </Button>
-              </span>
+                  <Tab label="Test Cases" {...a11yProps(0)} />
+                  <Tab label="Code Run Result" {...a11yProps(1)} />
+
+                </Tabs>
+              </AppBar>
+              <SwipeableViews
+                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                index={value}
+                onChangeIndex={handleChangeIndex}
+              >
+                <TabPanel value={value} index={0} dir={theme.direction} >
+                  <div>
+                    <div> Test Case : </div>
+                    <textarea
+                      style={{
+                        height: "100px",
+                        width: "100%",
+                        border: "1px solid #ddd",
+                      }}
+                      name="defaultInput"
+                      value={defaultInput}
+                      rows="5"
+                      onChange={onChange}
+                    ></textarea>
+                  </div>
+
+                </TabPanel>
+                <TabPanel value={value} index={1} dir={theme.direction} >
+                  <div>
+                  <div className="consoleOutput">
+                    <div style={{ width: "50%" }}>
+                        <div className="code-label"> Code Status</div>
+                        <div className="resultConsole">
+      
+                        </div>
+                      </div>
+
+                      <div style={{ width: "50%" }}>
+                        <div className="code-label"> Expected Output</div>
+                        <div className="resultConsole">
+   
+                        </div>
+                      </div>
+
+                      </div>
+
+                    <div className="consoleOutput">
+                      <div style={{ width: "75%" }}>
+                        <div className="code-label"> Console</div>
+                        <div className="console">
+                          {result.codeError && (
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: result.codeError.replace(/\n/g, "</br>"),
+                              }}
+                            />
+                          )}
+                          {result.stdout && (
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: result.stdout.replace(/\n/g, "</br>"),
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ width: "25%" }}>
+                        <div className="code-label"> Your Output</div>
+                        <div className="console">
+                          {result.output && (
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: result.output.replace(/\n/g, "</br>"),
+                              }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </TabPanel>
+
+              </SwipeableViews>
             </div>
+
+
+
+
           </div>
-          <div>
-            <div className="consoleOutput">
-              <div style={{ width: "75%" }}>
-                <div className="code-label"> Console</div>
-                <div className="console">
-                  {result.codeError && (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: result.codeError.replace(/\n/g, "</br>"),
-                      }}
-                    />
-                  )}
-                  {result.stdout && (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: result.stdout.replace(/\n/g, "</br>"),
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-              <div style={{ width: "25%" }}>
-                <div className="code-label"> Your Output</div>
-                <div className="console">
-                  {result.output && (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: result.output.replace(/\n/g, "</br>"),
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+
+
+
         </div>
       </div>
     </div>
   );
 }
+
+
+//tabs
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`full-width-tabpanel-${index}`}
+      aria-labelledby={`full-width-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography component={'div'}>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `full-width-tab-${index}`,
+    'aria-controls': `full-width-tabpanel-${index}`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    width: '100%'
+  },
+}));
+
+//tabs end
 
 function mapStateToProps(state, ownProps) {
   return {
