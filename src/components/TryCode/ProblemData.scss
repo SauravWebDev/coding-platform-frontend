@@ -2,9 +2,27 @@
   display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+
+}
+
+.borderStyle{
+  padding: 0.5em 0px;
+  border-bottom: 1px solid rgb(196, 184, 184);
 }
 
 .similarButton{
-
 text-align: center;
+}
+
+.topButtons{
+  position: inherit !important;
+}
+
+.exampleStyle{
+  background: #dadae86b;
+  padding: 10px 15px;
+  color: #263238;
+  line-height: 1.6;
+  font-size: 13px;
+  border-radius: 3px;
 }
