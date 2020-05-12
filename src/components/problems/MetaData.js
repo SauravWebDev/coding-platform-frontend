@@ -10,15 +10,10 @@ import {
   makeStyles,
   Container,
 } from "@material-ui/core";
-import CKEditor from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Button from "../common/Button";
-import MultiSelect from "../common/MultiSelect";
 import SingleSelect from "../common/SingleSelect";
 
 import TextInput from "../common/InputText";
-
-import { validString } from "../../util/util";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
