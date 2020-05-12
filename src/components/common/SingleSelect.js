@@ -5,10 +5,11 @@ import { FormControl, Select, InputLabel, MenuItem } from "@material-ui/core";
 
 export default function SingleSelect({
   labelName,
+  name,
   selectedValue,
   inputItems,
   autoFocus,
-  onChange
+  onChange,
 }) {
   return (
     <>
@@ -16,13 +17,13 @@ export default function SingleSelect({
         <InputLabel id={labelName}>{labelName}</InputLabel>
         <Select
           labelId={labelName}
-          name={labelName}
+          name={name}
           id={labelName}
           value={selectedValue}
           autoFocus={autoFocus}
           onChange={onChange}
         >
-          {Object.keys(inputItems).map(item => (
+          {Object.keys(inputItems).map((item) => (
             <MenuItem key={item} value={item}>
               {inputItems[item]}
             </MenuItem>
@@ -38,5 +39,6 @@ SingleSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   selectedValue: PropTypes.string,
   inputItems: PropTypes.object.isRequired,
-  autoFocus:PropTypes.bool,
+  autoFocus: PropTypes.bool,
+  name: PropTypes.string,
 };

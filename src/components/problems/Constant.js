@@ -17,13 +17,32 @@ export const FILTERS = {
   lang: {},
   tag: {},
 };
-export const TEST_CASES= [
+export const TEST_CASES = [
   {
-    id:"",
+    id: "",
     input: "",
     output: "",
-    type:"",
-    name:""
+    type: "",
+    name: "",
   },
 ];
 export const DEFAULT_INPUT = [];
+
+export const VARIABLE_TYPE = {
+  1: "int",
+  2: "string",
+  3: "boolean",
+  4: "array_integer",
+  5: "array_string",
+};
+
+export const DEFAULT_META_DATA = {
+  noOfInputs: 1,
+  outputType: 1,
+  inputs: [
+    {
+      name: "",
+      type: "",
+    },
+  ],
+};

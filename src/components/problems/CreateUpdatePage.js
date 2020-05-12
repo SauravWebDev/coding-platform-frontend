@@ -7,16 +7,24 @@ import { validString } from "../../util/util";
 import Form from "./Form.js";
 import CodeSetupPage from "./CodeSetupPage";
 import "./CreateUpdatePage.scss";
+import MetaData from "./MetaData";
 import {
   getSourceCode,
   createORUpdateProblem,
   saveFileData,
   saveTestCases,
   deleteTestCase as deleteTestCaseApi,
+  saveMetaData as saveMetaDataApi,
 } from "../../api/problemsApi";
 import { getFilters } from "../../api/filtersApi";
 import TestCasePage from "./TestCasePage";
-import { DEFAULT_PROB_DATA, FILTERS, TEST_CASES } from "./Constant";
+import {
+  DEFAULT_PROB_DATA,
+  FILTERS,
+  TEST_CASES,
+  VARIABLE_TYPE,
+  DEFAULT_META_DATA,
+} from "./Constant";
 import OverviewPage from "./OverviewPage";
 
 const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
@@ -25,6 +33,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedTagArray, setSelectedTagArray] = useState([]);
   const [selectedLangArray, setSelectedLangArray] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
+  const [metaData, setMetaData] = useState(props.DEFAULT_META_DATA);
   const [statusOb] = useState({
     0: "Inactive",
     1: "Active",
@@ -121,6 +130,24 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               sourceCode,
               selectedCode,
               status: data.status,
+            });
+
+            setMetaData((prev) => {
+              prev.outputType =
+                (data.meta_data &&
+                  data.meta_data.output_meta_data &&
+                  String(data.meta_data.output_meta_data.output_type)) ||
+                "";
+              prev.noOfInputs =
+                (data.meta_data.input_meta_data.no_of_inputs &&
+                  String(data.meta_data.input_meta_data.no_of_inputs)) ||
+                "";
+              prev.inputs = data.meta_data.input_meta_data.inputs.map(
+                (input) => {
+                  return { type: input.type, name: input.name };
+                }
+              );
+              return { ...prev };
             });
           }
         })
@@ -289,6 +316,78 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
         alert(e);
       });
   };
+  const metaDataChange = (event) => {
+    const { name, value } = event.target;
+    debugger;
+    if (name === "no-of-inputs") {
+      setMetaData((prev) => {
+        prev.noOfInputs = value;
+        if (prev.inputs.length < parseInt(value)) {
+          for (let i = 0; i < parseInt(value) - prev.inputs.length; i++)
+            prev.inputs.push({
+              type: "",
+              name: "",
+            });
+        }
+        return { ...prev };
+      });
+      return;
+    }
+    if (name === "output-type") {
+      setMetaData((prev) => {
+        prev.outputType = value;
+        return { ...prev };
+      });
+      return;
+    }
+    let namePart = name.split("-");
+    setMetaData((prev) => {
+      prev.inputs[namePart[2]][namePart[1]] = value;
+      return { ...prev };
+    });
+  };
+  const saveMetaData = () => {
+    event.preventDefault();
+    let inputs = [];
+
+    if (metaData.outputType == "") {
+      toast.error("Invalid output type");
+      return;
+    }
+    debugger;
+    for (let i in metaData.inputs) {
+      let input = metaData.inputs[i];
+      if (i < metaData.noOfInputs) {
+        if (input.name.trim() != "" && input.type != "") {
+          inputs.push({
+            name: input.name,
+            type: parseInt(input.type),
+          });
+        } else {
+          toast.error("Invalid inputs");
+          return;
+        }
+      }
+    }
+    let reqBody = {
+      problem_id: problem.id,
+      no_of_inputs: parseInt(metaData.noOfInputs),
+      output_type: parseInt(metaData.outputType),
+      inputs: inputs,
+    };
+    saveMetaDataApi(reqBody)
+      .then((res) => {
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          toast.success("Meta Data updated sucessfully");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error("Something went wrong");
+      });
+  };
   const getTabData = () => {
     if (selectedTab == 0) {
       return (
@@ -308,12 +407,24 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     }
     if (selectedTab == 1) {
       return (
-        <CodeSetupPage
-          problem={problem}
-          onChangeCodeSetupLang={onChangeCodeSetupLang}
-          saveSourceCode={saveSourceCode}
-          codeChange={codeChange}
-        />
+        <div className="createUpdate-codesetup-tab">
+          <div style={{ width: "50%" }}>
+            <MetaData
+              metaData={metaData}
+              variableMap={props.VARIABLE_TYPE}
+              onChange={metaDataChange}
+              onSave={saveMetaData}
+            />
+          </div>
+          <div style={{ width: "100%" }}>
+            <CodeSetupPage
+              problem={problem}
+              onChangeCodeSetupLang={onChangeCodeSetupLang}
+              saveSourceCode={saveSourceCode}
+              codeChange={codeChange}
+            />
+          </div>
+        </div>
       );
     }
     if (selectedTab == 2) {
@@ -504,6 +615,8 @@ CreateUpdatePage.propTypes = {
   slug: PropTypes.string.isRequired,
   FILTERS: PropTypes.object.isRequired,
   TEST_CASES: PropTypes.array.isRequired,
+  DEFAULT_META_DATA: PropTypes.object.isRequired,
+  VARIABLE_TYPE: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -514,6 +627,8 @@ function mapStateToProps(state, ownProps) {
     DEFAULT_PROB_DATA,
     FILTERS,
     TEST_CASES,
+    VARIABLE_TYPE,
+    DEFAULT_META_DATA,
   };
 }
 const mapDispatchToProps = {

@@ -72,6 +72,7 @@ export default function Form({ onChange, onSave, errors, ...props }) {
             <Grid item xs={6}>
               <SingleSelect
                 labelName={"Difficulty"}
+                name={"Difficulty"}
                 selectedValue={props.selectedDifficulty}
                 inputItems={props.filters.difficulty}
                 onChange={onChange}
@@ -144,6 +145,7 @@ export default function Form({ onChange, onSave, errors, ...props }) {
             <Grid item xs={6}>
               <SingleSelect
                 labelName={"Status"}
+                name={"Status"}
                 selectedValue={String(props.problem.status)}
                 inputItems={{ 0: "InActive", 1: "Active" }}
                 onChange={onChange}
