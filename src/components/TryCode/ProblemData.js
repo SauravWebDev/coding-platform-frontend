@@ -11,15 +11,19 @@ export default function ProblemData({ questionData }) {
   return (
     <div>
       <h4>Question Details</h4>
-      <div>
-        <span>Easy</span>
+      <div className="navButton borderStyle">
+        <Button  >
+          Easy
+        </Button>
         <Button
+        className="topButtons"
           size="small"
           color="primary"
         >
           <NavigateBeforeIcon />
         </Button>
         <Button
+        className="topButtons"
           size="small"
           color="primary"
         >
@@ -27,6 +31,7 @@ export default function ProblemData({ questionData }) {
         </Button>
 
         <Button
+        className="topButtons"
           size="small"
           color="primary"
         >
@@ -38,8 +43,8 @@ export default function ProblemData({ questionData }) {
         {questionData.id}. {questionData.title}
       </div>
       <div dangerouslySetInnerHTML={{ __html: questionData.description }} />
-      <div dangerouslySetInnerHTML={{ __html: questionData.example }} />
-      <div dangerouslySetInnerHTML={{ __html: questionData.note }} />
+      <div className="exampleStyle" dangerouslySetInnerHTML={{ __html: questionData.example }} />
+      <div className="exampleStyle" dangerouslySetInnerHTML={{ __html: questionData.note }} />
       <div className="navButton">
         <Button
           size="small"
