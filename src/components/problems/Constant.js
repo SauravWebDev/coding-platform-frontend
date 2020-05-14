@@ -20,8 +20,9 @@ export const FILTERS = {
 export const TEST_CASES = [
   {
     id: "",
-    input: "",
+    inputs: [],
     output: "",
+    outputType: "",
     type: "",
     name: "",
   },

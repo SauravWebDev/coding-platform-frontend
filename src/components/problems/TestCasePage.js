@@ -164,15 +164,11 @@ export default function TestCasePage({
                     {TEST_CASE_TYPE[testCase.type]}
                   </TableCell>
                   <TableCell align="left">
-                    {testCase.input.split("\n").map((item, i) => {
-                      return <p key={i}>{item}</p>;
+                    {testCase.inputs.map((item, i) => {
+                      return <p key={i}>{JSON.stringify(item)}</p>;
                     })}
                   </TableCell>
-                  <TableCell align="left">
-                    {testCase.output.split("\n").map((item, i) => {
-                      return <p key={i}>{item}</p>;
-                    })}
-                  </TableCell>
+                  <TableCell align="left">{testCase.output}</TableCell>
                   <TableCell align="left">
                     <span style={{ padding: "5px", margin: "5px" }}>
                       <Button onClick={() => updateTestCase(testCase)}>

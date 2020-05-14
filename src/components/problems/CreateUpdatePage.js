@@ -113,7 +113,16 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
                 codeTemplate[selectedLanguage];
             }
             setTestCases((prev) => {
-              prev = data.test_case;
+              let test_cases = data.test_case;
+              prev = test_cases.map((item) => {
+                return {
+                  id: item.id,
+                  type: item.type,
+                  inputs: item.input,
+                  output: item.output,
+                  output_type: item.output_type,
+                };
+              });
               return [...prev];
             });
             setProblem({
@@ -136,7 +145,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               prev.outputType =
                 (data.meta_data &&
                   data.meta_data.output_meta_data &&
-                  String(data.meta_data.output_meta_data.output_type)) ||
+                  String(data.meta_data.output_meta_data.type)) ||
                 "";
               prev.noOfInputs =
                 (data.meta_data.input_meta_data.no_of_inputs &&
