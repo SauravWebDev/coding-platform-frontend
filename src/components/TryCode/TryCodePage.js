@@ -52,7 +52,7 @@ const font = {
 };
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
-  const [defaultInput, setDefaultInput] = useState(DEFAULT_INPUT);
+  const [defaultInput, setDefaultInput] = useState([]);
   const [checkRes, setCheckRes] = useState(false);
   const [submissionId, setSubmissionId] = useState(null);
   const [result, setResult] = useState({});
@@ -164,7 +164,17 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
             } catch (err) {
               localStorage.setItem(data.slug, "{}");
             }
-            setDefaultInput(data.default_input);
+            let inputObj = data.meta_data.input_meta_data.inputs;
+            let defaultTc = data.default_input.map((data, index) => {
+              if (inputObj[index].type == 4) {
+                return JSON.stringify(data);
+              }
+              return data;
+            });
+            setDefaultInput((prev) => {
+              prev = [...defaultTc];
+              return [...prev];
+            });
             let problemData = {
               id: data.id,
               slug: data.slug,
@@ -230,7 +240,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
     body.lang_id = problem.selectedLanguage;
     body.code = problem.selectedCode;
     body.language = problem.language[problem.selectedLanguage];
-    body.default_input = defaultInput.split("\n");
+    body.default_input = defaultInput;
     body.problem_id = problem.id;
 
     submissionRun(body)
@@ -278,8 +288,11 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
   };
   const onChange = (event) => {
     const { name, value } = event.target;
-    if (name == "defaultInput") {
-      setDefaultInput(value);
+    if (name.split("-")[0] == "defaultInput") {
+      setDefaultInput((prev) => {
+        prev[name.split("-")[1]] = value;
+        return [...prev];
+      });
       return;
     }
     if (name == "theme") {
@@ -423,17 +436,24 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
                 <TabPanel value={consoleIndex} index={0} dir={theme.direction}>
                   <div>
                     <div> Test Case : </div>
-                    <textarea
-                      style={{
-                        height: "100px",
-                        width: "100%",
-                        border: "1px solid #ddd",
-                      }}
-                      name="defaultInput"
-                      value={defaultInput}
-                      rows="5"
-                      onChange={onChange}
-                    ></textarea>
+                    {defaultInput.map((data, index) => {
+                      return (
+                        <div key={index}>
+                          Input {index + 1}
+                          <textarea
+                            style={{
+                              height: "100px",
+                              width: "100%",
+                              border: "1px solid #ddd",
+                            }}
+                            name={"defaultInput-" + index}
+                            value={defaultInput[index]}
+                            rows="3"
+                            onChange={onChange}
+                          ></textarea>
+                        </div>
+                      );
+                    })}
                   </div>
                 </TabPanel>
                 <TabPanel value={consoleIndex} index={1} dir={theme.direction}>
