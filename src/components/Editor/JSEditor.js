@@ -16,7 +16,7 @@ import "codemirror/addon/fold/foldcode";
 
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/eclipse.css";
-import "codemirror/theme/yonce.css";
+import "codemirror/theme/twilight.css";
 import "codemirror/theme/base16-light.css";
 
 import "codemirror/theme/neat.css";
@@ -32,8 +32,8 @@ const mapLangToMode = {
 };
 const themes = {
   eclipse: "eclipse",
-  light: "light",
-  dark: "yonce",
+  light: "base16-light",
+  dark: "twilight",
   neat: "neat",
 };
 export default function Editor({ codeData, onCodeChange, ...props }) {

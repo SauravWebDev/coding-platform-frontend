@@ -58,8 +58,12 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
   const [result, setResult] = useState({});
   const [apiInprogress, setApiInprogress] = useState(false);
   const [consoleIndex, setConsoleIndex] = useState(0);
-  const [selectedTheme, setSelectedTheme] = useState(editorThemes.eclipse);
-  const [fontSize, setFontSize] = useState(font["14"]);
+  const [selectedTheme, setSelectedTheme] = useState(
+    localStorage.getItem("THEME") || editorThemes.eclipse
+  );
+  const [fontSize, setFontSize] = useState(
+    font[localStorage.getItem("FONT_SIZE") || 14]
+  );
 
   const handleChange = (event, newValue) => {
     setConsoleIndex(newValue);
@@ -142,15 +146,28 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
               sourceCode[item.lang_id] = item.code;
             });
             let lang = {};
-
             for (let i in data.language) {
               lang[data.language[i].id] = data.language[i].value;
             }
-            let selectedLanguage = data.language[0].id;
+            let preferrredLang = localStorage.getItem("LANGUAGE");
+            let selectedLanguage = lang[preferrredLang]
+              ? preferrredLang
+              : data.language[0].id;
+
             let selectedCode = sourceCode[selectedLanguage];
+            try {
+              let userPrevCode = localStorage.getItem(data.slug);
+              userPrevCode = JSON.parse(userPrevCode);
+              if (userPrevCode && userPrevCode[selectedLanguage]) {
+                selectedCode = userPrevCode[selectedLanguage];
+              }
+            } catch (err) {
+              localStorage.setItem(data.slug, "{}");
+            }
             setDefaultInput(data.default_input);
             let problemData = {
               id: data.id,
+              slug: data.slug,
               title: data.title,
               description: data.description,
               example: data.example,
@@ -179,7 +196,33 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
       prev.selectedCode = value;
       return { ...prev };
     });
+    updateLocalStrage("code", value);
   };
+  function updateLocalStrage(key, value) {
+    if (key == "code") {
+      let localStorageValue = localStorage.getItem(problem.slug) || "{}";
+      try {
+        localStorageValue = JSON.parse(localStorageValue);
+      } catch (e) {
+        localStorageValue = {};
+      }
+      localStorageValue[problem.selectedLanguage] = value;
+      localStorage.setItem(problem.slug, JSON.stringify(localStorageValue));
+      return;
+    }
+    if (key == "FONT_SIZE") {
+      localStorage.setItem("FONT_SIZE", value);
+      return;
+    }
+    if (key == "THEME") {
+      localStorage.setItem("THEME", value);
+      return;
+    }
+    if (key == "LANGUAGE") {
+      localStorage.setItem("LANGUAGE", value);
+      return;
+    }
+  }
 
   const run = () => {
     setApiInprogress(true);
@@ -241,19 +284,32 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
     }
     if (name == "theme") {
       setSelectedTheme(value);
+      updateLocalStrage("THEME", value);
       return;
     }
     if (name == "fontSize") {
       setFontSize(value);
+      updateLocalStrage("FONT_SIZE", value);
       return;
     }
-    if (name == "lang")
+    if (name == "lang") {
       setProblem((prev) => {
         prev.sourceCode[prev.selectedLanguage] = prev.selectedCode;
         prev.selectedLanguage = value;
+
         prev.selectedCode = prev.sourceCode[value];
+        let userPrevCode = localStorage.getItem(problem.slug);
+        try {
+          userPrevCode = JSON.parse(userPrevCode);
+          if (userPrevCode[prev.selectedLanguage])
+            prev.selectedCode = userPrevCode[prev.selectedLanguage];
+        } catch (e) {
+          localStorage.setItem(problem.slug, "{}");
+        }
         return { ...prev };
       });
+      updateLocalStrage("LANGUAGE", value);
+    }
   };
 
   const classes = useStyles();
