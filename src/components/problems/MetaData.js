@@ -62,42 +62,53 @@ export default function MetaData({ metaData, variableMap, onChange, onSave }) {
               <SingleSelect
                 labelName={"No of Inputs"}
                 name="no-of-inputs"
-                selectedValue={metaData.noOfInputs}
+                selectedValue={String(metaData.noOfInputs)}
                 inputItems={{ 1: 1, 2: 2, 3: 3 }}
                 onChange={onChange}
               />
             </Grid>
-
-            {metaData.inputs.map((data, index) => {
-              return (
-                index < metaData.noOfInputs && (
-                  <>
-                    <Grid item xs={12}>
-                      <TextInput
-                        label={"Input Name "}
-                        name={"input-name-" + index}
-                        type="text"
-                        required={true}
-                        rows={1}
-                        value={data.name}
-                        onChange={onChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <SingleSelect
-                        labelName={"Input Type"}
-                        name={"input-type-" + index}
-                        selectedValue={data.type}
-                        required={true}
-                        inputItems={variableMap}
-                        onChange={onChange}
-                      />
-                    </Grid>
-                  </>
-                )
-              );
-            })}
           </Grid>
+          {metaData.inputs.map((data, index) => {
+            return (
+              index < metaData.noOfInputs && (
+                <Grid
+                  container
+                  spacing={3}
+                  key={index}
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid #f1e5bc",
+                    borderRadius: "3px",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <Grid item xs={12}>
+                    <TextInput
+                      label={"Input Name "}
+                      id={"input-name-" + index}
+                      name={"input-name-" + index}
+                      type="text"
+                      required={true}
+                      rows={1}
+                      value={data.name}
+                      onChange={onChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <SingleSelect
+                      labelName={"Input Type"}
+                      name={"input-type-" + index}
+                      selectedValue={String(data.type)}
+                      required={true}
+                      inputItems={variableMap}
+                      onChange={onChange}
+                    />
+                  </Grid>
+                </Grid>
+              )
+            );
+          })}
+
           <Grid
             container
             spacing={3}

@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-const List = ({ problems, filters }) => {
+export default function List({ problems, filters }) {
   const classes = useStyles();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
@@ -57,55 +57,48 @@ const List = ({ problems, filters }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(problems)
-              .slice(start, end)
-              .map((index) => (
-                <TableRow
-                  key={problems[index].id}
-                  className="problem-list-element"
-                >
-                  <TableCell component="th" scope="row">
-                    {problems[index].id}
-                  </TableCell>
-                  <TableCell align="left">
-                    <NavLink to={"/problem/" + problems[index].slug}>
-                      {problems[index].title}
-                    </NavLink>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Chip
-                      style={{
-                        backgroundColor: color[problems[index].difficulty],
-                        color: "white",
-                      }}
-                      label={filters.difficulty[problems[index].difficulty]}
-                      variant="outlined"
-                    />
-                  </TableCell>
-                  <TableCell align="left" style={{ padding: "5px" }}>
-                    <NavLink
-                      to={"/problem/createUpdate/" + problems[index].slug}
-                    >
-                      Update
-                    </NavLink>
-                  </TableCell>
-                  <TableCell
-                    align="left"
+            {problems.slice(start, end).map((problem) => (
+              <TableRow key={problem.id} className="problem-list-element">
+                <TableCell component="th" scope="row">
+                  {problem.id}
+                </TableCell>
+                <TableCell align="left">
+                  <NavLink to={"/problem/" + problem.slug}>
+                    {problem.title}
+                  </NavLink>
+                </TableCell>
+                <TableCell align="left">
+                  <Chip
                     style={{
-                      color: problems[index].status == 0 ? "Red" : undefined,
+                      backgroundColor: color[problem.difficulty],
+                      color: "white",
                     }}
-                  >
-                    {problems[index].status == 0 ? "InActive" : "Active"}
-                  </TableCell>
-                </TableRow>
-              ))}
+                    label={filters.difficulty[problem.difficulty]}
+                    variant="outlined"
+                  />
+                </TableCell>
+                <TableCell align="left" style={{ padding: "5px" }}>
+                  <NavLink to={"/problem/createUpdate/" + problem.slug}>
+                    Update
+                  </NavLink>
+                </TableCell>
+                <TableCell
+                  align="left"
+                  style={{
+                    color: problem.status == 0 ? "Red" : undefined,
+                  }}
+                >
+                  {problem.status == 0 ? "InActive" : "Active"}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 20, 40]}
         component="div"
-        count={Object.keys(problems).length}
+        count={problems.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
@@ -113,19 +106,9 @@ const List = ({ problems, filters }) => {
       />
     </div>
   );
-};
-
-List.propTypes = {
-  problems: PropTypes.object.isRequired,
-  filters: PropTypes.object.isRequired,
-};
-function mapStateToProps(state) {
-  return {
-    problems: state.problems,
-    filters: state.filters,
-  };
 }
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(List);
+List.propTypes = {
+  problems: PropTypes.array.isRequired,
+  filters: PropTypes.object.isRequired,
+};

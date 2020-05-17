@@ -1,5 +1,7 @@
 export default {
-  problems: {},
+  problems: [],
+  problemById: {},
+  problemBySlug: {},
   filters: {
     difficulty: {},
     tag: {},

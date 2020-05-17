@@ -32,7 +32,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
     }
   };
   useEffect(() => {
-    let length = Object.keys(problemsData).length;
+    let length = problemsData.length;
     if (length === 0) {
       loadProblems().catch(() => toast.error("something went wrong"));
     }
@@ -61,7 +61,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
             handleChange={handleChange}
             selectedTag={selectedTag}
           />
-          <ProblemList />
+          <ProblemList problems={problemsData} filters={props.filters} />
         </div>
         <div className="width-25percent filter"></div>
       </div>
@@ -71,7 +71,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
 
 ProblemsPage.propTypes = {
   loadProblems: PropTypes.func.isRequired,
-  problemsData: PropTypes.object.isRequired,
+  problemsData: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,
   loadFilters: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,

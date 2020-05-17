@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import cloneDeep from "lodash/cloneDeep";
+
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -24,6 +26,9 @@ import {
   TEST_CASES,
   VARIABLE_TYPE,
   DEFAULT_META_DATA,
+  TEST_CASE_TYPE,
+  SELECTED_TEST_CASE,
+  STATUS,
 } from "./Constant";
 import OverviewPage from "./OverviewPage";
 
@@ -34,28 +39,16 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedLangArray, setSelectedLangArray] = useState([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState("");
   const [metaData, setMetaData] = useState(props.DEFAULT_META_DATA);
-  const [statusOb] = useState({
-    0: "Inactive",
-    1: "Active",
-  });
   const [problem, setProblem] = useState(props.DEFAULT_PROB_DATA);
   const [filters, setFilters] = useState(props.FILTERS);
   const [apiError, setApiError] = useState("");
   const [formError, setFormError] = useState({});
   const [testCases, setTestCases] = useState(props.TEST_CASES);
-  const TEST_CASE_TYPE = {
-    1: "Default Case",
-    2: "corner_case",
-    3: "Normal",
-    4: "Time Complexity",
-  };
-  const [selectedTestCase, setSelectedTestCase] = useState({
-    id: null,
-    type: "",
-    input: "",
-    output: "",
-    name: "",
-  });
+
+  const [selectedTestCase, setSelectedTestCase] = useState(
+    props.SELECTED_TEST_CASE
+  );
+
   useEffect(() => {
     if (validString(slug)) {
       getSourceCode(slug)
@@ -63,15 +56,13 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
           if (data.error) {
             setApiError(data.error);
           } else {
-            let tag = Object.keys(data.tag).map((key) =>
-              String(data.tag[key].id)
-            );
-            let lang = Object.keys(data.language).map((key) =>
-              String(data.language[key].id)
+            let tag = Object.keys(data.tag).map((key) => data.tag[key].id);
+            let lang = Object.keys(data.language).map(
+              (key) => data.language[key].id
             );
             setSelectedLangArray(lang);
             setSelectedTagArray(tag);
-            setSelectedDifficulty(String(data.difficulty));
+            setSelectedDifficulty(data.difficulty);
 
             let sourceCode = {};
             data.sourceCode.forEach((item) => {
@@ -118,8 +109,11 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
                 return {
                   id: item.id,
                   type: item.type,
-                  inputs: item.input,
-                  output: item.output,
+                  input: JSON.stringify(item.input),
+                  output:
+                    data.meta_data.output_meta_data.type == 4
+                      ? JSON.stringify(item.output)
+                      : item.output,
                   output_type: item.output_type,
                 };
               });
@@ -140,24 +134,22 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
               selectedCode,
               status: data.status,
             });
-
-            setMetaData((prev) => {
-              prev.outputType =
-                (data.meta_data &&
-                  data.meta_data.output_meta_data &&
-                  String(data.meta_data.output_meta_data.type)) ||
-                "";
-              prev.noOfInputs =
-                (data.meta_data.input_meta_data.no_of_inputs &&
-                  String(data.meta_data.input_meta_data.no_of_inputs)) ||
-                "";
-              prev.inputs = data.meta_data.input_meta_data.inputs.map(
-                (input) => {
-                  return { type: input.type, name: input.name };
-                }
-              );
-              return { ...prev };
-            });
+            if (
+              data.meta_data &&
+              data.meta_data.input_meta_data &&
+              data.meta_data.output_meta_data
+            ) {
+              setMetaData((prev) => {
+                prev.outputType = data.meta_data.output_meta_data.type;
+                prev.noOfInputs = data.meta_data.input_meta_data.no_of_inputs;
+                prev.inputs = data.meta_data.input_meta_data.inputs.map(
+                  (input) => {
+                    return { type: input.type, name: input.name };
+                  }
+                );
+                return { ...prev };
+              });
+            }
           }
         })
         .catch((e) => {
@@ -327,7 +319,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   };
   const metaDataChange = (event) => {
     const { name, value } = event.target;
-    debugger;
     if (name === "no-of-inputs") {
       setMetaData((prev) => {
         prev.noOfInputs = value;
@@ -363,7 +354,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       toast.error("Invalid output type");
       return;
     }
-    debugger;
     for (let i in metaData.inputs) {
       let input = metaData.inputs[i];
       if (i < metaData.noOfInputs) {
@@ -402,13 +392,13 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       return (
         <Form
           problem={problem}
-          statusOb={statusOb}
+          statusOb={props.STATUS}
           filters={filters}
           onSave={handleSave}
           onChange={handleChange}
           errors={formError}
           selectedTagArray={selectedTagArray}
-          selectedDifficulty={selectedDifficulty}
+          selectedDifficulty={String(selectedDifficulty)}
           selectedLangArray={selectedLangArray}
           updateHtml={updateHtml}
         />
@@ -475,15 +465,28 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     let reqBody = {
       problem_id: problem.id,
     };
-    if (selectedTestCase) reqBody.id = selectedTestCase.id;
-    reqBody.input = selectedTestCase.input;
-    reqBody.output = selectedTestCase.output;
-    reqBody.type = Number(selectedTestCase.type);
-    reqBody.name = TEST_CASE_TYPE[reqBody.type];
+    let outputType = metaData.outputType;
+    if (outputType == 1) {
+      reqBody.output = parseInt(selectedTestCase.output);
+    } else if (outputType == 4) {
+      try {
+        reqBody.output = JSON.parse(selectedTestCase.output);
+      } catch (e) {
+        return;
+      }
+    }
 
+    if (selectedTestCase) reqBody.id = selectedTestCase.id;
+    reqBody.input = JSON.parse(selectedTestCase.input);
+    reqBody.type = Number(selectedTestCase.type);
+    reqBody.name = props.TEST_CASE_TYPE[reqBody.type];
     event.preventDefault();
     saveTestCases(reqBody)
       .then((data) => {
+        reqBody.input = JSON.stringify(reqBody.input);
+        if (metaData.outputType == 4) {
+          reqBody.output = JSON.stringify(reqBody.output);
+        }
         if (data.error) {
           alert(data.error);
         } else {
@@ -536,17 +539,18 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
       });
       return;
     }
-    if (name == "Type") {
+    if (name == "type") {
       setSelectedTestCase((prev) => {
         return { ...prev, ["type"]: value };
       });
       return;
     }
   };
+
   const updateTestCase = function (testCase) {
     setSelectedTestCase((prev) => {
       prev = testCase;
-      prev.type = String(testCase.type);
+      prev.type = testCase.type;
       return { ...prev };
     });
   };
@@ -626,20 +630,27 @@ CreateUpdatePage.propTypes = {
   TEST_CASES: PropTypes.array.isRequired,
   DEFAULT_META_DATA: PropTypes.object.isRequired,
   VARIABLE_TYPE: PropTypes.object.isRequired,
+  TEST_CASE_TYPE: PropTypes.object.isRequired,
+  SELECTED_TEST_CASE: PropTypes.object.isRequired,
+  STATUS: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   let slug = ownProps.match.params.slug && ownProps.match.params.slug.trim();
-  return {
+  return cloneDeep({
     isLoggedIn: state.userData.isAuthenticated,
     slug: slug || "",
-    DEFAULT_PROB_DATA,
+    DEFAULT_PROB_DATA: DEFAULT_PROB_DATA,
     FILTERS,
     TEST_CASES,
     VARIABLE_TYPE,
     DEFAULT_META_DATA,
-  };
+    TEST_CASE_TYPE,
+    SELECTED_TEST_CASE,
+    STATUS,
+  });
 }
+
 const mapDispatchToProps = {
   loadFilters: getFilters,
 };

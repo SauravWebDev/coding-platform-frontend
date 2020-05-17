@@ -42,7 +42,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Form({ onChange, onSave, errors, ...props }) {
   const classes = useStyles();
-
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
@@ -177,7 +176,7 @@ Form.propTypes = {
   filters: PropTypes.object.isRequired,
   selectedLangArray: PropTypes.array.isRequired,
   selectedTagArray: PropTypes.array.isRequired,
-  selectedDifficulty: PropTypes.string,
+  selectedDifficulty: PropTypes.string.isRequired,
   updateHtml: PropTypes.func.isRequired,
   statusOb: PropTypes.object.isRequired,
 };

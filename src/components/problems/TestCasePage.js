@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import "./TestCasePage.scss";
 // Material UI Componenets
 import {
@@ -23,6 +21,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Button from "../common/Button";
 import TextInput from "../common/InputText";
 import SingleSelect from "../common/SingleSelect";
+import ConfirmBox from "../common/ConfirmBox";
 
 const TEST_CASE_TYPE = {
   1: "Default Case",
@@ -62,23 +61,11 @@ export default function TestCasePage({
 }) {
   const classes = useStyles();
 
-  const deleteTC = (data) => {
-    confirmAlert({
-      title: ``,
-      message: `Delete Test Case : ${data.id} `,
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            deleteTestCase(data.id);
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {},
-        },
-      ],
-    });
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedTCIdtoDlt, setSelectedTCIdtoDlt] = useState(null);
+  const confirmDlt = (data) => {
+    setSelectedTCIdtoDlt(data.id);
+    setConfirmOpen(true);
   };
   return (
     <>
@@ -92,6 +79,7 @@ export default function TestCasePage({
           >
             Provide testCases
           </Typography>
+
           <form className={classes.form} onSubmit={onSave}>
             <Divider variant="middle" />
             <div>
@@ -99,6 +87,16 @@ export default function TestCasePage({
                 ? `update test case : ${selectedTestCase.id}`
                 : `create test case`}
             </div>
+            <ul>
+              <li>
+                Input will always be array. First input paramter will be first
+                index of input and last paramter will be last Index of input
+              </li>
+              <li>
+                Output : There is only single output it can be integer, string
+                or array
+              </li>
+            </ul>
             <Grid container spacing={3} style={{ padding: "5px" }}>
               <Grid item xs={6}>
                 <TextInput
@@ -124,18 +122,23 @@ export default function TestCasePage({
                   onChange={changeSelectedTC}
                   multiline={true}
                   rows={3}
-                  value={selectedTestCase.output}
+                  value={
+                    (Array.isArray(selectedTestCase.output) &&
+                      JSON.stringify(selectedTestCase.output)) ||
+                    String(selectedTestCase.output)
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
                 <SingleSelect
                   labelName="Type"
+                  name="type"
                   selectedValue={selectedTestCase.type}
                   inputItems={TEST_CASE_TYPE}
                   onChange={changeSelectedTC}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} className="centreDivElement">
                 <Button onClick={onSave}>Save</Button>
               </Grid>
             </Grid>
@@ -163,11 +166,7 @@ export default function TestCasePage({
                   <TableCell align="left">
                     {TEST_CASE_TYPE[testCase.type]}
                   </TableCell>
-                  <TableCell align="left">
-                    {testCase.inputs.map((item, i) => {
-                      return <p key={i}>{JSON.stringify(item)}</p>;
-                    })}
-                  </TableCell>
+                  <TableCell align="left">{testCase.input}</TableCell>
                   <TableCell align="left">{testCase.output}</TableCell>
                   <TableCell align="left">
                     <span style={{ padding: "5px", margin: "5px" }}>
@@ -178,7 +177,7 @@ export default function TestCasePage({
                     <span style={{ padding: "5px", margin: "5px" }}>
                       <Button
                         onClick={function () {
-                          deleteTC(testCase);
+                          confirmDlt(testCase);
                         }}
                       >
                         Delete
@@ -190,6 +189,20 @@ export default function TestCasePage({
             </TableBody>
           </Table>
         </TableContainer>
+        <ConfirmBox
+          open={confirmOpen}
+          title={"Delete Test Case ?"}
+          content={"Are You sure, you want to delete selected Test Case"}
+          calcelLabel={"No"}
+          okLabel={"Yes"}
+          clickOk={() => {
+            deleteTestCase(selectedTCIdtoDlt);
+            setConfirmOpen(false);
+          }}
+          clickCancel={() => {
+            setConfirmOpen(false);
+          }}
+        />
       </div>
     </>
   );

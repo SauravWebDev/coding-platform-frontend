@@ -3,9 +3,9 @@ import * as problemApi from "../../api/problemsApi";
 import { beginApiCall } from "./apiStatusActions";
 
 export function setProblemsData(data) {
-  let payload = {};
+  let payload = [];
   for (let i = 0; i < data.length; i++) {
-    payload[data[i].id] = data[i];
+    payload.push(data[i]);
   }
   return { type: types.SET_ALL_PROBLEMS_DATA, payload };
 }
