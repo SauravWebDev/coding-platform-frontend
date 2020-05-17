@@ -11,18 +11,18 @@ import Editor from "../Editor/JSEditor";
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
-import { run as submissionRun, checkStatus } from "../../api/submissionApi";
+import { run as submissionRun, submit as submissionSubmit, checkStatus } from "../../api/submissionApi";
 import { toast } from "react-toastify";
 import { debounceFn, validString } from "../../util/util";
 
 //tabs
-import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
+import SwipeableViews from "react-swipeable-views";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
 import ResizePanel from "react-resize-panel";
 
@@ -159,7 +159,32 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
         setApiInprogress(false);
       });
   };
+  const submit = () => {
+    setApiInprogress(true);
+    let body = {};
+    body.lang_id = problem.selectedLanguage;
+    body.code = problem.selectedCode;
+    body.language = problem.language[problem.selectedLanguage];
+    body.default_input = defaultInput.split("\n");
+    body.problem_id = problem.id;
 
+    submissionSubmit(body)
+      .then((data) => {
+        if (data.error) {
+          toast.error(data.error);
+        } else {
+          toast.success("Execution in progress");
+          setSubmissionId(data.submissionId);
+          setCheckRes(true);
+        }
+      })
+      .catch((e) => {
+        toast.error("Something went wrong");
+        console.log(e);
+        setCheckRes(false);
+        setApiInprogress(false);
+      });
+  }
   const onChange = (event) => {
     const { name, value } = event.target;
     if (name == "defaultInput") {
@@ -228,7 +253,6 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
             </div>
           </div>
 
-
           <div className="actionButton">
             <span className="runAlign">
               <Button
@@ -245,17 +269,16 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
               size="small"
               variant="contained"
               color="primary"
-              onClick={run}
+              onClick={submit}
               disabled={apiInprogress}
             >
               Submit
-             </Button>
+            </Button>
           </div>
           <br />
           <div style={{ display: "flex", backgroundColor: "#fafafa" }}>
-
             <div className={classes.root}>
-              <AppBar position="static" color="default" >
+              <AppBar position="static" color="default">
                 <Tabs
                   value={value}
                   onChange={handleChange}
@@ -266,15 +289,14 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                 >
                   <Tab label="Test Cases" {...a11yProps(0)} />
                   <Tab label="Code Run Result" {...a11yProps(1)} />
-
                 </Tabs>
               </AppBar>
               <SwipeableViews
-                axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                axis={theme.direction === "rtl" ? "x-reverse" : "x"}
                 index={value}
                 onChangeIndex={handleChangeIndex}
               >
-                <TabPanel value={value} index={0} dir={theme.direction} >
+                <TabPanel value={value} index={0} dir={theme.direction}>
                   <div>
                     <div> Test Case : </div>
                     <textarea
@@ -289,25 +311,19 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                       onChange={onChange}
                     ></textarea>
                   </div>
-
                 </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction} >
+                <TabPanel value={value} index={1} dir={theme.direction}>
                   <div>
                     <div className="consoleOutput">
                       <div style={{ width: "50%" }}>
                         <div className="code-label"> Code Status</div>
-                        <div className="resultConsole">
-
-                        </div>
+                        <div className="resultConsole"></div>
                       </div>
 
                       <div style={{ width: "50%" }}>
                         <div className="code-label"> Expected Output</div>
-                        <div className="resultConsole">
-
-                        </div>
+                        <div className="resultConsole"></div>
                       </div>
-
                     </div>
 
                     <div className="consoleOutput">
@@ -317,7 +333,10 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                           {result.codeError && (
                             <div
                               dangerouslySetInnerHTML={{
-                                __html: result.codeError.replace(/\n/g, "</br>"),
+                                __html: result.codeError.replace(
+                                  /\n/g,
+                                  "</br>"
+                                ),
                               }}
                             />
                           )}
@@ -343,26 +362,16 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                         </div>
                       </div>
                     </div>
-
                   </div>
                 </TabPanel>
-
               </SwipeableViews>
             </div>
-
-
-
-
           </div>
-
-
-
         </div>
       </div>
     </div>
   );
 }
-
 
 //tabs
 function TabPanel(props) {
@@ -378,7 +387,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3}>
-          <Typography component={'div'}>{children}</Typography>
+          <Typography component={"div"}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -394,14 +403,14 @@ TabPanel.propTypes = {
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`,
+    "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: '100%'
+    width: "100%",
   },
 }));
 

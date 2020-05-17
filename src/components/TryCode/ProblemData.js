@@ -163,21 +163,13 @@ export default function ProblemData({ questionData }) {
       </div>
 
       <div className="navButton">
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-        >
+        <Button size="small" color="primary" variant="contained">
           <NavigateBeforeIcon fontSize="small" />
-        Prev
-               </Button>
-        <Button
-          size="small"
-          color="primary"
-          variant="contained"
-        >
+          Prev
+        </Button>
+        <Button size="small" color="primary" variant="contained">
           Next
-        <NavigateNextIcon fontSize="small" />
+          <NavigateNextIcon fontSize="small" />
         </Button>
       </div>
     </div>
