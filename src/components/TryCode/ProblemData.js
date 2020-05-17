@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
+
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import "./ProblemData.scss";
@@ -7,6 +9,7 @@ import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
+import Chip from "@material-ui/core/Chip";
 
 // drawer for similar problems
 import clsx from "clsx";
@@ -34,7 +37,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ProblemData({ questionData }) {
+export default function ProblemData({
+  questionData,
+  problems,
+  selectedQuestionIndex,
+  changeProblem,
+  difficulty,
+}) {
   const classes = useStyles();
   //drawer and list starts
   const [state, setState] = React.useState({
@@ -68,42 +77,65 @@ export default function ProblemData({ questionData }) {
     >
       <Button className="drawerButton">All Problems</Button>
       <List>
-        {[
-          "Question1",
-          "Question2",
-          "Question3",
-          "Question4",
-          "Question5",
-          "Question6",
-          "Question7",
-          "Question8",
-          "Question9",
-          "Question10",
-          "Question11",
-          "Question12",
-          "Question13",
-          "Question14",
-          "Question15",
-          "Question16",
-        ].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
-          </ListItem>
+        {problems.map((data) => (
+          <div
+            key={data.id}
+            style={{
+              backgroundColor: data.id == questionData.id ? "grey" : undefined,
+            }}
+          >
+            <NavLink to={"/problem/" + data.slug}>
+              <ListItem button>
+                <ListItemText primary={data.title} />
+                <Chip
+                  style={{
+                    backgroundColor: color[data.difficulty],
+                    color: "white",
+                  }}
+                  label={difficulty[data.difficulty]}
+                  variant="outlined"
+                />
+              </ListItem>
+            </NavLink>
+          </div>
         ))}
       </List>
     </div>
   );
   //drawer a  nd list ends
-
+  let color = {
+    1: "#5cb85c",
+    2: "#f0ad4e",
+    3: "#db2644",
+  };
   return (
     <div>
       <h4>Question Details</h4>
       <div className="navButton borderStyle">
-        <Button>Easy</Button>
-        <Button className="topButtons" size="small" color="primary">
+        <Chip
+          style={{
+            backgroundColor: color[questionData.difficulty],
+            color: "white",
+          }}
+          label={difficulty[questionData.difficulty]}
+          variant="outlined"
+        />
+        <Button
+          className="topButtons"
+          size="small"
+          color="primary"
+          disabled={selectedQuestionIndex == 0 ? true : false}
+          onClick={() => changeProblem("prev")}
+        >
           <NavigateBeforeIcon />
         </Button>
-        <Button className="topButtons" size="small" color="primary">
+        <Button
+          className="topButtons"
+          size="small"
+          color="primary"
+          disabled={selectedQuestionIndex == problems.length - 1 ? true : false}
+          onClick={() => changeProblem("next")}
+        >
           <NavigateNextIcon />
         </Button>
 
@@ -186,11 +218,23 @@ export default function ProblemData({ questionData }) {
       </div>
 
       <div className="navButton">
-        <Button size="small" color="primary" variant="contained">
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          disabled={selectedQuestionIndex == 0 ? true : false}
+          onClick={() => changeProblem("prev")}
+        >
           <NavigateBeforeIcon fontSize="small" />
           Prev
         </Button>
-        <Button size="small" color="primary" variant="contained">
+        <Button
+          size="small"
+          color="primary"
+          variant="contained"
+          disabled={selectedQuestionIndex == problems.length - 1 ? true : false}
+          onClick={() => changeProblem("next")}
+        >
           Next
           <NavigateNextIcon fontSize="small" />
         </Button>
@@ -201,4 +245,8 @@ export default function ProblemData({ questionData }) {
 
 ProblemData.propTypes = {
   questionData: PropTypes.object.isRequired,
+  selectedQuestionIndex: PropTypes.number,
+  changeProblem: PropTypes.func.isRequired,
+  difficulty: PropTypes.object.isRequired,
+  problems: PropTypes.array.isRequired,
 };

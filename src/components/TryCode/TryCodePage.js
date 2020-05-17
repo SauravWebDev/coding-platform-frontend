@@ -11,6 +11,10 @@ import Editor from "../Editor/JSEditor";
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
+import { getAllProblems } from "../../redux/actions/problemsAction";
+
+import * as filtersAction from "../../redux/actions/filtersAction";
+
 import {
   run as submissionRun,
   submit as submissionSubmit,
@@ -46,7 +50,7 @@ const font = {
   15: "15",
   16: "16",
 };
-function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
+function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [defaultInput, setDefaultInput] = useState(DEFAULT_INPUT);
   const [checkRes, setCheckRes] = useState(false);
@@ -64,7 +68,25 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const handleChangeIndex = (index) => {
     setConsoleIndex(index);
   };
-
+  let selectedQuestionIndex = null;
+  props.problems.forEach((prob, index) => {
+    if (prob.id == problem.id) {
+      selectedQuestionIndex = index;
+      return;
+    }
+  });
+  const changeProblem = (dir) => {
+    if (dir == "prev") {
+      props.history.push(
+        "/problem/" + props.problems[selectedQuestionIndex - 1].slug
+      );
+    }
+    if (dir == "next") {
+      props.history.push(
+        "/problem/" + props.problems[selectedQuestionIndex + 1].slug
+      );
+    }
+  };
   const getResult = function () {
     if (checkRes) {
       setCheckRes(false);
@@ -95,6 +117,20 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   ]);
 
   useEffect(() => {
+    let length = props.problems.length;
+    if (length === 0) {
+      props.loadProblems().catch(() => toast.error("something went wrong"));
+    }
+    let filters = props.filters;
+    if (
+      Object.keys(filters.difficulty).length === 0 &&
+      Object.keys(filters.tag).length === 0
+    ) {
+      props.loadFilters().catch(() => toast.error("something went wrong"));
+    }
+  }, []);
+
+  useEffect(() => {
     if (validString(slug)) {
       tryCode(slug)
         .then((data) => {
@@ -119,6 +155,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
               description: data.description,
               example: data.example,
               note: data.note,
+              difficulty: data.difficulty,
               tag: data.tag,
               language: lang,
               selectedLanguage,
@@ -226,7 +263,13 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
       <div className="try-code-page">
         <ResizePanel direction="e" style={{ flexGrow: "1" }}>
           <div className="questionDetailsScreen scrollStyle">
-            <ProblemData questionData={problem} />
+            <ProblemData
+              questionData={problem}
+              problems={props.problems}
+              selectedQuestionIndex={selectedQuestionIndex}
+              changeProblem={changeProblem}
+              difficulty={props.filters.difficulty}
+            />
           </div>
         </ResizePanel>
         <div className="codeEditorScreen">
@@ -440,21 +483,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-//tabs end
-
 function mapStateToProps(state, ownProps) {
   return {
     slug:
       (ownProps.match.params.slug && ownProps.match.params.slug.trim()) || "",
     DEFAULT_PROB_DATA,
     DEFAULT_INPUT,
+    problems: state.problems,
+    filters: state.filters,
+    history: ownProps.history,
   };
 }
+const mapDispatchToProps = {
+  loadProblems: getAllProblems,
+  loadFilters: filtersAction.getFilters,
+};
 
 TryCodePage.propTypes = {
   slug: PropTypes.string.isRequired,
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
   DEFAULT_INPUT: PropTypes.string.isRequired,
+  loadProblems: PropTypes.func.isRequired,
+  loadFilters: PropTypes.func.isRequired,
+  problems: PropTypes.array.isRequired,
+  filters: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(TryCodePage);
+export default connect(mapStateToProps, mapDispatchToProps)(TryCodePage);

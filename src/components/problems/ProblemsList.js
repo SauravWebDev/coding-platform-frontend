@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 
 import "./ProblemList.scss";
 import Table from "@material-ui/core/Table";
