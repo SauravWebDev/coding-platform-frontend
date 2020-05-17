@@ -41,7 +41,7 @@ const List = ({ problems, filters }) => {
   let color = {
     1: "#5cb85c",
     2: "#f0ad4e",
-    3: "#d9534f",
+    3: "#db2644",
   };
   return (
     <div className="problemList">

@@ -85,3 +85,18 @@
 .runAlign{
   margin: 0 10px;
 }
+
+.selectionPanel{
+  display: flex;
+  justify-content: space-between;
+}
+
+.selectionDropdowns{
+  padding-right: 9px;
+  width: 100%;
+}
+
+.scrollStyle{
+  max-height: 791px;
+    overflow-y: overlay;
+}
