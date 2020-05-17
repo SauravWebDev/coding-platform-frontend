@@ -360,7 +360,6 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT, ...props }) {
           </div>
 
           <div className="code-template" key={"code_body"}>
-            <div className="code-label"> Code Body</div>
             <div className="code-editor" style={{ fontSize: fontSize + "px" }}>
               <Editor
                 language={
