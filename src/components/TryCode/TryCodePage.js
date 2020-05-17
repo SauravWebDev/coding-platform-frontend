@@ -49,6 +49,11 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   };
   //tabs end
 
+  //font dropdwon
+const font=[12,13,14,15,16]
+
+//theme dropdwon
+const themes=['textmate','eclipse','blackboard','solarized dark']
   const getResult = function () {
     if (checkRes) {
       setCheckRes(false);
@@ -197,19 +202,37 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   return (
     <div>
       <div className="try-code-page">
-        <ResizePanel direction="e" style={{ flexGrow: "1" }}>
-          <div className="questionDetailsScreen">
+        <ResizePanel direction="e" style={{ flexGrow: '1' }} >
+          <div className="questionDetailsScreen scrollStyle">
             <ProblemData questionData={problem} />
           </div>
         </ResizePanel>
         <div className="codeEditorScreen">
-          <div className="fileNameDiv">
-            <SingleSelect
+          <div className="selectionPanel">
+            <div className="selectionDropdowns">
+            <SingleSelect          
               labelName="Language"
               selectedValue={String(problem.selectedLanguage || "")}
               inputItems={problem.language}
               onChange={onChange}
             />
+            </div>
+            <div className="selectionDropdowns">
+            <SingleSelect
+              labelName="Font Size"
+              selectedValue={String(problem.selectedLanguage || "")}
+              inputItems={font}
+              onChange={onChange}
+            />
+            </div>
+            <div className="selectionDropdowns">
+            <SingleSelect           
+              labelName="Theme"
+              selectedValue={String(problem.selectedLanguage || "")}
+              inputItems={themes}
+              onChange={onChange}
+            />
+            </div>
           </div>
 
           <div className="code-template" key={"code_body"}>
@@ -240,7 +263,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
                 disabled={apiInprogress}
               >
                 Run
-              </Button>
+             </Button>
             </span>
             <Button
               size="small"
@@ -304,7 +327,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
                     </div>
 
                     <div className="consoleOutput">
-                      <div style={{ width: "75%" }}>
+                      <div style={{ width: "50%" }}>
                         <div className="code-label"> Console</div>
                         <div className="console">
                           {result.codeError && (
@@ -326,7 +349,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
                           )}
                         </div>
                       </div>
-                      <div style={{ width: "25%" }}>
+                      <div style={{ width: "50%" }}>
                         <div className="code-label"> Your Output</div>
                         <div className="console">
                           {result.output && (
