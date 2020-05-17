@@ -1,35 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import Button from "@material-ui/core/Button";
 import "./ProblemData.scss";
 
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import MenuIcon from '@material-ui/icons/Menu';
-import { makeStyles } from '@material-ui/core/styles';
+import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
+import MenuIcon from "@material-ui/icons/Menu";
+import { makeStyles } from "@material-ui/core/styles";
 
 // drawer for similar problems
-import clsx from 'clsx';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import clsx from "clsx";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 //
 
 //other parts
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ExpandLessIcon from "@material-ui/icons/ExpandLess";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const useStyles = makeStyles({
   list: {
-    maxWidth: '650px',
+    maxWidth: "650px",
     width: 600,
 
-    background: '#1F1E1E',
-    color: '#A8A7A7',
-    cursor: 'pointer'
+    background: "#1F1E1E",
+    color: "#A8A7A7",
+    cursor: "pointer",
   },
   fullList: {
-    width: 'auto',
+    width: "auto",
   },
 });
 
@@ -40,10 +41,10 @@ export default function ProblemData({ questionData }) {
     top: false,
     left: false,
     bottom: false,
-    right: false
+    right: false,
   });
-
-  const toggleDrawer = (anchor, open) => event => {
+  const [showSimilar, setShowSimilar] = useState(true);
+  const toggleDrawer = (anchor, open) => (event) => {
     if (
       event &&
       event.type === "keydown" &&
@@ -54,8 +55,11 @@ export default function ProblemData({ questionData }) {
 
     setState({ ...state, [anchor]: open });
   };
+  const changeShowSimilar = () => {
+    setShowSimilar(!showSimilar);
+  };
 
-  const list = anchor => (
+  const list = (anchor) => (
     <div
       className={clsx(classes.list)}
       role="presentation"
@@ -87,37 +91,28 @@ export default function ProblemData({ questionData }) {
           </ListItem>
         ))}
       </List>
-
     </div>
   );
-  //drawer and list ends
+  //drawer a  nd list ends
 
   return (
     <div>
       <h4>Question Details</h4>
       <div className="navButton borderStyle">
-        <Button  >
-          Easy
-        </Button>
-        <Button
-          className="topButtons"
-          size="small"
-          color="primary"
-        >
+        <Button>Easy</Button>
+        <Button className="topButtons" size="small" color="primary">
           <NavigateBeforeIcon />
         </Button>
-        <Button
-          className="topButtons"
-          size="small"
-          color="primary"
-        >
+        <Button className="topButtons" size="small" color="primary">
           <NavigateNextIcon />
         </Button>
 
         <div>
-          {["Problems"].map(anchor => (
+          {["Problems"].map((anchor) => (
             <React.Fragment key={"left"}>
-              <Button onClick={toggleDrawer("left", true)}>{anchor} <MenuIcon fontSize="small" /></Button>
+              <Button onClick={toggleDrawer("left", true)}>
+                {anchor} <MenuIcon fontSize="small" />
+              </Button>
               <SwipeableDrawer
                 anchor={"left"}
                 open={state["left"]}
@@ -143,23 +138,51 @@ export default function ProblemData({ questionData }) {
         {questionData.id}. {questionData.title}
       </div>
       <div dangerouslySetInnerHTML={{ __html: questionData.description }} />
-      <div className="exampleStyle elementMargin" dangerouslySetInnerHTML={{ __html: questionData.example }} />
-      <div className="exampleStyle borderStyle" dangerouslySetInnerHTML={{ __html: questionData.note }} />
+      <div
+        className="exampleStyle elementMargin"
+        dangerouslySetInnerHTML={{ __html: questionData.example }}
+      />
+      <div
+        className="exampleStyle borderStyle"
+        dangerouslySetInnerHTML={{ __html: questionData.note }}
+      />
 
-      
-      <div className="borderStyle">
-        <Button
-          size="small"
-        >
-          Similar problems
-          <ArrowDropDownIcon fontSize="small" />
-        </Button>
+      <div
+        className="borderStyle"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          cursor: "pointer",
+        }}
+        onClick={changeShowSimilar}
+      >
+        <Button size="small">Similar problems</Button>
+        <span>
+          {showSimilar ? (
+            <ExpandLessIcon fontSize="small" />
+          ) : (
+            <ExpandMoreIcon fontSize="small" />
+          )}
+        </span>
       </div>
 
-      <div className="exampleStyle">
-        <div className="similarQuesStyle"><span>Question1</span><span>Easy</span></div>
-        <div className="similarQuesStyle"><span>Question2</span><span>Medium</span></div>
-        <div className="similarQuesStyle"><span>Question3</span><span>Hard</span></div>
+      <div
+        className="exampleStyle"
+        style={{ display: !showSimilar ? "none" : undefined }}
+      >
+        <div className="similarQuesStyle">
+          <span>Question1</span>
+          <span>Easy</span>
+        </div>
+        <div className="similarQuesStyle">
+          <span>Question2</span>
+          <span>Medium</span>
+        </div>
+        <div className="similarQuesStyle">
+          <span>Question3</span>
+          <span>Hard</span>
+        </div>
       </div>
 
       <div className="navButton">

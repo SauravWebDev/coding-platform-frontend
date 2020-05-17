@@ -11,7 +11,11 @@ import Editor from "../Editor/JSEditor";
 import { DEFAULT_PROB_DATA, DEFAULT_INPUT } from "./Constant";
 // API //
 import { tryCode } from "../../api/problemsApi";
-import { run as submissionRun, submit as submissionSubmit, checkStatus } from "../../api/submissionApi";
+import {
+  run as submissionRun,
+  submit as submissionSubmit,
+  checkStatus,
+} from "../../api/submissionApi";
 import { toast } from "react-toastify";
 import { debounceFn, validString } from "../../util/util";
 
@@ -27,6 +31,21 @@ import Box from "@material-ui/core/Box";
 import ResizePanel from "react-resize-panel";
 
 const delay = 4000;
+//theme dropdwon
+const editorThemes = {
+  eclipse: "eclipse",
+  light: "light",
+  dark: "yonce",
+  neat: "neat",
+};
+//font dropdwon
+const font = {
+  12: "12",
+  13: "13",
+  14: "14",
+  15: "15",
+  16: "16",
+};
 function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [defaultInput, setDefaultInput] = useState(DEFAULT_INPUT);
@@ -34,26 +53,18 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, DEFAULT_INPUT }) {
   const [submissionId, setSubmissionId] = useState(null);
   const [result, setResult] = useState({});
   const [apiInprogress, setApiInprogress] = useState(false);
-
-  //tabs
-  const classes = useStyles();
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const [consoleIndex, setConsoleIndex] = useState(0);
+  const [selectedTheme, setSelectedTheme] = useState(editorThemes.eclipse);
+  const [fontSize, setFontSize] = useState(font["14"]);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setConsoleIndex(newValue);
   };
 
   const handleChangeIndex = (index) => {
-    setValue(index);
+    setConsoleIndex(index);
   };
-  //tabs end
 
-  //font dropdwon
-const font=[12,13,14,15,16]
-
-//theme dropdwon
-const themes=['textmate','eclipse','blackboard','solarized dark']
   const getResult = function () {
     if (checkRes) {
       setCheckRes(false);
@@ -184,25 +195,36 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
         setCheckRes(false);
         setApiInprogress(false);
       });
-  }
+  };
   const onChange = (event) => {
     const { name, value } = event.target;
     if (name == "defaultInput") {
       setDefaultInput(value);
       return;
     }
-    setProblem((prev) => {
-      prev.sourceCode[prev.selectedLanguage] = prev.selectedCode;
-      prev.selectedLanguage = value;
-      prev.selectedCode = prev.sourceCode[value];
-      return { ...prev };
-    });
+    if (name == "theme") {
+      setSelectedTheme(value);
+      return;
+    }
+    if (name == "fontSize") {
+      setFontSize(value);
+      return;
+    }
+    if (name == "lang")
+      setProblem((prev) => {
+        prev.sourceCode[prev.selectedLanguage] = prev.selectedCode;
+        prev.selectedLanguage = value;
+        prev.selectedCode = prev.sourceCode[value];
+        return { ...prev };
+      });
   };
 
+  const classes = useStyles();
+  const theme = useTheme();
   return (
     <div>
       <div className="try-code-page">
-        <ResizePanel direction="e" style={{ flexGrow: '1' }} >
+        <ResizePanel direction="e" style={{ flexGrow: "1" }}>
           <div className="questionDetailsScreen scrollStyle">
             <ProblemData questionData={problem} />
           </div>
@@ -210,34 +232,37 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
         <div className="codeEditorScreen">
           <div className="selectionPanel">
             <div className="selectionDropdowns">
-            <SingleSelect          
-              labelName="Language"
-              selectedValue={String(problem.selectedLanguage || "")}
-              inputItems={problem.language}
-              onChange={onChange}
-            />
+              <SingleSelect
+                labelName="Language"
+                name="lang"
+                selectedValue={String(problem.selectedLanguage || "")}
+                inputItems={problem.language}
+                onChange={onChange}
+              />
             </div>
             <div className="selectionDropdowns">
-            <SingleSelect
-              labelName="Font Size"
-              selectedValue={String(problem.selectedLanguage || "")}
-              inputItems={font}
-              onChange={onChange}
-            />
+              <SingleSelect
+                labelName="Font Size"
+                name="fontSize"
+                selectedValue={fontSize}
+                inputItems={font}
+                onChange={onChange}
+              />
             </div>
             <div className="selectionDropdowns">
-            <SingleSelect           
-              labelName="Theme"
-              selectedValue={String(problem.selectedLanguage || "")}
-              inputItems={themes}
-              onChange={onChange}
-            />
+              <SingleSelect
+                labelName="Theme"
+                name="theme"
+                inputItems={editorThemes}
+                selectedValue={selectedTheme}
+                onChange={onChange}
+              />
             </div>
           </div>
 
           <div className="code-template" key={"code_body"}>
             <div className="code-label"> Code Body</div>
-            <div className="code-editor">
+            <div className="code-editor" style={{ fontSize: fontSize + "px" }}>
               <Editor
                 language={
                   (problem &&
@@ -245,6 +270,7 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                     problem.language[problem.selectedLanguage]) ||
                   ""
                 }
+                theme={selectedTheme}
                 codeData={problem.selectedCode}
                 onCodeChange={(data) => {
                   codeChange(data);
@@ -263,7 +289,7 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                 disabled={apiInprogress}
               >
                 Run
-             </Button>
+              </Button>
             </span>
             <Button
               size="small"
@@ -280,7 +306,7 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
             <div className={classes.root}>
               <AppBar position="static" color="default">
                 <Tabs
-                  value={value}
+                  value={consoleIndex}
                   onChange={handleChange}
                   indicatorColor="primary"
                   textColor="primary"
@@ -293,10 +319,10 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
               </AppBar>
               <SwipeableViews
                 axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-                index={value}
+                index={consoleIndex}
                 onChangeIndex={handleChangeIndex}
               >
-                <TabPanel value={value} index={0} dir={theme.direction}>
+                <TabPanel value={consoleIndex} index={0} dir={theme.direction}>
                   <div>
                     <div> Test Case : </div>
                     <textarea
@@ -312,7 +338,7 @@ const themes=['textmate','eclipse','blackboard','solarized dark']
                     ></textarea>
                   </div>
                 </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction}>
+                <TabPanel value={consoleIndex} index={1} dir={theme.direction}>
                   <div>
                     <div className="consoleOutput">
                       <div style={{ width: "50%" }}>
