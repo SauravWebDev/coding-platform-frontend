@@ -13,6 +13,7 @@ import "codemirror/addon/edit/closetag";
 import "codemirror/addon/edit/closebrackets";
 import "codemirror/addon/edit/matchtags";
 import "codemirror/addon/fold/foldcode";
+import "codemirror/addon/fold/foldgutter";
 
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/eclipse.css";

@@ -32,3 +32,26 @@ export function getAllProblems() {
       });
   };
 }
+
+export function saveProblem(data) {
+  return { type: types.SAVE_PROBLEM, payload: data };
+}
+export function createORUpdateProblem(data) {
+  beginApiCall();
+  return function (dispatch) {
+    return problemApi
+      .createORUpdateProblem(data)
+      .then((res) => {
+        if (res.error) {
+          let err = new Error();
+          err.msg = "Error in saving problem";
+          throw err;
+        } else {
+          dispatch(saveProblem(data));
+        }
+      })
+      .catch((err) => {
+        throw err;
+      });
+  };
+}

@@ -1,6 +1,6 @@
 export const GET_ALL_PROBLEMS = "GET_ALL_PROBLEMS";
 export const SET_ALL_PROBLEMS_DATA = "SET_ALL_PROBLEMS_DATA";
-
+export const SAVE_PROBLEM = "SAVE_PROBLEM";
 export const GET_FILTER = "GET_FILTER";
 export const APPLY_FILTER = "APPLY_FILTER";
 

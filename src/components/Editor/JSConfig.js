@@ -14,5 +14,6 @@ export default {
   matchTags: true,
   showTrailingSpace: true,
   foldGutter: true,
-  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+
+  gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 };

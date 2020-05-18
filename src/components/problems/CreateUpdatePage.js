@@ -113,7 +113,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
                   output:
                     data.meta_data.output_meta_data.type == 4
                       ? JSON.stringify(item.output)
-                      : item.output,
+                      : String(item.output),
                   output_type: item.output_type,
                 };
               });
@@ -243,7 +243,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     setProblem((prevProblem) => ({ ...prevProblem, [name]: value }));
   };
 
-  const handleSave = () => {
+  const saveBasicProblemData = () => {
     event.preventDefault();
     if (!formIsValid()) return;
 
@@ -267,7 +267,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
         } else {
           toast.success(res.msg);
           if (!problem.id) {
-            // why we have to update slug becuase we do not have code template data so we have to call getsourcedata
+            // As we are creting new problem , we dont have code template data, calling get problem by slug will have required data
             setSlug(res.slug);
           } else {
             let sourceCode = problem.sourceCode;
@@ -394,12 +394,12 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
           problem={problem}
           statusOb={props.STATUS}
           filters={filters}
-          onSave={handleSave}
+          onSave={saveBasicProblemData}
           onChange={handleChange}
           errors={formError}
-          selectedTagArray={selectedTagArray}
+          selectedTagArray={selectedTagArray.map((val) => String(val))}
           selectedDifficulty={String(selectedDifficulty)}
-          selectedLangArray={selectedLangArray}
+          selectedLangArray={selectedLangArray.map((val) => String(val))}
           updateHtml={updateHtml}
         />
       );
@@ -462,12 +462,24 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   // Test Cases Function
 
   const onSaveTestCase = () => {
+    event.preventDefault();
     let reqBody = {
       problem_id: problem.id,
     };
     let outputType = metaData.outputType;
     if (outputType == 1) {
       reqBody.output = parseInt(selectedTestCase.output);
+    } else if (outputType == 2) {
+      reqBody.output = selectedTestCase.output;
+    } else if (outputType == 3) {
+      if (selectedTestCase.output == "true") {
+        reqBody.output = true;
+      } else if (selectedTestCase.output == "false") {
+        reqBody.output = false;
+      } else {
+        toast.error("Output is invalid");
+        return;
+      }
     } else if (outputType == 4) {
       try {
         reqBody.output = JSON.parse(selectedTestCase.output);
@@ -480,12 +492,14 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
     reqBody.input = JSON.parse(selectedTestCase.input);
     reqBody.type = Number(selectedTestCase.type);
     reqBody.name = props.TEST_CASE_TYPE[reqBody.type];
-    event.preventDefault();
+
     saveTestCases(reqBody)
       .then((data) => {
         reqBody.input = JSON.stringify(reqBody.input);
         if (metaData.outputType == 4) {
           reqBody.output = JSON.stringify(reqBody.output);
+        } else {
+          reqBody.output = String(reqBody.output);
         }
         if (data.error) {
           alert(data.error);
