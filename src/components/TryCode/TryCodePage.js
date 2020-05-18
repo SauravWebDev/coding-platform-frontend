@@ -266,7 +266,6 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
     body.lang_id = problem.selectedLanguage;
     body.code = problem.selectedCode;
     body.language = problem.language[problem.selectedLanguage];
-    body.default_input = defaultInput.split("\n");
     body.problem_id = problem.id;
 
     submissionSubmit(body)
