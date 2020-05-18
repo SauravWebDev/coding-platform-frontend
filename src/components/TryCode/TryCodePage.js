@@ -233,7 +233,13 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
       return;
     }
   }
-
+  const resetCode = () => {
+    setProblem((prev) => {
+      prev.selectedCode = prev.sourceCode[prev.selectedLanguage];
+      debugger;
+      return { ...prev };
+    });
+  };
   const run = () => {
     setApiInprogress(true);
     let body = {};
@@ -330,7 +336,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
     <div>
       <div className="try-code-page">
         <ResizePanel direction="e" style={{ flexGrow: "1" }}>
-          <div className="questionDetailsScreen scrollStyle">
+          <div className=" scrollStyle">
             <ProblemData
               questionData={problem}
               problems={props.problems}
@@ -368,6 +374,16 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
                 selectedValue={selectedTheme}
                 onChange={onChange}
               />
+            </div>
+            <div className="selectionDropdowns resetCode">
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={resetCode}
+              >
+                Reset Code
+              </Button>
             </div>
           </div>
 
