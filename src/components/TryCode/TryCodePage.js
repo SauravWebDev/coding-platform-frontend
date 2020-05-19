@@ -475,13 +475,27 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
                   <div>
                     <div className="consoleOutput">
                       <div style={{ width: "50%" }}>
-                        <div className="code-label"> Code Status</div>
-                        <div className="resultConsole"></div>
+                        <div className="code-label">
+                          Code Status:
+                          {result.type == 2 && result.result == "Passed" && (
+                            <span style={{ color: "green" }}>
+                              All Test Cases Passed
+                            </span>
+                          )}
+                          {result.type == 2 && result.result != "Passed" && (
+                            <span style={{ color: "red" }}>
+                              Test Case Failed
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div style={{ width: "50%" }}>
                         <div className="code-label"> Expected Output</div>
-                        <div className="resultConsole"></div>
+                        <div className="resultConsole">
+                          {result.failureRes &&
+                            result.failureRes.expectedOutput}
+                        </div>
                       </div>
                     </div>
 
@@ -511,13 +525,14 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
                       <div style={{ width: "50%" }}>
                         <div className="code-label"> Your Output</div>
                         <div className="console">
-                          {result.output && (
+                          {result.type == 1 && result.output && (
                             <div
                               dangerouslySetInnerHTML={{
-                                __html: result.output.replace(/\n/g, "</br>"),
+                                __html: result.output,
                               }}
                             />
                           )}
+                          {result.failureRes && result.failureRes.actualOutput}
                         </div>
                       </div>
                     </div>
