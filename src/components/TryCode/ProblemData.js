@@ -52,7 +52,7 @@ export default function ProblemData({
     bottom: false,
     right: false,
   });
-  const [showSimilar, setShowSimilar] = useState(true);
+  const [showSimilar, setShowSimilar] = useState(false);
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event &&
@@ -104,21 +104,21 @@ export default function ProblemData({
   );
   //drawer a  nd list ends
   let color = {
-    1: "#5cb85c",
-    2: "#f0ad4e",
+    1: "#199a46",
+    2: "#f65039",
     3: "#db2644",
   };
   return (
-    <div>
+    <div className="problemData">
       <h4>Question Details</h4>
       <div className="navButton borderStyle">
         <Chip
           style={{
-            backgroundColor: color[questionData.difficulty],
-            color: "white",
+            color: color[questionData.difficulty],
+           
           }}
           label={difficulty[questionData.difficulty]}
-          variant="outlined"
+         
         />
         <Button
           className="topButtons"

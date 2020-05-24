@@ -25,7 +25,7 @@ import { debounceFn, validString } from "../../util/util";
 
 //tabs
 import SwipeableViews from "react-swipeable-views";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -33,6 +33,16 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
 import ResizePanel from "react-resize-panel";
+
+//button styling
+import { green, red } from '@material-ui/core/colors';
+
+const colorTheme = createMuiTheme({
+  palette: {
+    secondary: green,
+    error: red,
+  },
+});
 
 const delay = 4000;
 //theme dropdwon
@@ -415,15 +425,21 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
 
           <div className="actionButton">
             <span className="runAlign">
-              <Button
-                size="small"
-                variant="contained"
-                color="primary"
-                onClick={run}
-                disabled={apiInprogress}
-              >
-                Run
+              <MuiThemeProvider theme={colorTheme}>
+                <Button
+                  style={{
+                    backgroundColor: "#15843c",
+                    color: 'white',
+                  }}
+                  size="small"
+                  variant="contained"
+
+                  onClick={run}
+                  disabled={apiInprogress}
+                >
+                  Run
               </Button>
+              </MuiThemeProvider>
             </span>
             <Button
               size="small"

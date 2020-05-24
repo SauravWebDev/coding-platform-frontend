@@ -38,8 +38,8 @@ export default function List({ isAdmin, problems, filters }) {
   const start = rowsPerPage * page;
   const end = start + rowsPerPage;
   let color = {
-    1: "#5cb85c",
-    2: "#f0ad4e",
+    1: "#199a46",
+    2: "#f65039",
     3: "#db2644",
   };
   return (
@@ -73,11 +73,9 @@ export default function List({ isAdmin, problems, filters }) {
                 <TableCell align="left">
                   <Chip
                     style={{
-                      backgroundColor: color[problem.difficulty],
-                      color: "white",
+                      color: color[problem.difficulty],
                     }}
                     label={filters.difficulty[problem.difficulty]}
-                    variant="outlined"
                   />
                 </TableCell>
                 {isAdmin && (
