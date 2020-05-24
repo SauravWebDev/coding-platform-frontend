@@ -12,11 +12,13 @@ const deleteTestCaseUrl = apiUrl + "/problem/testCase/delete";
 const saveMetaDataUrl = apiUrl + "/problem/saveMetaData";
 
 export function getAllProblems() {
-  return fetch(getAll).then(handleResponse).catch(handleError);
+  return fetch(getAll, { credentials: "include" })
+    .then(handleResponse)
+    .catch(handleError);
 }
 
 export function getProblemByIdOrTitle(id) {
-  return fetch(getByIdOrTitle + "" + id)
+  return fetch(getByIdOrTitle + "" + id, { credentials: "include" })
     .then(handleResponse)
     .catch(handleError);
 }

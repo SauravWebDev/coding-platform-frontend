@@ -32,7 +32,7 @@ import {
 } from "./Constant";
 import OverviewPage from "./OverviewPage";
 
-const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
+const CreateUpdatePage = ({ ...props }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [slug, setSlug] = useState(props.slug);
   const [selectedTagArray, setSelectedTagArray] = useState([]);
@@ -48,7 +48,9 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   const [selectedTestCase, setSelectedTestCase] = useState(
     props.SELECTED_TEST_CASE
   );
-
+  if (!props.isAdmin) {
+    return <Redirect to="/" />;
+  }
   useEffect(() => {
     if (validString(slug)) {
       getSourceCode(slug)
@@ -588,9 +590,7 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
   };
 
   ///////////////End Test Case ////////
-  if (!isLoggedIn) {
-    return <Redirect to="/" />;
-  }
+
   if (validString(apiError)) {
     toast.error(apiError);
     return <></>;
@@ -636,7 +636,6 @@ const CreateUpdatePage = ({ isLoggedIn, ...props }) => {
 };
 
 CreateUpdatePage.propTypes = {
-  isLoggedIn: PropTypes.bool.isRequired,
   loadFilters: PropTypes.func.isRequired,
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
   slug: PropTypes.string.isRequired,
@@ -647,12 +646,18 @@ CreateUpdatePage.propTypes = {
   TEST_CASE_TYPE: PropTypes.object.isRequired,
   SELECTED_TEST_CASE: PropTypes.object.isRequired,
   STATUS: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
   let slug = ownProps.match.params.slug && ownProps.match.params.slug.trim();
   return cloneDeep({
-    isLoggedIn: state.userData.isAuthenticated,
+    isAdmin:
+      state.userData.isAuthenticated &&
+      state.userData.data &&
+      state.userData.data.role == 2
+        ? true
+        : false,
     slug: slug || "",
     DEFAULT_PROB_DATA: DEFAULT_PROB_DATA,
     FILTERS,

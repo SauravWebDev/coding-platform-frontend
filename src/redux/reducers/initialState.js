@@ -7,7 +7,7 @@ export default {
     tag: {},
     language: {},
   },
-  userDetails: {
+  userData: {
     isAuthenticated: false,
     data: {},
   },
