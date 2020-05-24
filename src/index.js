@@ -5,13 +5,14 @@ import App from "./components/App";
 import configureStore from "./redux/configureStore";
 import { Provider as ReduxProvider } from "react-redux";
 import { setCurrentUser } from "./redux/actions/loginAction";
+import Cookies from "js-cookie";
 
 import "./assets/scss/material-kit-react.scss";
 
 const store = configureStore();
 
-if (localStorage.token) {
-  store.dispatch(setCurrentUser(localStorage.token));
+if (Cookies.get("ac-token")) {
+  store.dispatch(setCurrentUser(Cookies.get("ac-token")));
 }
 
 render(

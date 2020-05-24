@@ -3,11 +3,12 @@ import { debounce } from "lodash";
 const jwt = require("jsonwebtoken");
 
 export function decode(token) {
-  let { emailID, firstName, lastName } = jwt.decode(token.split(" ")[1]);
+  let { emailID, firstName, lastName, role } = jwt.decode(token);
   return {
     emailID,
     firstName,
     lastName,
+    role,
   };
 }
 
