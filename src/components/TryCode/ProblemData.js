@@ -104,8 +104,8 @@ export default function ProblemData({
   );
   //drawer a  nd list ends
   let color = {
-    1: "#199a46",
-    2: "#f65039",
+    1: "#5cb85c",
+    2: "#f0ad4e",
     3: "#db2644",
   };
   return (
@@ -114,11 +114,10 @@ export default function ProblemData({
       <div className="navButton borderStyle">
         <Chip
           style={{
-            color: color[questionData.difficulty],
-           
+            backgroundColor: color[questionData.difficulty],
+            color: "white",
           }}
           label={difficulty[questionData.difficulty]}
-         
         />
         <Button
           className="topButtons"
