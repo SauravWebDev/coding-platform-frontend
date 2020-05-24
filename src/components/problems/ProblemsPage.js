@@ -50,18 +50,24 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
       <div className="problemPage">
         <div className="width-5percent"></div>
         <div className="width-70percent">
-          <Chip
-            onClick={() => createProblem(history)}
-            label={"Create New Problem"}
-            variant="outlined"
-          />
+          {props.isAdmin && (
+            <Chip
+              onClick={() => createProblem(history)}
+              label={"Create New Problem"}
+              variant="outlined"
+            />
+          )}
           <Filters
             filters={props.filters}
             selectedDifficulty={selectedDifficulty}
             handleChange={handleChange}
             selectedTag={selectedTag}
           />
-          <ProblemList problems={problemsData} filters={props.filters} />
+          <ProblemList
+            isAdmin={props.isAdmin}
+            problems={problemsData}
+            filters={props.filters}
+          />
         </div>
         <div className="width-25percent filter"></div>
       </div>
@@ -75,6 +81,7 @@ ProblemsPage.propTypes = {
   history: PropTypes.object.isRequired,
   loadFilters: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -82,6 +89,12 @@ function mapStateToProps(state, ownProps) {
     problemsData: state.problems,
     history: ownProps.history,
     filters: state.filters,
+    isAdmin:
+      state.userData.isAuthenticated &&
+      state.userData.data &&
+      state.userData.data.role == 2
+        ? true
+        : false,
   };
 }
 

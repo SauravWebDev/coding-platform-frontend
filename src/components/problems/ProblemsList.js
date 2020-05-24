@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function List({ problems, filters }) {
+export default function List({ isAdmin, problems, filters }) {
   const classes = useStyles();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
@@ -51,8 +51,12 @@ export default function List({ problems, filters }) {
               <TableCell>#</TableCell>
               <TableCell align="left">Title</TableCell>
               <TableCell align="left">Difficulty</TableCell>
-              <TableCell align="left">Action</TableCell>
-              <TableCell align="left">Status</TableCell>
+              {isAdmin && (
+                <>
+                  <TableCell align="left">Action</TableCell>
+                  <TableCell align="left">Status</TableCell>
+                </>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -76,19 +80,23 @@ export default function List({ problems, filters }) {
                     variant="outlined"
                   />
                 </TableCell>
-                <TableCell align="left" style={{ padding: "5px" }}>
-                  <NavLink to={"/problem/createUpdate/" + problem.slug}>
-                    Update
-                  </NavLink>
-                </TableCell>
-                <TableCell
-                  align="left"
-                  style={{
-                    color: problem.status == 0 ? "Red" : undefined,
-                  }}
-                >
-                  {problem.status == 0 ? "InActive" : "Active"}
-                </TableCell>
+                {isAdmin && (
+                  <>
+                    <TableCell align="left" style={{ padding: "5px" }}>
+                      <NavLink to={"/problem/createUpdate/" + problem.slug}>
+                        Update
+                      </NavLink>
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      style={{
+                        color: problem.status == 0 ? "Red" : undefined,
+                      }}
+                    >
+                      {problem.status == 0 ? "InActive" : "Active"}
+                    </TableCell>
+                  </>
+                )}
               </TableRow>
             ))}
           </TableBody>
@@ -110,4 +118,5 @@ export default function List({ problems, filters }) {
 List.propTypes = {
   problems: PropTypes.array.isRequired,
   filters: PropTypes.object.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };

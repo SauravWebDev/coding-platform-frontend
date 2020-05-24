@@ -241,6 +241,10 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
     });
   };
   const run = () => {
+    if (!props.isLoggedIn) {
+      toast.error("Please Login to run Code");
+      return;
+    }
     setApiInprogress(true);
     let body = {};
     body.lang_id = problem.selectedLanguage;
@@ -267,6 +271,10 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
       });
   };
   const submit = () => {
+    if (!props.isLoggedIn) {
+      toast.error("Please Login to submit code");
+      return;
+    }
     setApiInprogress(true);
     let body = {};
     body.lang_id = problem.selectedLanguage;
@@ -593,6 +601,7 @@ function mapStateToProps(state, ownProps) {
     slug:
       (ownProps.match.params.slug && ownProps.match.params.slug.trim()) || "",
     DEFAULT_PROB_DATA,
+    isLoggedIn: state.userData.isAuthenticated,
     problems: state.problems,
     filters: state.filters,
     history: ownProps.history,
@@ -605,6 +614,7 @@ const mapDispatchToProps = {
 
 TryCodePage.propTypes = {
   slug: PropTypes.string.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
   DEFAULT_PROB_DATA: PropTypes.object.isRequired,
   loadProblems: PropTypes.func.isRequired,
   loadFilters: PropTypes.func.isRequired,

@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App({ isLoggedIn }) {
+function App({ isLoggedIn, isAdmin }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -182,7 +182,7 @@ function App({ isLoggedIn }) {
             </NavLink>
           </List>
           <Divider />
-          {isLoggedIn && (
+          {isAdmin && (
             <NavLink to={addProblemLink}>
               <ListItem button key={"Add Problem"}>
                 <ListItemIcon>
@@ -237,10 +237,17 @@ function App({ isLoggedIn }) {
 
 App.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    isAdmin:
+      state.userData.isAuthenticated &&
+      state.userData.data &&
+      state.userData.data.role == 2
+        ? true
+        : false,
     isLoggedIn: state.userData.isAuthenticated,
   };
 }
