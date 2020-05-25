@@ -45,11 +45,29 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 
 import HomeIcon from "@material-ui/icons/Home";
+
+//for app bar
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+
+//login icon
+import Avatar from "@material-ui/core/Avatar";
+import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
+import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
+    display: "flex"
+
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -66,9 +84,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  menuButton: {
-    marginRight: 36,
-  },
+
   hide: {
     display: "none",
   },
@@ -107,12 +123,19 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: theme.spacing(1),
   },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
 }));
 
 function App({ isLoggedIn, isAdmin }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [auth] = React.useState(true);
+  const openMenu = Boolean(anchorEl);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -121,11 +144,23 @@ function App({ isLoggedIn, isAdmin }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+
+  };
+
+
   return (
     <>
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
+        {/* <AppBar
           position="fixed"
           className={clsx(classes.appBar, {
             [classes.appBarShift]: open,
@@ -147,7 +182,63 @@ function App({ isLoggedIn, isAdmin }) {
               GammaCoder
             </Typography>
           </Toolbar>
+        </AppBar> */}
+
+        <AppBar position="fixed" className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}>
+          <Toolbar>
+            <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start"
+              className={clsx(classes.menuButton, {
+                [classes.hide]: open,
+              })}>
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              gammaCoder
+          </Typography>
+            {isLoggedIn && (
+              <>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={openMenu}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Change Password</MenuItem>
+                  <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                </Menu>
+              </>
+            )}
+            {!isLoggedIn && (
+              <>
+                <div>Login</div>
+                <Avatar className={classes.avatar}>
+                  <LockOpenOutlinedIcon size="small" />
+                </Avatar>
+              </>
+            )}
+          </Toolbar>
         </AppBar>
+
         <Drawer
           variant="permanent"
           className={clsx(classes.drawer, {
@@ -166,8 +257,8 @@ function App({ isLoggedIn, isAdmin }) {
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />
               ) : (
-                <ChevronLeftIcon />
-              )}
+                  <ChevronLeftIcon />
+                )}
             </IconButton>
           </div>
           <Divider />
@@ -200,6 +291,11 @@ function App({ isLoggedIn, isAdmin }) {
                     <InboxIcon />
                   </ListItemIcon>
                   <ListItemText primary={"Login"} />
+                  <Avatar className={classes.avatar}>
+                 
+                      <LockOpenOutlinedIcon />
+                    
+                  </Avatar>
                 </ListItem>
               </NavLink>
               <NavLink to={signupLink}>
@@ -208,6 +304,11 @@ function App({ isLoggedIn, isAdmin }) {
                     <InboxIcon />
                   </ListItemIcon>
                   <ListItemText primary={"Signup"} />
+                  <Avatar className={classes.avatar}>
+                   
+                      <PersonAddOutlinedIcon />
+                  
+                  </Avatar>
                 </ListItem>
               </NavLink>
             </>
@@ -244,8 +345,8 @@ function mapStateToProps(state) {
   return {
     isAdmin:
       state.userData.isAuthenticated &&
-      state.userData.data &&
-      state.userData.data.role == 2
+        state.userData.data &&
+        state.userData.data.role == 2
         ? true
         : false,
     isLoggedIn: state.userData.isAuthenticated,
