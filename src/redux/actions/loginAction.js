@@ -44,3 +44,14 @@ export function signup(firsName, lastName, email, password) {
       });
   };
 }
+
+function setDefaultUsetDetails() {
+  let res = "success";
+  return { type: types.LOG_OUT, res };
+}
+export function logout() {
+  return function (dispatch) {
+    Cookies.remove("ac-token", { path: "" });
+    dispatch(setDefaultUsetDetails());
+  };
+}

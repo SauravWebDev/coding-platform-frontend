@@ -2,6 +2,8 @@ import React from "react";
 import { Route, Switch, NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { logout as logoutAction } from "../redux/actions/loginAction";
+
 import {
   homeLink,
   listProblemLink,
@@ -19,7 +21,7 @@ import ManageSignupPage from "./signup/ManageSignupPage";
 import CreateUpdatePage from "./problems/CreateUpdatePage";
 import TryCodePage from "./TryCode/TryCodePage";
 
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "../css/main.scss";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -125,7 +127,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App({ isLoggedIn, isAdmin }) {
+function App({ isLoggedIn, isAdmin, ...props }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -147,7 +149,14 @@ function App({ isLoggedIn, isAdmin }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  const logoutUser = () => {
+    try {
+      props.logoutAction();
+      toast.success("Logout successfully");
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <div className={classes.root}>
@@ -184,6 +193,7 @@ function App({ isLoggedIn, isAdmin }) {
                 >
                   <AccountCircle />
                 </IconButton>
+                {props.name}
                 <Menu
                   id="menu-appbar"
                   anchorEl={anchorEl}
@@ -199,8 +209,8 @@ function App({ isLoggedIn, isAdmin }) {
                   open={openMenu}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>Change Password</MenuItem>
-                  <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                  <MenuItem>Change Password</MenuItem>
+                  <MenuItem onClick={logoutUser}>Log Out</MenuItem>
                 </Menu>
               </>
             )}
@@ -314,6 +324,8 @@ function App({ isLoggedIn, isAdmin }) {
 App.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   isAdmin: PropTypes.bool.isRequired,
+  logoutAction: PropTypes.func.isRequired,
+  name: PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -325,7 +337,10 @@ function mapStateToProps(state) {
         ? true
         : false,
     isLoggedIn: state.userData.isAuthenticated,
+    name: state.userData.data.firstName || "",
   };
 }
-
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = {
+  logoutAction: logoutAction,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(App);
