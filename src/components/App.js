@@ -18,7 +18,6 @@ import ManageLoginPage from "./login/ManageLoginPage";
 import ManageSignupPage from "./signup/ManageSignupPage";
 import CreateUpdatePage from "./problems/CreateUpdatePage";
 import TryCodePage from "./TryCode/TryCodePage";
-import DiscussPage from "./discuss/Discuss";
 
 import { ToastContainer } from "react-toastify";
 import "../css/main.scss";
@@ -42,26 +41,23 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import AddIcon from "@material-ui/icons/Add";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
 
 import HomeIcon from "@material-ui/icons/Home";
 
 //for app bar
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 
 //login icon
-import Avatar from "@material-ui/core/Avatar";
-import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
-import PersonAddOutlinedIcon from '@material-ui/icons/PersonAddOutlined';
+import LockOpenOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
+import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex"
-
+    display: "flex",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -134,7 +130,6 @@ function App({ isLoggedIn, isAdmin }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [auth] = React.useState(true);
   const openMenu = Boolean(anchorEl);
 
   const handleDrawerOpen = () => {
@@ -147,20 +142,17 @@ function App({ isLoggedIn, isAdmin }) {
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
-
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-
   };
-
 
   return (
     <>
       <div className={classes.root}>
         <CssBaseline />
-        {/* <AppBar
+        <AppBar
           position="fixed"
           className={clsx(classes.appBar, {
             [classes.appBarShift]: open,
@@ -178,25 +170,9 @@ function App({ isLoggedIn, isAdmin }) {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              GammaCoder
-            </Typography>
-          </Toolbar>
-        </AppBar> */}
-
-        <AppBar position="fixed" className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}>
-          <Toolbar>
-            <IconButton color="inherit" aria-label="open drawer" onClick={handleDrawerOpen} edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}>
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6" className={classes.title}>
               gammaCoder
-          </Typography>
+            </Typography>
             {isLoggedIn && (
               <>
                 <IconButton
@@ -212,13 +188,13 @@ function App({ isLoggedIn, isAdmin }) {
                   id="menu-appbar"
                   anchorEl={anchorEl}
                   anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                   keepMounted
                   transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: "top",
+                    horizontal: "right",
                   }}
                   open={openMenu}
                   onClose={handleClose}
@@ -230,10 +206,19 @@ function App({ isLoggedIn, isAdmin }) {
             )}
             {!isLoggedIn && (
               <>
-                <div>Login</div>
-                <Avatar className={classes.avatar}>
-                  <LockOpenOutlinedIcon size="small" />
-                </Avatar>
+                <NavLink
+                  to={loginLink}
+                  style={{
+                    backgroundColor: "white",
+                    border: "1px solid hsl(246, 55%, 47%)",
+                    borderRadius: "3px",
+                  }}
+                >
+                  <ListItem button key={"Login"}>
+                    <LockOpenOutlinedIcon />
+                    <ListItemText primary={"Login"} />
+                  </ListItem>
+                </NavLink>
               </>
             )}
           </Toolbar>
@@ -257,24 +242,24 @@ function App({ isLoggedIn, isAdmin }) {
               {theme.direction === "rtl" ? (
                 <ChevronRightIcon />
               ) : (
-                  <ChevronLeftIcon />
-                )}
+                <ChevronLeftIcon />
+              )}
             </IconButton>
           </div>
           <Divider />
-          <List>
-            <NavLink to={homeLink}>
-              <ListItem button key={"All Problems"}>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary={"All Problems"} />
-              </ListItem>
-            </NavLink>
-          </List>
+          <List />
+          <NavLink exact to={homeLink} activeClassName={"activeLink"}>
+            <ListItem button key={"All Problems"}>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"All Problems"} />
+            </ListItem>
+          </NavLink>
+
           <Divider />
           {isAdmin && (
-            <NavLink to={addProblemLink}>
+            <NavLink to={addProblemLink} activeClassName={"activeLink"}>
               <ListItem button key={"Add Problem"}>
                 <ListItemIcon>
                   <AddIcon />
@@ -285,30 +270,20 @@ function App({ isLoggedIn, isAdmin }) {
           )}
           {!isLoggedIn && (
             <>
-              <NavLink to={loginLink}>
+              <NavLink to={loginLink} activeClassName={"activeLink"}>
                 <ListItem button key={"Login"}>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <LockOpenOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary={"Login"} />
-                  <Avatar className={classes.avatar}>
-                 
-                      <LockOpenOutlinedIcon />
-                    
-                  </Avatar>
                 </ListItem>
               </NavLink>
-              <NavLink to={signupLink}>
+              <NavLink to={signupLink} activeClassName={"activeLink"}>
                 <ListItem button key={"Signup"}>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <PersonAddOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary={"Signup"} />
-                  <Avatar className={classes.avatar}>
-                   
-                      <PersonAddOutlinedIcon />
-                  
-                  </Avatar>
                 </ListItem>
               </NavLink>
             </>
@@ -345,8 +320,8 @@ function mapStateToProps(state) {
   return {
     isAdmin:
       state.userData.isAuthenticated &&
-        state.userData.data &&
-        state.userData.data.role == 2
+      state.userData.data &&
+      state.userData.data.role == 2
         ? true
         : false,
     isLoggedIn: state.userData.isAuthenticated,

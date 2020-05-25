@@ -25,7 +25,12 @@ import { debounceFn, validString } from "../../util/util";
 
 //tabs
 import SwipeableViews from "react-swipeable-views";
-import { makeStyles, useTheme, MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import {
+  makeStyles,
+  useTheme,
+  MuiThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -35,7 +40,7 @@ import Box from "@material-ui/core/Box";
 import ResizePanel from "react-resize-panel";
 
 //button styling
-import { green, red } from '@material-ui/core/colors';
+import { green, red } from "@material-ui/core/colors";
 
 const colorTheme = createMuiTheme({
   palette: {
@@ -429,16 +434,15 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
                 <Button
                   style={{
                     backgroundColor: "#15843c",
-                    color: 'white',
+                    color: "white",
                   }}
                   size="small"
                   variant="contained"
-
                   onClick={run}
                   disabled={apiInprogress}
                 >
                   Run
-              </Button>
+                </Button>
               </MuiThemeProvider>
             </span>
             <Button
