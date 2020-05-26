@@ -177,11 +177,10 @@ export default function ProblemData({
         className="exampleStyle borderStyle"
         dangerouslySetInnerHTML={{ __html: questionData.note }}
       />
-
       <div
         className="borderStyle"
         style={{
-          display: "flex",
+          display: "none",
           alignItems: "center",
           justifyContent: "space-between",
           cursor: "pointer",
@@ -197,7 +196,6 @@ export default function ProblemData({
           )}
         </span>
       </div>
-
       <div
         className="exampleStyle"
         style={{ display: !showSimilar ? "none" : undefined }}
@@ -215,7 +213,6 @@ export default function ProblemData({
           <span>Hard</span>
         </div>
       </div>
-
       <div className="navButton">
         <Button
           size="small"

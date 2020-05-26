@@ -27,7 +27,7 @@ import "../css/main.scss";
 import "react-toastify/dist/ReactToastify.css";
 
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, createMuiTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -54,7 +54,18 @@ import Menu from "@material-ui/core/Menu";
 //login icon
 import LockOpenOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
+import { ThemeProvider } from "@material-ui/styles";
 
+const mainTheme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#1976d2",
+    },
+    secondary: {
+      main: "#dc004e",
+    },
+  },
+});
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -159,164 +170,171 @@ function App({ isLoggedIn, isAdmin, ...props }) {
   };
   return (
     <>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              className={clsx(classes.menuButton, {
-                [classes.hide]: open,
-              })}
+      <ThemeProvider theme={mainTheme}>
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar
+            position="fixed"
+            className={clsx(classes.appBar, {
+              [classes.appBarShift]: open,
+            })}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
+                className={clsx(classes.menuButton, {
+                  [classes.hide]: open,
+                })}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.title}>
+                gammaCoder
+              </Typography>
+              {isLoggedIn && (
+                <>
+                  <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  {props.name}
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                    open={openMenu}
+                    onClose={handleClose}
+                  >
+                    <MenuItem>Change Password</MenuItem>
+                    <MenuItem onClick={logoutUser}>Log Out</MenuItem>
+                  </Menu>
+                </>
+              )}
+              {!isLoggedIn && (
+                <>
+                  <NavLink
+                    to={loginLink}
+                    style={{
+                      backgroundColor: "white",
+                      border: "1px solid hsl(246, 55%, 47%)",
+                      borderRadius: "3px",
+                    }}
+                  >
+                    <ListItem button key={"Login"}>
+                      <LockOpenOutlinedIcon />
+                      <ListItemText primary={"Login"} />
+                    </ListItem>
+                  </NavLink>
+                </>
+              )}
+            </Toolbar>
+          </AppBar>
+
+          <Drawer
+            variant="permanent"
+            className={clsx(classes.drawer, {
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            })}
+            classes={{
+              paper: clsx({
+                [classes.drawerOpen]: open,
+                [classes.drawerClose]: !open,
+              }),
+            }}
+          >
+            <div className={classes.toolbar}>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === "rtl" ? (
+                  <ChevronRightIcon />
+                ) : (
+                  <ChevronLeftIcon />
+                )}
+              </IconButton>
+            </div>
+            <Divider />
+            <List />
+            <NavLink
+              color="primary"
+              exact
+              to={homeLink}
+              activeClassName={"activeLink"}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              gammaCoder
-            </Typography>
-            {isLoggedIn && (
-              <>
-                <IconButton
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                {props.name}
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={openMenu}
-                  onClose={handleClose}
-                >
-                  <MenuItem>Change Password</MenuItem>
-                  <MenuItem onClick={logoutUser}>Log Out</MenuItem>
-                </Menu>
-              </>
+              <ListItem button key={"All Problems"}>
+                <ListItemIcon>
+                  <HomeIcon />
+                </ListItemIcon>
+                <ListItemText primary={"All Problems"} />
+              </ListItem>
+            </NavLink>
+
+            <Divider />
+            {isAdmin && (
+              <NavLink to={addProblemLink} activeClassName={"activeLink"}>
+                <ListItem button key={"Add Problem"}>
+                  <ListItemIcon>
+                    <AddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={"Add Problem"} />
+                </ListItem>
+              </NavLink>
             )}
             {!isLoggedIn && (
               <>
-                <NavLink
-                  to={loginLink}
-                  style={{
-                    backgroundColor: "white",
-                    border: "1px solid hsl(246, 55%, 47%)",
-                    borderRadius: "3px",
-                  }}
-                >
+                <NavLink to={loginLink} activeClassName={"activeLink"}>
                   <ListItem button key={"Login"}>
-                    <LockOpenOutlinedIcon />
+                    <ListItemIcon>
+                      <LockOpenOutlinedIcon />
+                    </ListItemIcon>
                     <ListItemText primary={"Login"} />
+                  </ListItem>
+                </NavLink>
+                <NavLink to={signupLink} activeClassName={"activeLink"}>
+                  <ListItem button key={"Signup"}>
+                    <ListItemIcon>
+                      <PersonAddOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={"Signup"} />
                   </ListItem>
                 </NavLink>
               </>
             )}
-          </Toolbar>
-        </AppBar>
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
 
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <div className={classes.toolbar}>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === "rtl" ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          </div>
-          <Divider />
-          <List />
-          <NavLink exact to={homeLink} activeClassName={"activeLink"}>
-            <ListItem button key={"All Problems"}>
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary={"All Problems"} />
-            </ListItem>
-          </NavLink>
+            <Switch>
+              <Route exact path={homeLink} component={ProblemsPage} />
+              <Route exact path={listProblemLink} component={ProblemsPage} />
+              <Route path={loginLink} component={ManageLoginPage} />
+              <Route path={signupLink} component={ManageSignupPage} />
+              <Route path={updateProblemLink} component={CreateUpdatePage} />
+              <Route path={addProblemLink} component={CreateUpdatePage} />
+              <Route path={solveProblemLink} component={TryCodePage} />
 
-          <Divider />
-          {isAdmin && (
-            <NavLink to={addProblemLink} activeClassName={"activeLink"}>
-              <ListItem button key={"Add Problem"}>
-                <ListItemIcon>
-                  <AddIcon />
-                </ListItemIcon>
-                <ListItemText primary={"Add Problem"} />
-              </ListItem>
-            </NavLink>
-          )}
-          {!isLoggedIn && (
-            <>
-              <NavLink to={loginLink} activeClassName={"activeLink"}>
-                <ListItem button key={"Login"}>
-                  <ListItemIcon>
-                    <LockOpenOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Login"} />
-                </ListItem>
-              </NavLink>
-              <NavLink to={signupLink} activeClassName={"activeLink"}>
-                <ListItem button key={"Signup"}>
-                  <ListItemIcon>
-                    <PersonAddOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={"Signup"} />
-                </ListItem>
-              </NavLink>
-            </>
-          )}
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-
-          <Switch>
-            <Route exact path={homeLink} component={ProblemsPage} />
-            <Route exact path={listProblemLink} component={ProblemsPage} />
-            <Route path={loginLink} component={ManageLoginPage} />
-            <Route path={signupLink} component={ManageSignupPage} />
-            <Route path={updateProblemLink} component={CreateUpdatePage} />
-            <Route path={addProblemLink} component={CreateUpdatePage} />
-            <Route path={solveProblemLink} component={TryCodePage} />
-
-            <Route component={PageNotFound} />
-          </Switch>
-          <Footer />
-          <ToastContainer autoClose={3000} hideProgressBar />
-        </main>
-      </div>
+              <Route component={PageNotFound} />
+            </Switch>
+            <Footer />
+            <ToastContainer autoClose={3000} hideProgressBar />
+          </main>
+        </div>
+      </ThemeProvider>
     </>
   );
 }
