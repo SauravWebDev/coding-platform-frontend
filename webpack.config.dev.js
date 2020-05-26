@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 process.env.NODE_ENV = "development";
 
-var API_URL = JSON.stringify("http://localhost:8081");
+var API_URL = JSON.stringify("http://18.191.152.109:8081");
 
 // check environment mode
 var environment =
@@ -18,15 +18,15 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "build"),
     publicPath: "/",
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "src/index.html"
+      template: "src/index.html",
     }),
     new webpack.DefinePlugin({
-      API_URL: API_URL
-    })
+      API_URL: API_URL,
+    }),
   ],
   devServer: {
     stats: "minimal",
@@ -34,35 +34,35 @@ module.exports = {
     historyApiFallback: true,
     disableHostCheck: true,
     headers: { "Access-Control-Allow-Origin": "*" },
-    https: false
+    https: false,
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"]
+        use: ["babel-loader", "eslint-loader"],
       },
       {
         test: /(\.css)$/,
-        use: ["style-loader", "css-loader"]
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.scss$/,
         use: [
           { loader: "style-loader" },
           { loader: "css-loader" },
-          { loader: "sass-loader" }
-        ]
+          { loader: "sass-loader" },
+        ],
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
         use: [
           {
-            loader: "file-loader"
-          }
-        ]
-      }
-    ]
-  }
+            loader: "file-loader",
+          },
+        ],
+      },
+    ],
+  },
 };

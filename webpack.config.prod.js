@@ -6,7 +6,7 @@ const webpackBundleAnalyzer = require("webpack-bundle-analyzer");
 
 process.env.NODE_ENV = "production";
 
-var API_URL = JSON.stringify("http://localhost:8081");
+var API_URL = JSON.stringify("http://18.191.152.109:8081");
 
 module.exports = {
   mode: "production",
@@ -16,20 +16,20 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "build"),
     publicPath: "/",
-    filename: "bundle.js"
+    filename: "bundle.js",
   },
   plugins: [
     // Display bundle stats
     new webpackBundleAnalyzer.BundleAnalyzerPlugin({ analyzerMode: "static" }),
 
     new MiniCssExtractPlugin({
-      filename: "[name].[contenthash].css"
+      filename: "[name].[contenthash].css",
     }),
 
     new webpack.DefinePlugin({
       // This global makes sure React is built in prod mode.
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
-      API_URL: API_URL
+      API_URL: API_URL,
     }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
@@ -44,16 +44,16 @@ module.exports = {
         keepClosingSlash: true,
         minifyJS: true,
         minifyCSS: true,
-        minifyURLs: true
-      }
-    })
+        minifyURLs: true,
+      },
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ["babel-loader", "eslint-loader"]
+        use: ["babel-loader", "eslint-loader"],
       },
       {
         test: /(\.css)$/,
@@ -62,34 +62,34 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              sourceMap: true
-            }
+              sourceMap: true,
+            },
           },
           {
             loader: "postcss-loader",
             options: {
               plugins: () => [require("cssnano")],
-              sourceMap: true
-            }
-          }
-        ]
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.scss$/,
         use: [
           { loader: "style-loader" },
           { loader: "css-loader" },
-          { loader: "sass-loader" }
-        ]
+          { loader: "sass-loader" },
+        ],
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
         use: [
           {
-            loader: "file-loader"
-          }
-        ]
-      }
-    ]
-  }
+            loader: "file-loader",
+          },
+        ],
+      },
+    ],
+  },
 };
