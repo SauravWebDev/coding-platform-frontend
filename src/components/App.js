@@ -222,7 +222,9 @@ function App({ isLoggedIn, isAdmin, ...props }) {
                     onClose={handleClose}
                   >
                     <MenuItem>Change Password</MenuItem>
-                    <MenuItem onClick={logoutUser}>Log Out</MenuItem>
+                    <NavLink to={loginLink}>
+                      <MenuItem onClick={logoutUser}>Log Out</MenuItem>
+                    </NavLink>
                   </Menu>
                 </>
               )}

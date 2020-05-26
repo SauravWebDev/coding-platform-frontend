@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 process.env.NODE_ENV = "development";
 
-var API_URL = JSON.stringify("http://18.191.152.109:8081");
+var API_URL = JSON.stringify("http://localhost:8081");
 
 // check environment mode
 var environment =
