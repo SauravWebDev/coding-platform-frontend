@@ -7,7 +7,7 @@ const port = 3000;
 
 app.use(express.static(buildDirPath));
 
-app.get("/*", function(req, res) {
+app.get("/*", function (req, res) {
   res.sendFile(buildFilePath);
 });
 app.listen(port);
