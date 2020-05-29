@@ -45,7 +45,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import HomeIcon from "@material-ui/icons/Home";
-
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 //for app bar
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -55,7 +55,7 @@ import Menu from "@material-ui/core/Menu";
 import LockOpenOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import { ThemeProvider } from "@material-ui/styles";
-
+import "./App.scss";
 const mainTheme = createMuiTheme({
   palette: {
     primary: {
@@ -196,16 +196,12 @@ function App({ isLoggedIn, isAdmin, ...props }) {
               </Typography>
               {isLoggedIn && (
                 <>
-                  <IconButton
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                  >
-                    <AccountCircle />
+                  <IconButton onClick={handleMenu} color="inherit">
+                    <AccountCircle fontSize="large" />
+                    <span className="userName"> {props.name}</span>
+                    <ArrowDropDownIcon fontSize="large" />
                   </IconButton>
-                  {props.name}
+
                   <Menu
                     id="menu-appbar"
                     anchorEl={anchorEl}
