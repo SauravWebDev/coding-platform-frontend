@@ -165,6 +165,7 @@ function App({ isLoggedIn, isAdmin, ...props }) {
     try {
       props.logoutAction();
       toast.success("Logout successfully");
+      setAnchorEl(null);
     } catch (e) {
       console.log(e);
     }
@@ -197,32 +198,35 @@ function App({ isLoggedIn, isAdmin, ...props }) {
               </Typography>
               {isLoggedIn && (
                 <>
-                  <Button onClick={handleMenu}>
-                    <AccountCircle fontSize="large" />
-                    <span className="userName"> {props.name}</span>
-                    <ArrowDropDownIcon fontSize="large" />
-                  </Button>
-
-                  <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "right",
-                    }}
-                    open={openMenu}
-                    onClose={handleClose}
-                  >
-                    <MenuItem>Change Password</MenuItem>
-                    <NavLink to={loginLink}>
-                      <MenuItem onClick={logoutUser}>Log Out</MenuItem>
-                    </NavLink>
-                  </Menu>
+                  <div>
+                    <Button onClick={handleMenu}>
+                      <AccountCircle fontSize="large" />
+                      <span className="userName"> {props.name}</span>
+                      <ArrowDropDownIcon fontSize="large" />
+                    </Button>
+                  </div>
+                  <div>
+                    <Menu
+                      id="menu-appbar"
+                      anchorEl={anchorEl}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={openMenu}
+                      onClose={handleClose}
+                    >
+                      <MenuItem>Change Password</MenuItem>
+                      <NavLink to={loginLink}>
+                        <MenuItem onClick={logoutUser}>Log Out</MenuItem>
+                      </NavLink>
+                    </Menu>
+                  </div>
                 </>
               )}
               {!isLoggedIn && (
