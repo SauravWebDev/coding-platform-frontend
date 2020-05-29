@@ -56,6 +56,7 @@ import LockOpenOutlinedIcon from "@material-ui/icons/LockOpenOutlined";
 import PersonAddOutlinedIcon from "@material-ui/icons/PersonAddOutlined";
 import { ThemeProvider } from "@material-ui/styles";
 import "./App.scss";
+import Button from "./common/Button";
 const mainTheme = createMuiTheme({
   palette: {
     primary: {
@@ -196,11 +197,11 @@ function App({ isLoggedIn, isAdmin, ...props }) {
               </Typography>
               {isLoggedIn && (
                 <>
-                  <IconButton onClick={handleMenu} color="inherit">
+                  <Button onClick={handleMenu}>
                     <AccountCircle fontSize="large" />
                     <span className="userName"> {props.name}</span>
                     <ArrowDropDownIcon fontSize="large" />
-                  </IconButton>
+                  </Button>
 
                   <Menu
                     id="menu-appbar"
