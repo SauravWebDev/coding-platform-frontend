@@ -1,9 +1,9 @@
 import { submission as apiUrl } from "./apiUrls";
-
+import { getCookieByName } from "../util/util";
 const runUrl = apiUrl + "/submission/run";
 const submitUrl = apiUrl + "/submission/submit";
 const checkStatusUrl = apiUrl + "/submission/checkStatus";
-
+const accessToken = "ac-token";
 import { handleResponse, handleError } from "./apiUtils";
 
 export function run(data) {
@@ -14,6 +14,7 @@ export function run(data) {
     referrerPolicy: "no-referrer",
     headers: {
       "Content-Type": "application/json",
+      authorization: `Bearer ${getCookieByName(accessToken)}`,
     },
     body: JSON.stringify(data),
   })
@@ -28,6 +29,7 @@ export function submit(data) {
     referrerPolicy: "no-referrer",
     headers: {
       "Content-Type": "application/json",
+      authorization: `Bearer ${getCookieByName(accessToken)}`,
     },
     body: JSON.stringify(data),
   })

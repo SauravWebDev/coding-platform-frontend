@@ -1,11 +1,14 @@
 import * as types from "./actionTypes";
 import * as auth from "../../api/auth";
-import * as util from "../../util/util";
+import { decode, getCookieByName } from "../../util/util";
 import Cookies from "js-cookie";
 
 export function setCurrentUser(data) {
-  let userData = util.decode(data);
+  let userData = decode(data);
   return { type: types.SET_CURRENT_USER_SUCCESS, userData };
+}
+export function incrementCounter(data) {
+  return { type: "add", data };
 }
 export function signupSuccess() {
   let res = "success";
@@ -17,7 +20,7 @@ export function login(email, password) {
       .logIn(email, password)
       .then(({ error }) => {
         if (!error) {
-          dispatch(setCurrentUser(Cookies.get("ac-token")));
+          dispatch(setCurrentUser(getCookieByName("ac-token")));
         } else {
           throw error;
         }

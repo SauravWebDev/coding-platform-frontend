@@ -10,3 +10,4 @@ export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const BEGIN_API_CALL = "BEGIN_API_CALL";
 export const API_CALL_ERROR = "API_CALL_ERROR";
 export const LOG_OUT = "LOG_OUT";
+export const SET_TOKEN_EXPIRY = "VERIFY_TOKEN_EXPIRY";
