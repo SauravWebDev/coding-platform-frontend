@@ -141,7 +141,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
   ]);
   async function getAllProblemsAndFilters() {
     try {
-      if (isJWTExpired(getCookieByName(ACCESS_TOKEN)))
+      if (props.isLoggedIn && isJWTExpired(getCookieByName(ACCESS_TOKEN)))
         await props.refreshTokenApi();
       let length = props.problems.length;
 
