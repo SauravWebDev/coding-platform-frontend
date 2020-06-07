@@ -1,6 +1,6 @@
 import { handleResponse, handleError } from "./apiUtils";
 import { problem as apiUrl } from "./apiUrls";
-
+import { getCookieByName } from "../util/util";
 const getAll = apiUrl + `/getAllProblems/`;
 const getByIdOrTitle = apiUrl + "/problem/";
 const createORUpdate = apiUrl + "/problem/createORUpdate";
@@ -11,14 +11,17 @@ const saveTestCasesUrl = apiUrl + "/problem/testCase/save";
 const deleteTestCaseUrl = apiUrl + "/problem/testCase/delete";
 const saveMetaDataUrl = apiUrl + "/problem/saveMetaData";
 
+const accessToken = "ac-token";
 export function getAllProblems() {
-  return fetch(getAll, { credentials: "include" })
+  return fetch(getAll, {
+    method: "get",
+  })
     .then(handleResponse)
     .catch(handleError);
 }
 
 export function getProblemByIdOrTitle(id) {
-  return fetch(getByIdOrTitle + "" + id, { credentials: "include" })
+  return fetch(getByIdOrTitle + "" + id)
     .then(handleResponse)
     .catch(handleError);
 }
@@ -37,6 +40,7 @@ export function createORUpdateProblem(data) {
     referrerPolicy: "no-referrer",
     headers: {
       "Content-Type": "application/json",
+      authorization: "Basic " + getCookieByName(accessToken),
     },
     body: JSON.stringify(data),
   })
