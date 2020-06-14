@@ -1,29 +1,31 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import SingleSelect from "../common/SingleSelect";
-
-import "./TryCodePage.scss";
-import Button from "@material-ui/core/Button";
-
-import ProblemData from "./ProblemData";
-import Editor from "../Editor/JSEditor";
-import { DEFAULT_PROB_DATA } from "./Constant";
-// API //
-import { tryCode } from "../../api/problemsApi";
-import { getAllProblems } from "../../redux/actions/problemsAction";
-
-import * as filtersAction from "../../redux/actions/filtersAction";
 
 import {
   run as submissionRun,
   submit as submissionSubmit,
   checkStatus,
 } from "../../api/submissionApi";
-import { toast } from "react-toastify";
-import { debounceFn, validString } from "../../util/util";
+import SingleSelect from "../common/SingleSelect";
+import { tryCode } from "../../api/problemsApi";
+import { getAllProblems } from "../../redux/actions/problemsAction";
+import { refreshToken } from "../../redux/actions/authActions";
 
-//tabs
+import * as filtersAction from "../../redux/actions/filtersAction";
+
+import {
+  debounceFn,
+  validString,
+  isJWTExpired,
+  getCookieByName,
+} from "../../util/util";
+
+import ProblemData from "./ProblemData";
+import Editor from "../Editor/JSEditor";
+import { DEFAULT_PROB_DATA } from "./Constant";
+import Button from "@material-ui/core/Button";
+import { toast } from "react-toastify";
 import SwipeableViews from "react-swipeable-views";
 import {
   makeStyles,
@@ -36,11 +38,10 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-
 import ResizePanel from "react-resize-panel";
-
-//button styling
 import { green, red } from "@material-ui/core/colors";
+
+import "./TryCodePage.scss";
 
 const colorTheme = createMuiTheme({
   palette: {
@@ -65,6 +66,7 @@ const font = {
   15: "15",
   16: "16",
 };
+const ACCESS_TOKEN = "ac-token";
 function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
   const [problem, setProblem] = useState(DEFAULT_PROB_DATA);
   const [defaultInput, setDefaultInput] = useState([]);
@@ -106,8 +108,11 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
       );
     }
   };
-  const getResult = function () {
+
+  const getResult = async function () {
     if (checkRes) {
+      if (isJWTExpired(getCookieByName(ACCESS_TOKEN)))
+        await props.refreshTokenApi();
       setCheckRes(false);
       checkStatus(submissionId)
         .then((res) => {
@@ -134,83 +139,95 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
   const debounceOnChange = useCallback(debounceFn(getResult, delay), [
     checkRes,
   ]);
+  async function getAllProblemsAndFilters() {
+    try {
+      if (props.isLoggedIn && isJWTExpired(getCookieByName(ACCESS_TOKEN)))
+        await props.refreshTokenApi();
+      let length = props.problems.length;
+
+      if (length === 0) {
+        await props.loadProblems();
+      }
+      let filters = props.filters;
+      if (
+        Object.keys(filters.difficulty).length === 0 &&
+        Object.keys(filters.tag).length === 0
+      ) {
+        await props.loadFilters();
+      }
+    } catch (e) {
+      debugger;
+      toast.error("Something went wrong");
+    }
+  }
 
   useEffect(() => {
-    let length = props.problems.length;
-    if (length === 0) {
-      props.loadProblems().catch(() => toast.error("something went wrong"));
-    }
-    let filters = props.filters;
-    if (
-      Object.keys(filters.difficulty).length === 0 &&
-      Object.keys(filters.tag).length === 0
-    ) {
-      props.loadFilters().catch(() => toast.error("something went wrong"));
-    }
+    getAllProblemsAndFilters();
   }, []);
 
-  useEffect(() => {
+  async function getTryCodeProblemData() {
     if (validString(slug)) {
-      tryCode(slug)
-        .then((data) => {
-          if (data.error) {
-            alert(data.error);
-          } else {
-            let sourceCode = {};
-            data.sourceCode.forEach((item) => {
-              sourceCode[item.lang_id] = item.code;
-            });
-            let lang = {};
-            for (let i in data.language) {
-              lang[data.language[i].id] = data.language[i].value;
-            }
-            let preferrredLang = localStorage.getItem("LANGUAGE");
-            let selectedLanguage = lang[preferrredLang]
-              ? preferrredLang
-              : data.language[0].id;
-
-            let selectedCode = sourceCode[selectedLanguage];
-            try {
-              let userPrevCode = localStorage.getItem(data.slug);
-              userPrevCode = JSON.parse(userPrevCode);
-              if (userPrevCode && userPrevCode[selectedLanguage]) {
-                selectedCode = userPrevCode[selectedLanguage];
-              }
-            } catch (err) {
-              localStorage.setItem(data.slug, "{}");
-            }
-            let inputObj = data.meta_data.input_meta_data.inputs;
-            let defaultTc = data.default_input.map((data, index) => {
-              if (inputObj[index].type == 4) {
-                return JSON.stringify(data);
-              }
-              return data;
-            });
-            setDefaultInput((prev) => {
-              prev = [...defaultTc];
-              return [...prev];
-            });
-            let problemData = {
-              id: data.id,
-              slug: data.slug,
-              title: data.title,
-              description: data.description,
-              example: data.example,
-              note: data.note,
-              difficulty: data.difficulty,
-              tag: data.tag,
-              language: lang,
-              selectedLanguage,
-              sourceCode,
-              selectedCode,
-            };
-            setProblem(problemData);
+      try {
+        let data = await tryCode(slug);
+        if (data.error) {
+          alert(data.error);
+        } else {
+          let sourceCode = {};
+          data.sourceCode.forEach((item) => {
+            sourceCode[item.lang_id] = item.code;
+          });
+          let lang = {};
+          for (let i in data.language) {
+            lang[data.language[i].id] = data.language[i].value;
           }
-        })
-        .catch((e) => {
-          alert(e);
-        });
+          let preferrredLang = localStorage.getItem("LANGUAGE");
+          let selectedLanguage = lang[preferrredLang]
+            ? preferrredLang
+            : data.language[0].id;
+
+          let selectedCode = sourceCode[selectedLanguage];
+          try {
+            let userPrevCode = localStorage.getItem(data.slug);
+            userPrevCode = JSON.parse(userPrevCode);
+            if (userPrevCode && userPrevCode[selectedLanguage]) {
+              selectedCode = userPrevCode[selectedLanguage];
+            }
+          } catch (err) {
+            localStorage.setItem(data.slug, "{}");
+          }
+          let inputObj = data.meta_data.input_meta_data.inputs;
+          let defaultTc = data.default_input.map((data, index) => {
+            if (inputObj[index].type == 4) {
+              return JSON.stringify(data);
+            }
+            return data;
+          });
+          setDefaultInput((prev) => {
+            prev = [...defaultTc];
+            return [...prev];
+          });
+          setProblem({
+            id: data.id,
+            slug: data.slug,
+            title: data.title,
+            description: data.description,
+            example: data.example,
+            note: data.note,
+            difficulty: data.difficulty,
+            tag: data.tag,
+            language: lang,
+            selectedLanguage,
+            sourceCode,
+            selectedCode,
+          });
+        }
+      } catch (e) {
+        alert("Something went wrong");
+      }
     }
+  }
+  useEffect(() => {
+    getTryCodeProblemData();
   }, [slug]);
 
   if (submissionId && checkRes) {
@@ -255,7 +272,7 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
       return { ...prev };
     });
   };
-  const run = () => {
+  const run = async () => {
     if (!props.isLoggedIn) {
       toast.error("Please Login to run Code");
       return;
@@ -268,24 +285,26 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
     body.default_input = defaultInput;
     body.problem_id = problem.id;
 
-    submissionRun(body)
-      .then((data) => {
-        if (data.error) {
-          toast.error(data.error);
-        } else {
-          toast.success("Execution in progress");
-          setSubmissionId(data.submissionId);
-          setCheckRes(true);
-        }
-      })
-      .catch((e) => {
-        toast.error("Something went wrong");
-        console.log(e);
-        setCheckRes(false);
-        setApiInprogress(false);
-      });
+    try {
+      if (isJWTExpired(getCookieByName(ACCESS_TOKEN)))
+        await props.refreshTokenApi();
+      let data = await submissionRun(body);
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        toast.success("Execution in progress");
+        setSubmissionId(data.submissionId);
+        setCheckRes(true);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+      console.log(e);
+      setCheckRes(false);
+      setApiInprogress(false);
+    }
   };
-  const submit = () => {
+
+  const submit = async () => {
     if (!props.isLoggedIn) {
       toast.error("Please Login to submit code");
       return;
@@ -296,23 +315,23 @@ function TryCodePage({ slug, DEFAULT_PROB_DATA, ...props }) {
     body.code = problem.selectedCode;
     body.language = problem.language[problem.selectedLanguage];
     body.problem_id = problem.id;
-
-    submissionSubmit(body)
-      .then((data) => {
-        if (data.error) {
-          toast.error(data.error);
-        } else {
-          toast.success("Execution in progress");
-          setSubmissionId(data.submissionId);
-          setCheckRes(true);
-        }
-      })
-      .catch((e) => {
-        toast.error("Something went wrong");
-        console.log(e);
-        setCheckRes(false);
-        setApiInprogress(false);
-      });
+    try {
+      if (isJWTExpired(getCookieByName(ACCESS_TOKEN)))
+        await props.refreshTokenApi();
+      let data = await submissionSubmit(body);
+      if (data.error) {
+        toast.error(data.error);
+      } else {
+        toast.success("Execution in progress");
+        setSubmissionId(data.submissionId);
+        setCheckRes(true);
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+      console.log(e);
+      setCheckRes(false);
+      setApiInprogress(false);
+    }
   };
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -630,6 +649,7 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {
   loadProblems: getAllProblems,
   loadFilters: filtersAction.getFilters,
+  refreshTokenApi: refreshToken,
 };
 
 TryCodePage.propTypes = {
@@ -641,6 +661,7 @@ TryCodePage.propTypes = {
   problems: PropTypes.array.isRequired,
   filters: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  refreshTokenApi: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TryCodePage);

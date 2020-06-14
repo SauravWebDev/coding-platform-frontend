@@ -17,6 +17,12 @@ export default function loginReducer(state = initialState.userData, action) {
         data: {},
       };
     }
+    case types.SET_TOKEN_EXPIRY: {
+      return {
+        ...state,
+        tokenExpired: action.isExpired,
+      };
+    }
     default:
       return state;
   }

@@ -9,6 +9,7 @@ export default {
   },
   userData: {
     isAuthenticated: false,
+    tokenExpired: false,
     data: {},
   },
   signupSuccess: false,

@@ -4,7 +4,5 @@ import { filter as apiUrl } from "./apiUrls";
 const get = apiUrl + `/filter`;
 
 export function getFilters() {
-  return fetch(get)
-    .then(handleResponse)
-    .catch(handleError);
+  return fetch(get).then(handleResponse).catch(handleError);
 }

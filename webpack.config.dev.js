@@ -3,13 +3,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 process.env.NODE_ENV = "development";
-
-var API_URL = JSON.stringify("http://localhost:8081");
-
-// check environment mode
-var environment =
-  process.env.NODE_ENV === "production" ? "production" : "development";
-
+const API_URL = JSON.stringify("http://localhost:8081");
 module.exports = {
   mode: "development",
   target: "web",
