@@ -27,10 +27,10 @@ const useStyles = makeStyles({
   list: {
     maxWidth: "650px",
     width: 600,
-
     background: "#1F1E1E",
     color: "#A8A7A7",
     cursor: "pointer",
+    height: '1000%',
   },
   fullList: {
     width: "auto",
@@ -75,18 +75,20 @@ export default function ProblemData({
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <Button className="drawerButton">All Problems</Button>
-      <List>
+      <div className="modalHeader">
+        <h4 className="drawerButton">All Problems</h4>
+      </div>
+      <List className="modalList">
         {problems.map((data) => (
           <div
             key={data.id}
-            style={{
-              backgroundColor: data.id == questionData.id ? "grey" : undefined,
-            }}
+          // style={{
+          //   backgroundColor: data.id == questionData.id ? "grey" : undefined,
+          // }}
           >
             <NavLink to={"/problem/" + data.slug}>
-              <ListItem button>
-                <ListItemText primary={data.title} />
+              <ListItem button className="listDetails">
+                <ListItemText primary={data.title} className="listItems" />
                 <Chip
                   style={{
                     backgroundColor: color[data.difficulty],
@@ -120,7 +122,7 @@ export default function ProblemData({
           label={difficulty[questionData.difficulty]}
         />
         <Button
-          className="topButtons"
+
           size="small"
           color="primary"
           disabled={selectedQuestionIndex == 0 ? true : false}
@@ -129,7 +131,7 @@ export default function ProblemData({
           <NavigateBeforeIcon />
         </Button>
         <Button
-          className="topButtons"
+
           size="small"
           color="primary"
           disabled={selectedQuestionIndex == problems.length - 1 ? true : false}
@@ -192,8 +194,8 @@ export default function ProblemData({
           {showSimilar ? (
             <ExpandLessIcon fontSize="small" />
           ) : (
-            <ExpandMoreIcon fontSize="small" />
-          )}
+              <ExpandMoreIcon fontSize="small" />
+            )}
         </span>
       </div>
       <div

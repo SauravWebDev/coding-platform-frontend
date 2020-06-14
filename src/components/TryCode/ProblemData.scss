@@ -29,10 +29,14 @@ text-align: center;
 
 .drawerButton{
   background: #1F1E1E!important;
-  color: #A8A7A7!important;
+  color: white!important;
   cursor: 'pointer'!important;
   padding: 0.5em 0px!important;
- 
+ width: 600px;
+ max-width: 650px;
+ margin-top: 0px;
+ display: flex;
+ justify-content: center;
 }
 
 .similarQuesStyle{
@@ -49,4 +53,26 @@ text-align: center;
 
 .problemData{
   min-width: 324px;
+}
+
+.modalHeader{
+  z-index: 2;
+  height: 65px;
+  width: 100%;
+  position: fixed;
+
+}
+
+.modalList{
+  margin-top: 30px!important;
+}
+
+.listItems{
+  color:white;
+  font-size: inherit!important;
+}
+
+.listDetails{
+  padding-top: 5px!important;
+    padding-bottom: 5px!important;
 }
