@@ -2,39 +2,39 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import "./ProblemList.scss";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import { NavLink } from "react-router-dom";
+
+//listing
+import Typography from "@material-ui/core/Typography";
+import IconButton from '@material-ui/core/IconButton';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import Grid from '@material-ui/core/Grid';
+
 import Chip from "@material-ui/core/Chip";
-import TablePagination from "@material-ui/core/TablePagination";
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: theme.palette.primary.light,
+    padding:0
   },
-  head: {
-    fontWeight: 600,
+  root: {
+    flexGrow: 1,
+    overflow: 'hidden',
+    padding: theme.spacing(0, 3),
   },
-});
+  paper: {
+    maxWidth: 400,
+    margin: `${theme.spacing(1)}px auto`,
+    padding: theme.spacing(2),
+  },
+}));
 
 export default function List({ isAdmin, problems, filters }) {
   const classes = useStyles();
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [page, setPage] = React.useState(0);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   const start = rowsPerPage * page;
   const end = start + rowsPerPage;
   let color = {
@@ -43,74 +43,93 @@ export default function List({ isAdmin, problems, filters }) {
     3: "#db2644",
   };
   return (
-    <div className="problemList">
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow className={classes.head}>
-              <TableCell>#</TableCell>
-              <TableCell align="left">Title</TableCell>
-              <TableCell align="left">Difficulty</TableCell>
-              {isAdmin && (
-                <>
-                  <TableCell align="left">Action</TableCell>
-                  <TableCell align="left">Status</TableCell>
-                </>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {problems.slice(start, end).map((problem) => (
-              <TableRow key={problem.id} className="problem-list-element">
-                <TableCell component="th" scope="row">
-                  {problem.id}
-                </TableCell>
-                <TableCell align="left">
-                  <NavLink to={"/problem/" + problem.slug}>
-                    {problem.title}
-                  </NavLink>
-                </TableCell>
-                <TableCell align="left">
-                  <Chip
-                    style={{
-                      backgroundColor: color[problem.difficulty],
-                      color: "white",
-                    }}
-                    label={filters.difficulty[problem.difficulty]}
-                  />
-                </TableCell>
-                {isAdmin && (
-                  <>
-                    <TableCell align="left" style={{ padding: "5px" }}>
-                      <NavLink to={"/problem/createUpdate/" + problem.slug}>
-                        Update
-                      </NavLink>
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      style={{
-                        color: problem.status == 0 ? "Red" : undefined,
-                      }}
-                    >
-                      {problem.status == 0 ? "InActive" : "Active"}
-                    </TableCell>
-                  </>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 20, 40]}
-        component="div"
-        count={problems.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
-    </div>
+    <>
+      <div className="listAlign">
+
+        <div className="listStyle">
+          <Typography variant="h4" align='center' className="headingStyle1">
+            Easy
+      </Typography>
+          {
+            problems.slice(start, end).map((problem) => (
+              <div key={problem.id} className={classes.root}>
+                <Paper className={classes.paper} style={{ border: '2px solid', borderColor: color[problem.difficulty] }}>
+               
+                  <Grid container wrap="nowrap" spacing={2} >     
+                     
+                    <Grid item xs zeroMinWidth  >
+                    <NavLink to={"/problem/" + problem.slug}>    
+                      <Typography className="questionText" noWrap>{problem.title}</Typography>
+                      </NavLink>    
+                      <IconButton >
+                        <StarBorderIcon className={classes.title} />
+                      </IconButton>
+                      Not Submitted
+                    </Grid>  
+                                 
+                  </Grid>
+                 
+                </Paper>
+              </div>
+
+            ))
+          }
+        </div>
+
+        <div className="listStyle">
+          <Typography variant="h4" align='center' className="headingStyle2">
+            Medium
+      </Typography>
+          {
+            problems.slice(start, end).map((problem) => (
+              <div key={problem.id} className={classes.root}>
+                <Paper className={classes.paper} style={{ border: '2px solid', borderColor: color[problem.difficulty] }}>
+                  <Grid container wrap="nowrap" spacing={2} >
+                    <Grid item xs zeroMinWidth>
+                    <NavLink to={"/problem/" + problem.slug}>    
+                      <Typography className="questionText" noWrap>{problem.title}</Typography>
+                      </NavLink>    
+                      <IconButton >
+                        <StarBorderIcon className={classes.title} />
+                      </IconButton>
+                      Not Submitted
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </div>
+
+            ))
+          }
+        </div>
+
+        <div className="listStyle">
+          <Typography variant="h4" align='center' className="headingStyle3">
+            Hard
+      </Typography>
+          {
+            problems.slice(start, end).map((problem) => (
+              <div key={problem.id} className={classes.root}>
+                <Paper className={classes.paper} style={{ border: '2px solid', borderColor: color[problem.difficulty] }}>
+                  <Grid container wrap="nowrap" spacing={2} >
+                    <Grid item xs zeroMinWidth>
+                    <NavLink to={"/problem/" + problem.slug}>    
+                      <Typography className="questionText" noWrap>{problem.title}</Typography>
+                      </NavLink>    
+                      <IconButton >
+                        <StarBorderIcon className={classes.title} />
+                      </IconButton>
+                      Not Submitted
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </div>
+
+            ))
+          }
+        </div>
+
+      </div>
+    </>
   );
 }
 

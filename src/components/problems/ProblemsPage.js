@@ -48,8 +48,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
   return (
     <div>
       <div className="problemPage">
-        <div className="width-5percent"></div>
-        <div className="width-70percent">
+        <div>
           {props.isAdmin && (
             <Chip
               onClick={() => createProblem(history)}
@@ -69,7 +68,7 @@ const ProblemsPage = ({ loadProblems, problemsData, history, ...props }) => {
             filters={props.filters}
           />
         </div>
-        <div className="width-25percent filter"></div>
+      
       </div>
     </div>
   );

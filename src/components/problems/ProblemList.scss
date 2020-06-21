@@ -8,3 +8,38 @@
 .problem-list-element:hover {
   background-color: aliceblue;
 }
+
+.listAlign{
+  display: flex;
+  margin-top: 5vh;
+}
+
+.headingStyle1{
+  background-color: #5cb85c;
+  width: fit-content;
+  color: white;
+  font-family: 'Libre Baskerville', serif;
+}
+
+.headingStyle2{
+  background-color: #f0ad4e;
+  width: fit-content;
+  color: white;
+  font-family: 'Libre Baskerville', serif;
+}
+
+.headingStyle3{
+  background-color:#db2644;
+  width: fit-content;
+  color: white;
+  font-family: 'Libre Baskerville', serif;
+}
+
+.listStyle{
+  width: 30vw;
+}
+
+.questionText{
+  padding-left: 15px;
+  padding-top: 12px;
+}
